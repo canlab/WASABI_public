@@ -11,9 +11,9 @@ title                    : "CAN Lab"
 title_separator          : "-"
 name                     : &name "Cognitive and Affective Neuroscience Lab"
 description              : &description "Pain and Emotion at CU Boulder"
-url                      : https://lslipski.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://canlab.github.io/WASABI_public/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/about"
-repository               : "https://github.com/Lslipski/CANlab_help_examples"
+repository               : "canlab/WASABI_public"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 breadcrumbs              : false # true, false (default)
 words_per_minute         : 160
@@ -110,7 +110,7 @@ author:
   xing             :
   youtube          :
   wikipedia        :
-  cuwebsite        : "https://canlabweb.colorado.edu/"
+  # cuwebsite        : "https://canlabweb.colorado.edu/"
 
 
 # Reading Files
