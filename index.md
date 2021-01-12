@@ -1,2 +1,2 @@
 ## Good Documentation for WASABI 
-![Wasabi logo](logo.png)
+![Wasabi logo](images/logo.png)
