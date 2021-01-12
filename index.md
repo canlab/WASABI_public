@@ -1,2 +1,2 @@
 
-![Wasabi logo](images/logo.png)
+![Wasabi logo](logo.png)
