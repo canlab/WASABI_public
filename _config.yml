@@ -9,8 +9,8 @@
 locale                   : "en-US"
 title                    : "CAN Lab"
 title_separator          : "-"
-name                     : &name "Cognitive and Affective Neuroscience Lab"
-description              : &description "Pain and Emotion at CU Boulder"
+name                     : &name "WASABI"
+description              : &description "Warmth-Anticipation-Sensation-Aversion-Body-part-Imaging"
 url                      : https://canlab.github.io/WASABI_public/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/about"
 repository               : "canlab/WASABI_public"
@@ -92,7 +92,7 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : "https://github.com/canlab"
+  Wasabi github    : "https://github.com/canlab/WASABI_public"
   google_plus      :
   keybase          :
   instagram        :
@@ -110,7 +110,7 @@ author:
   xing             :
   youtube          :
   wikipedia        :
-  cuwebsite        : "https://sites.dartmouth.edu/canlab/"
+  CANlab website   : "https://sites.dartmouth.edu/canlab/"
 
 
 # Reading Files
