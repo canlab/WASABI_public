@@ -78,11 +78,11 @@ analytics:
 
 # Site Author
 author:
-  name             : "CAN Lab"
-  avatar           : "siips1.png"
-  bio              : "We investigate the brain pathways that underlie the generation and regulation of pain and emotion."
-  location         : "Boulder, CO"
-  employer         :
+  name             : "WASABI"
+  avatar           : "images/logo.png"
+  bio              : "The Warmth-Anticipation-Sensation-Aversion-Body-part-Imaging Study"
+  location         : "Dartmouth College, Hanover, NH"
+  employer         : "Cognitive and Affective Neuroscience Lab (CANLAB)"
   googlescholar    :
   email            :
   uri              :
@@ -110,7 +110,7 @@ author:
   xing             :
   youtube          :
   wikipedia        :
-  # cuwebsite        : "https://canlabweb.colorado.edu/"
+  cuwebsite        : "https://sites.dartmouth.edu/canlab/"
 
 
 # Reading Files
