@@ -14,7 +14,7 @@ description              : &description "Warmth-Anticipation-Sensation-Aversion-
 url                      : https://canlab.github.io/WASABI_public/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/about"
 repository               : "canlab/WASABI_public"
-teaser                   : "images/logo.png" 
+teaser                   : "https://github.com/canlab/WASABI_public/blob/gh-pages/images/logo.png" 
 breadcrumbs              : false # true, false (default)
 words_per_minute         : 160
 read_more                : "disabled" # if enabled, adds "Read more" links to excerpts
@@ -82,7 +82,7 @@ author:
   avatar           : "images/logo.png"
   bio              : "The Warmth-Anticipation-Sensation-Aversion-Body-part-Imaging Study"
   location         : "Dartmouth College, Hanover, NH"
-  employer         : "Cognitive and Affective Neuroscience Lab (CANLAB)"
+  employer         : "CANLAB"
   googlescholar    :
   email            :
   uri              :
