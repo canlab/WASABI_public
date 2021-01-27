@@ -2,10 +2,7 @@
 main:
   - title: "Home"
     url: /home/
-
-  - title: "Background"
-    url: /background/
-    
+ 
   - title: "Participant Tracking"
     url: /participant_tracking/
 
@@ -17,3 +14,6 @@ main:
 
   - title: "Trouble-shooting"
     url: /troubleshoot/
+    
+  - title: "Blog"
+    url: /blog/
