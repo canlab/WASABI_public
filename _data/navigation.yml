@@ -1,7 +1,7 @@
 # main links links
 main:
-  - title: "Home"
-    url: /home/
+  - title: "About"
+    url: /about/
  
   - title: "Participant Tracking"
     url: /participant_tracking/
