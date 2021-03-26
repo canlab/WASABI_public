@@ -82,10 +82,10 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 0
-autorespond = 1
+autorespond = 0
 # Device togglers
-biopac_exists = 0
-thermode_exists = 0
+biopac_exists = 1
+thermode_exists = 1
 
 class simKeys:
     '''
@@ -114,87 +114,88 @@ thisSimKey=simKeys(keyList=['space'],
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 
 # biopac channels EDIT
-# task_start=7
-# task_end=8
-# run_start=9
-# run_end=10
-# run_middle=11
-# trial_start=12
-# trial_end=13
-# bodymapping_intro=14
-# bodymapping_instruction=15
-# imagination_instruction=16
-# leftface_heat=17
-# rightface_heat=18
-# leftarm_heat=19
-# rightarm_heat=20
-# leftleg_heat=21
-# rightleg_heat=22
-# chest_heat=23
-# abdomen_heat=24
-# leftface_warm=25
-# rightface_warm=26
-# leftarm_warm=27
-# rightarm_warm=28
-# leftleg_warm=29
-# rightleg_warm=30
-# chest_warm=31
-# abdomen_warm=32
-# leftface_imagine=33
-# rightface_imagine=34
-# leftarm_imagine=35
-# rightarm_imagine=36
-# leftleg_imagine=37
-# rightleg_imagine=38
-# chest_imagine=39
-# abdomen_imagine=40
-# rest=41
-# valence_rating=42
-# intensity_rating=43
-# comfort_rating=44
-# between_run_msg=45
-# end=46
+task_ID=1
+task_start=7
+task_end=8
+run_start=9
+run_end=10
+run_middle=11
+trial_start=12
+trial_end=13
+bodymapping_intro=14
+bodymapping_instruction=15
+imagination_instruction=16
+leftface_heat=17
+rightface_heat=18
+leftarm_heat=19
+rightarm_heat=20
+leftleg_heat=21
+rightleg_heat=22
+chest_heat=23
+abdomen_heat=24
+leftface_warm=25
+rightface_warm=26
+leftarm_warm=27
+rightarm_warm=28
+leftleg_warm=29
+rightleg_warm=30
+chest_warm=31
+abdomen_warm=32
+leftface_imagine=33
+rightface_imagine=34
+leftarm_imagine=35
+rightarm_imagine=36
+leftleg_imagine=37
+rightleg_imagine=38
+chest_imagine=39
+abdomen_imagine=40
+rest=41
+valence_rating=42
+intensity_rating=43
+comfort_rating=44
+between_run_msg=45
+end=46
 
-task_start=0
-task_end=0
-run_start=0
-run_end=0
-run_middle=0
-trial_start=0
-trial_end=0
-bodymapping_intro=0
-bodymapping_instruction=0
-imagination_instruction=0
-leftface_heat=1
-rightface_heat=1
-leftarm_heat=1
-rightarm_heat=1
-leftleg_heat=1
-rightleg_heat=1
-chest_heat=1
-abdomen_heat=1
-leftface_warm=2
-rightface_warm=2
-leftarm_warm=2
-rightarm_warm=2
-leftleg_warm=2
-rightleg_warm=2
-chest_warm=2
-abdomen_warm=2
-leftface_imagine=4
-rightface_imagine=4
-leftarm_imagine=4
-rightarm_imagine=4
-leftleg_imagine=4
-rightleg_imagine=4
-chest_imagine=4
-abdomen_imagine=4
-rest=8
-valence_rating=16
-intensity_rating=16
-comfort_rating=16
-between_run_msg=32
-end=64
+# task_start=0
+# task_end=0
+# run_start=0
+# run_end=0
+# run_middle=0
+# trial_start=0
+# trial_end=0
+# bodymapping_intro=0
+# bodymapping_instruction=0
+# imagination_instruction=0
+# leftface_heat=1
+# rightface_heat=1
+# leftarm_heat=1
+# rightarm_heat=1
+# leftleg_heat=1
+# rightleg_heat=1
+# chest_heat=1
+# abdomen_heat=1
+# leftface_warm=2
+# rightface_warm=2
+# leftarm_warm=2
+# rightarm_warm=2
+# leftleg_warm=2
+# rightleg_warm=2
+# chest_warm=2
+# abdomen_warm=2
+# leftface_imagine=4
+# rightface_imagine=4
+# leftarm_imagine=4
+# rightarm_imagine=4
+# leftleg_imagine=4
+# rightleg_imagine=4
+# chest_imagine=4
+# abdomen_imagine=4
+# rest=8
+# valence_rating=16
+# intensity_rating=16
+# comfort_rating=16
+# between_run_msg=32
+# end=64
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -310,24 +311,24 @@ if debug==1:
         'scanner': 'MS'
     }
     participant_settingsHeat = {
-        'Left Face': '46',
-        'Right Face': '46',
-        'Left Arm': '46',
-        'Right Arm': '46',
-        'Left Leg': '46',
-        'Right Leg': '46',
-        'Chest': '46',
-        'Abdomen': "46"
+        'Left Face': 46,
+        'Right Face': 46,
+        'Left Arm': 46,
+        'Right Arm': 46,
+        'Left Leg': 46,
+        'Right Leg': 46,
+        'Chest': 46,
+        'Abdomen': 46
     }
     participant_settingsWarm = {
-        'Left Face': '40',
-        'Right Face': '40',
-        'Left Arm': '40',
-        'Right Arm': '40',
-        'Left Leg': '40',
-        'Right Leg': '40',
-        'Chest': '40',
-        'Abdomen': '40'
+        'Left Face': 40,
+        'Right Face': 40,
+        'Left Arm': 40,
+        'Right Arm': 40,
+        'Left Leg': 40,
+        'Right Leg': 40,
+        'Chest': 40,
+        'Abdomen': 40
     }
 else:
     dlg1 = gui.fileOpenDlg(tryFilePath="", tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
@@ -335,7 +336,7 @@ else:
         if "_task-Calibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
             a = pd.read_csv(dlg1[0], delimiter='\t', index_col=0, header=0, squeeze=True)
-            if a.shape == (1,38):
+            if a.shape == (1,39):
                 participant_settingsHeat = {}
                 participant_settingsWarm = {}
                 p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
@@ -343,23 +344,23 @@ else:
                 expInfo['gender'] = p_info['gender']
                 expInfo['handedness'] = p_info['handedness']
                 # Heat Settings
-                participant_settingsHeat['Left Face'] = str(p_info['leftface_ht'])
-                participant_settingsHeat['Right Face'] = str(p_info['rightface_ht'])
-                participant_settingsHeat['Left Arm'] = str(p_info['leftarm_ht'])
-                participant_settingsHeat['Right Arm'] = str(p_info['rightarm_ht'])
-                participant_settingsHeat['Left Leg'] = str(p_info['leftleg_ht'])
-                participant_settingsHeat['Right Leg'] = str(p_info['rightleg_ht'])
-                participant_settingsHeat['Chest'] = str(p_info['chest_ht'])
-                participant_settingsHeat['Abdomen'] = str(p_info['abdomen_ht'])
+                participant_settingsHeat['Left Face'] = p_info['leftface_ht']
+                participant_settingsHeat['Right Face'] = p_info['rightface_ht']
+                participant_settingsHeat['Left Arm'] = p_info['leftarm_ht']
+                participant_settingsHeat['Right Arm'] = p_info['rightarm_ht']
+                participant_settingsHeat['Left Leg'] = p_info['leftleg_ht']
+                participant_settingsHeat['Right Leg'] = p_info['rightleg_ht']
+                participant_settingsHeat['Chest'] = p_info['chest_ht']
+                participant_settingsHeat['Abdomen'] = p_info['abdomen_ht']
                 # Warm Settings
-                participant_settingsWarm['Left Face'] = str(p_info['leftface_st']+1)
-                participant_settingsWarm['Right Face'] = str(p_info['rightface_st']+1)
-                participant_settingsWarm['Left Arm'] = str(p_info['leftarm_st']+1)
-                participant_settingsWarm['Right Arm'] = str(p_info['rightarm_st']+1)
-                participant_settingsWarm['Left Leg'] = str(p_info['leftleg_st']+1)
-                participant_settingsWarm['Right Leg'] = str(p_info['rightleg_st']+1)
-                participant_settingsWarm['Chest'] = str(p_info['chest_st']+1)
-                participant_settingsWarm['Abdomen'] =  str(p_info['abdomen_st']+1)
+                participant_settingsWarm['Left Face'] = p_info['leftface_st']+1
+                participant_settingsWarm['Right Face'] = p_info['rightface_st']+1
+                participant_settingsWarm['Left Arm'] = p_info['leftarm_st']+1
+                participant_settingsWarm['Right Arm'] = p_info['rightarm_st']+1
+                participant_settingsWarm['Left Leg'] = p_info['leftleg_st']+1
+                participant_settingsWarm['Right Leg'] = p_info['rightleg_st']+1
+                participant_settingsWarm['Chest'] = p_info['chest_st']+1
+                participant_settingsWarm['Abdomen'] =  p_info['abdomen_st']+1
                 
                 # count number of existing sessions and set the session number
                 num = 1 
@@ -483,12 +484,12 @@ thermode1_temp2program = {}
 with open("thermode1_programs.txt") as f:
     for line in f:
        (key, val) = line.split()
-       thermode1_temp2program[key] = int(val)
+       thermode1_temp2program[float(key)] = int(val)
 thermode2_temp2program = {}
 with open("thermode2_programs.txt") as f:
     for line in f:
        (key, val) = line.split()
-       thermode2_temp2program[key] = int(val)
+       thermode2_temp2program[float(key)] = int(val)
 
 """
 4. Create Body-Site Pairs for each run for this participant
@@ -523,7 +524,6 @@ logFile = logging.LogFile(psypy_filename+'.log', level=logging.ERROR)
 logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
-
 
 """
 6. Initialize Trial-level Components
@@ -721,14 +721,14 @@ ConfirmEnd = keyboard.Keyboard()
 # We are not doing ratings for this study...No need for any keyboard except for escaping
 defaultKeyboard = keyboard.Keyboard()
 
-
 win.mouseVisible = False   ## Turn the mouse cursor off during the duration of the scan
-
 """
 7. Start Experimental Loops: 
     runLoop (prepare the trial order for the run)
     trialLoop (prepare the trial_type for each trial)
 """
+biopac.setData(biopac, task_ID) # Start demarcation of the bodymap task in Biopac Acqknowledge
+biopac.setData(biopac, 0) 
 """
 7a. Body Mapping Introduction
 """
@@ -1919,7 +1919,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Comfort Rating")
             if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, Comfort_rating)
+                win.callOnFlip(biopac.setData, biopac, comfort_rating)
             win.timeOnFlip(ComfortRating, 'tStartRefresh')  # time at next scr refresh
             ComfortRating.setAutoDraw(True)
         if ComfortRating.status == STARTED:

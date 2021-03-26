@@ -69,10 +69,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-autorespond = 1
+debug = 0
+autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 class simKeys:
     '''
@@ -101,14 +101,20 @@ if autorespond == 1:
 #     For instance, the following code would send a value of 15 by setting the first 4 bits to “1": biopac.getFeedback(u3.PortStateWrite(State = [15, 0, 0]))
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 #     Another command that may work: biopac.setData(byte)
+
+# biopac channels EDIT
+task_ID=2
+intro=46
+rest_t1=47
+nback_instructions=48
+nback_fixation=49
+nback_trial_start=50
+in_between_run_msg=51
+nback_hit=52
+nback_miss=53
+end=54
+
 if biopac_exists == 1:
-    # biopac channels EDIT
-    channel_trigger     = 0
-    channel_fixation    = 1
-    channel_text        = 2
-    channel_audio       = 3
-    channel_feel        = 4
-    channel_expect      = 5
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
     # This involves importing the labjack U3 Parallelport to USB library
     # U3 Troubleshooting:
@@ -127,9 +133,8 @@ if biopac_exists == 1:
         else:
             byteStr = '{0:08b}'.format(byte)
         [self.writeRegister(address+pin, int(entry)) for (pin, entry) in enumerate(byteStr)]
-    labjacks.U3.setData = biopacSetData
-
     biopac = U3()
+    biopac.setData = biopacSetData
     # Set all FIO bits to digital output and set to low (i.e. “0")
     # The list in square brackets represent what’s desired for the FIO, EIO, CIO ports. We will only change the FIO port's state.
     biopac.configIO(FIOAnalog=0, EIOAnalog=0)
@@ -296,6 +301,9 @@ response_2 = keyboard.Keyboard()
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
+
+biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
+biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
 """
 5. Start Experimental Loops
 """
@@ -385,6 +393,7 @@ for thisCounterbalancer in counterbalancer:
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                win.callOnFlip(biopac.setData, biopac, rest_t1)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -413,6 +422,7 @@ for thisCounterbalancer in counterbalancer:
                 win.flip()
         
         # -------Ending Routine "RestT1"-------
+        biopac.setData(biopac, 0)
         for thisComponent in RestT1Components:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -493,6 +503,7 @@ for thisCounterbalancer in counterbalancer:
                 NbackInstructions.tStart = t  # local t and not account for scr refresh
                 NbackInstructions.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(NbackInstructions, 'tStartRefresh')  # time at next scr refresh
+                win.callOnFlip(biopac.setData, biopac, nback_instructions)
                 NbackInstructions.setAutoDraw(True)
             
             # *NbackStart* updates
@@ -539,6 +550,7 @@ for thisCounterbalancer in counterbalancer:
                 win.flip()
 
         # -------Ending Routine "NbackInstructions"-------
+        biopac.setData(biopac, 0)
         for thisComponent in NbackInstructionsComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -593,6 +605,7 @@ for thisCounterbalancer in counterbalancer:
                 fixation_2.tStart = t  # local t and not account for scr refresh
                 fixation_2.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_2, 'tStartRefresh')  # time at next scr refresh
+                win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_2.setAutoDraw(True)
             if fixation_2.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -621,6 +634,7 @@ for thisCounterbalancer in counterbalancer:
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        biopac.setData(biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -686,6 +700,7 @@ for thisCounterbalancer in counterbalancer:
                     grid_lines_2.frameNStart = frameN  # exact frame index
                     grid_lines_2.tStart = t  # local t and not account for scr refresh
                     grid_lines_2.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.callOnFlip(biopac.setData, biopac, nback_trial_start)
                     win.timeOnFlip(grid_lines_2, 'tStartRefresh')  # time at next scr refresh
                     grid_lines_2.setAutoDraw(True)
                 if grid_lines_2.status == STARTED:
@@ -761,8 +776,10 @@ for thisCounterbalancer in counterbalancer:
                         # was this correct?
                         if (response_2.keys == str(corrAns)) or (response_2.keys == corrAns):
                             response_2.corr = 1
+                            biopac.setData(biopac, nback_hit)
                         else:
                             response_2.corr = 0
+                            biopac.setData(biopac, nback_miss)
                 
                 # Autoresponder
                 if t >= thisSimKey.rt and autorespond == 1:
@@ -786,6 +803,7 @@ for thisCounterbalancer in counterbalancer:
                     win.flip()
             
             # -------Ending Routine "N_back_2_trials"-------
+            biopac.setData(biopac, 0)
             for thisComponent in N_back_2_trialsComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -824,93 +842,20 @@ for thisCounterbalancer in counterbalancer:
         message = visual.TextStim(win, text=in_between_run_msg, height=0.2)
         message.draw()
         win.callOnFlip(print, "Awaiting Experimenter to start next run...")
+        win.callOnFlip(biopac.setData, biopac,in_between_run_msg)
+        win.callOnFlip(biopac.setData,biopac,0)
         win.flip()
         # Autoresponder
         if autorespond != 1:
             event.waitKeys(keyList = 'e')
 
-        # # ------Prepare to start Routine "TaskT1"-------
-        # continueRoutine = True
-        # routineTimer.add(0.500000)
-        # # update component parameters for each repeat
-        # # keep track of which components have finished
-        # TaskT1Components = [text_2]
-        # for thisComponent in TaskT1Components:
-        #     thisComponent.tStart = None
-        #     thisComponent.tStop = None
-        #     thisComponent.tStartRefresh = None
-        #     thisComponent.tStopRefresh = None
-        #     if hasattr(thisComponent, 'status'):
-        #         thisComponent.status = NOT_STARTED
-        # # reset timers
-        # t = 0
-        # _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        # TaskT1Clock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-        # frameN = -1
-        
-        # # -------Run Routine "TaskT1"-------
-        # while continueRoutine and routineTimer.getTime() > 0:
-        #     # get current time
-        #     t = TaskT1Clock.getTime()
-        #     tThisFlip = win.getFutureFlipTime(clock=TaskT1Clock)
-        #     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-        #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        #     # update/draw components on each frame
-            
-        #     # *text_2* updates
-        #     if text_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        #         # keep track of start time/frame for later
-        #         text_2.frameNStart = frameN  # exact frame index
-        #         text_2.tStart = t  # local t and not account for scr refresh
-        #         text_2.tStartRefresh = tThisFlipGlobal  # on global time
-        #         win.timeOnFlip(text_2, 'tStartRefresh')  # time at next scr refresh
-        #         text_2.setAutoDraw(True)
-        #     if text_2.status == STARTED:
-        #         # is it time to stop? (based on global clock, using actual start)
-        #         if tThisFlipGlobal > text_2.tStartRefresh + 0.5-frameTolerance:
-        #             # keep track of stop time/frame for later
-        #             text_2.tStop = t  # not accounting for scr refresh
-        #             text_2.frameNStop = frameN  # exact frame index
-        #             win.timeOnFlip(text_2, 'tStopRefresh')  # time at next scr refresh
-        #             text_2.setAutoDraw(False)
-            
-        #     # check for quit (typically the Esc key)
-        #     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-        #         core.quit()
-            
-        #     # check if all components have finished
-        #     if not continueRoutine:  # a component has requested a forced-end of Routine
-        #         break
-        #     continueRoutine = False  # will revert to True if at least one component still running
-        #     for thisComponent in TaskT1Components:
-        #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-        #             continueRoutine = True
-        #             break  # at least one component has not yet finished
-            
-        #     # refresh the screen
-        #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-        #         win.flip()
-        
-        # # -------Ending Routine "TaskT1"-------
-        # for thisComponent in TaskT1Components:
-        #     if hasattr(thisComponent, "setAutoDraw"):
-        #         thisComponent.setAutoDraw(False)
-        # TaskT1Loop.addData('text_2.started', text_2.tStartRefresh)
-        # TaskT1Loop.addData('text_2.stopped', text_2.tStopRefresh)
-        # thisExp.nextEntry()
-        
-    # completed TaskT1 repeats of 'TaskT1Loop'
-    
-# completed 1 repeats of 'counterbalancer'
-
-
-# Flip one final time so any remaining win.callOnFlip() 
-# and win.timeOnFlip() tasks get executed before quitting
 win.flip()
 
 """
 9. Save data into Excel and .CSV formats and Tying up Loose Ends
 """ 
+biopac.setData(biopac,end)
+biopac.setData(biopac,0)
 nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
 bids_filename = _thisDir + os.sep + u'data\\sub-%03d_ses-%02d_task-%s_acq-order-%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
 nback_bids_data.to_csv(bids_filename, sep="\t")
