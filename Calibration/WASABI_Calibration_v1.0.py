@@ -80,7 +80,7 @@ Set to 1 during development, 0 during production
 """
 debug = 0
 autorespond = 0
-thermode_exists = 0
+thermode_exists = 1
 waitSetting = 0
 
 """
@@ -207,14 +207,14 @@ fullscr = False for testing, True for running participants
 """
 if debug == 1: 
     win = visual.Window(
-            size=[1280, 720], fullscr=False, screen=4, 
+            size=[1280, 720], fullscr=False, screen=0, 
             winType='pyglet', allowGUI=True, allowStencil=False,
             monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
             blendMode='avg', useFBO=True, 
             units='height')
 else:
     win = visual.Window(
-            size=[1920, 1080], fullscr=True, screen=4, 
+            size=[1920, 1080], fullscr=True, screen=0, 
             winType='pyglet', allowGUI=True, allowStencil=False,
             monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
             blendMode='avg', useFBO=True, 
@@ -673,7 +673,7 @@ routineTimer.reset()
 8b. Main Loop
 """
 # set up handler to look after randomisation of conditions etc
-trials = data.TrialHandler(nReps=2, method='random', 
+trials = data.TrialHandler(nReps=4, method='random', 
     extraInfo=expInfo, originPath=-1,
     trialList=data.importConditions('bodySites.csv'),
     seed=None, name='trials')

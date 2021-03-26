@@ -16,7 +16,8 @@ class ThermodeConfig():
     """
 #    address = '129.170.31.22'
 #    address = '172.17.96.1'
-    address = '192.168.1.2' # Elitebook x360
+#    address = '192.168.1.2' # Elitebook x360
+    address = '192.168.0.114'   # Control Room C
     port = 20121
     debug = 1
     timedelayformedoc = 0.1
