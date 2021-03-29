@@ -16,8 +16,8 @@ class ThermodeConfig():
     """
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
-    address = '10.64.1.10'
-#    address = '192.168.1.2'
+#    address = '10.64.1.10'
+    address = '192.168.1.2'
     port = 20121
     debug = 0
     timedelayformedoc = 0.1

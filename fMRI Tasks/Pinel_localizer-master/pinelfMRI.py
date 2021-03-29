@@ -16,11 +16,60 @@ import serial
 #prefs.general['audioLib'] = ['pyo']
 from psychopy import sound, visual, data, event, core, gui, logging, clock
 
+
+"""
+0c. Prepare Devices: Biopac Psychophysiological Acquisition
+"""  
+# Biopac parameters _________________________________________________
+# Relevant Biopac commands: 
+#     To send a Biopac marker code to Acqknowledge, replace the FIO number with a value between 0-255(dec), or an 8-bit word(bin) 
+#     For instance, the following code would send a value of 15 by setting the first 4 bits to “1": biopac.getFeedback(u3.PortStateWrite(State = [15, 0, 0]))
+#     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
+#     Another command that may work: biopac.setData(byte)
+
+# biopac channels EDIT
+task_ID=2
+intro=46
+rest_t1=47
+nback_instructions=48
+nback_fixation=49
+nback_trial_start=50
+in_between_run_msg=51
+nback_hit=52
+nback_miss=53
+end=54
+
+if biopac_exists == 1:
+    # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
+    # This involves importing the labjack U3 Parallelport to USB library
+    # U3 Troubleshooting:
+    # Check to see if u3 was imported correctly with: help('u3')
+    # Check to see if u3 is calibrated correctly with: cal_data = biopac.getCalibrationData()
+    # Check to see the data at the FIO, EIO, and CIO ports: biopac.getFeedback(u3.PortStateWrite(State = [0, 0, 0]))
+    try:
+        from psychopy.hardware.labjacks import U3
+        # from labjack import u3
+    except ImportError:
+        import u3
+    # Function defining setData to use the FIOports (address 6000)
+    def biopacSetData(self, byte, endian='big', address=6000): 
+        if endian=='big':
+            byteStr = '{0:08b}'.format(byte)[-1::-1]
+        else:
+            byteStr = '{0:08b}'.format(byte)
+        [self.writeRegister(address+pin, int(entry)) for (pin, entry) in enumerate(byteStr)]
+    biopac = U3()
+    biopac.setData = biopacSetData
+    # Set all FIO bits to digital output and set to low (i.e. “0")
+    # The list in square brackets represent what’s desired for the FIO, EIO, CIO ports. We will only change the FIO port's state.
+    biopac.configIO(FIOAnalog=0, EIOAnalog=0)
+    for FIONUM in range(8):
+        biopac.setFIOState(fioNum = FIONUM, state=0)
+
 # PARSE INPUTS - test or not
 # parser=argparse.ArgumentParser(description= 'This script runs a psychopy version of the pinel task for an fmri experiment.')
 # parser.add_argument('--test',action='store_true',default=False,help="Indicate whether we're testing and should expect scanner triggers. Otherwise start experiment with spacebar.")
 # args = parser.parse_args()
-
 
 # CREATE DIALOGUE SCREEN - enter subject ID
 config_dialog = gui.Dlg(title="Experiment Info")
@@ -52,7 +101,7 @@ elif test == int(0):
 
 # SET EXPERIMENT GLOBALS
 base_dir = './'
-data_dir = os.path.join(base_dir, 'Data')
+data_dir = os.path.join(base_dir, 'data', 'sub-%05d' % (int(subID)), 'ses-%02d' % (int(session))
 stim_dir = os.path.join(base_dir, 'stim')
 
 # triggers

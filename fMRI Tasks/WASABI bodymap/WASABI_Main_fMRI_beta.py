@@ -19,18 +19,13 @@ all data headers are in lower snake_case.
 missing values are coded None or -99 (i.e., body_site for rest trials).
 
 The paradigm will generate 8x of these files of name:
-sub-XX_task-bodymap_acq-bodysite1bodysite2_run-X_events.tsv
+sub-XXXX_task-bodymap_acq-bodysite1bodysite2_run-XX_events.tsv
 
-42x trials per file with the following
-headers:
-onset   duration    trial_type  body_site
+Trials per file are defined by the following headers:
+onset   duration    trial_type  body_site   temp
 
-Troubleshooting Tips:
-If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
-pip uninstall pyglet
-pip install pyglet==1.4.1
-If you get text uncentered problems, downgrade to pyglet 1.3.2
-pip install pyglet==1.3.2
+along with 3 rows indicating:
+valence intensity   comfort
 
 0a. Import Libraries
 """
@@ -46,6 +41,13 @@ from psychopy import visual  # ensure python image library "pillow" is installed
 from psychopy import gui     # ensure PyQt5 is installed. pip install pyqt5
 # but make sure to install specific version, otherwise clashes with other libraries
 # https://github.com/CorentinJ/Real-Time-Voice-Cloning/issues/109
+
+# Troubleshooting Tips:
+# If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
+# pip uninstall pyglet
+# pip install pyglet==1.4.1
+# If you get text uncentered problems, downgrade to pyglet 1.3.2
+# pip install pyglet==1.3.2
 
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
@@ -82,9 +84,9 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 0
-autorespond = 0
+autorespond = 1
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 
 class simKeys:
@@ -252,8 +254,6 @@ Clocks, paths, etc.
 # Clocks
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
-fmriClock = core.Clock()
-# kbClock = core.Clock()
 
 # Paths
 # Ensure that relative paths start from the same directory as this script
@@ -297,10 +297,6 @@ participant_settingsWarm = {
     'Abdomen': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49]       # Calibrated Temp for abdomen
     }
 
-# Hide the screen to show user input prompts
-# win.winHandle.set_visible(False) 
-# win.winHandle.set_fullscreen(False)
-# win.setMouseVisible(True)
 # Load the subject's calibration file and ensure that it is valid
 if debug==1:
     expInfo = {
@@ -395,10 +391,6 @@ else:
                                 title='Participant Warmth Parameters')
         if ppwDlg.OK == False:
             core.quit()
-# Make the mainscreen visible again once the dialog options are set.
-# win.winHandle.set_visible(True) 
-# if debug == 0:
-#     win.winHandle.set_fullscreen(True) 
 
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
@@ -435,7 +427,7 @@ else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
 """
-3. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
+4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
 ## Check gender for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
@@ -492,7 +484,7 @@ with open("thermode2_programs.txt") as f:
        thermode2_temp2program[float(key)] = int(val)
 
 """
-4. Create Body-Site Pairs for each run for this participant
+5. Create Body-Site Pairs for each run for this participant
 """
 # a. Initialize two runs worth of body-site arrays
 # bodySites0 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
@@ -508,7 +500,7 @@ while (bodySites2):
     bodySites.append([bodySites2.pop(), bodySites2.pop()])
 expInfo['body_site_order'] = str(bodySites)
 """
-5. Prepare files to write
+6. Prepare files to write
 """
 psypy_filename = _thisDir + os.sep + u'data/%03d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
 
@@ -526,12 +518,14 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
 
 """
-6. Initialize Trial-level Components
+7. Initialize Trial-level Components
 """
 # General Instructional Text
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
 in_between_run_msg = 'Thank you.\n Please wait for the next run to start. \n Experimenter press [e] to continue.'
 end_msg = 'This is the end of the experiment. \nPlease wait for instructions from the experimenter'
+
+trialTime = 13 # trial time in seconds (ISI)
 #############
 # Body Mapping Components
 #############
@@ -616,6 +610,7 @@ BodySiteCue = visual.ImageStim(
     texRes=512, interpolate=True, depth=0.0)
 
 # Initialize components for each Rating
+ratingTime = 10 # Rating Time limit in seconds
 TIME_INTERVAL = 0.005   # Speed at which slider ratings udpate
 ratingScaleWidth=1.5
 ratingScaleHeight=.4
@@ -721,16 +716,17 @@ ConfirmEnd = keyboard.Keyboard()
 # We are not doing ratings for this study...No need for any keyboard except for escaping
 defaultKeyboard = keyboard.Keyboard()
 
-win.mouseVisible = False   ## Turn the mouse cursor off during the duration of the scan
+win.mouseVisible = False   # Turn the mouse cursor off during the duration of the scan
 """
-7. Start Experimental Loops: 
+8. Start Experimental Loops: 
     runLoop (prepare the trial order for the run)
     trialLoop (prepare the trial_type for each trial)
 """
-biopac.setData(biopac, task_ID) # Start demarcation of the bodymap task in Biopac Acqknowledge
-biopac.setData(biopac, 0) 
+if biopac_exists:
+    biopac.setData(biopac, task_ID) # Start demarcation of the bodymap task in Biopac Acqknowledge
+    biopac.setData(biopac, 0) 
 """
-7a. Body Mapping Introduction
+8a. Body Mapping Introduction
 """
 # ------Prepare to start Routine "Introduction"-------
 continueRoutine = True
@@ -840,7 +836,7 @@ thisExp.nextEntry()
 routineTimer.reset()
 
 """
-7b. Main Run Loop
+8b. Main Run Loop
 """
 if int(expInfo['subject number']) % 2 == 0: subjectOrder = os.sep.join([stimuli_dir,"EvenOrders.xlsx"]) 
 else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
@@ -855,7 +851,7 @@ if thisRunLoop != None:
         exec('{} = thisRunLoop[paramName]'.format(paramName))
 
 """
-7c. Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
+8c. Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
 """
 for thisRunLoop in runLoop:                     # Loop through each run.
     currentLoop = runLoop
@@ -1119,32 +1115,26 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         # the Routine "ImaginationInstruction" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
     """
-    7d. Begin the run of 42 trials. 
+    8d. Begin the run of 42 trials. 
         7 Conditions (trial_type)
         2 Trial Types: (Stimulation and Non-Stimulation)
         Stimulation
-            Heat applied to body-site 1
-            Heat applied to body-site 2
-            Warmth applied to body-site 1
-            Warmth applied to body-site 2
-            Rest
+            1. Heat applied to body-site 1
+            2. Heat applied to body-site 2
+            3. Warmth applied to body-site 1
+            4. Warmth applied to body-site 2
+            7. Rest
         Non-Stimulation
-            Imagine Heat applied to body-site 1
-            Imagine Heat applied to body-site 2
+            5. Imagine Heat applied to body-site 1
+            6. Imagine Heat applied to body-site 2
     """
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='sequential', extraInfo=expInfo, originPath=-1, trialList=runLoop.trialList[runLoop.thisIndex]['runSeq'], seed=None, name='trials')
-#    if debug == 1:
-#        trials = data.TrialHandler(nReps=1, method='sequential', extraInfo=expInfo, originPath=-1, trialList=runLoop.trialList[runLoop.thisIndex]['runSeq'], seed=None, name='trials')
-#    else:
-#        subjectOrder = _thisDir + os.sep+ u"sub%03s-GAorder.tsv" %(expInfo['subject number'])
-#        trials = data.TrialHandler(nReps=1, method='sequential', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder), seed=None, name='trials')
-    
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
     # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
     """
-    7e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
+    8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
     """
     ###############################################################################################
     # Experimenter fMRI Start Instruction ____________________________________________________
@@ -1160,15 +1150,23 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     if thermode_exists == 1 and thisTrial['trial_type'] == 1:
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+        win.callOnFlip(poll_for_change, 'RUNNING')
+        win.callOnFlip(sendCommand, 'start')
     elif thermode_exists == 1 and thisTrial['trial_type'] == 2:
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+        win.callOnFlip(poll_for_change, 'RUNNING')
+        win.callOnFlip(sendCommand, 'start')
     elif thermode_exists == 1 and thisTrial['trial_type'] == 3:
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+        win.callOnFlip(poll_for_change, 'RUNNING')
+        win.callOnFlip(sendCommand, 'start')
     elif thermode_exists == 1 and thisTrial['trial_type'] == 4:
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+        win.callOnFlip(poll_for_change, 'RUNNING')
+        win.callOnFlip(sendCommand, 'start')
     win.flip()
 
     if autorespond != 1:
@@ -1183,7 +1181,6 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         biopac.setData(biopac, run_start)
         biopac.setData(biopac, 0)
     routineTimer.reset()
-    fmriClock.reset()
 
     if thisTrial != None:
         for paramName in thisTrial:
@@ -1195,7 +1192,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             for paramName in thisTrial:
                 exec('{} = thisTrial[paramName]'.format(paramName))
 
-        # Undergo the trial depending on trial_type    
+        # Setup the bext trial if it is a thermal stimulation condition    
         next_trial = trials.getFutureTrial()
         if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2, 3, 4}):
             print("Loading Program")
@@ -1204,22 +1201,30 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                 if thermode_exists == 1:
                     thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
                     sendCommand('select_tp', thermodeCommand)
+                    # poll_for_change('RUNNING')
+                    sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 2):
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][1])
                 if thermode_exists == 1:
                     thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
                     sendCommand('select_tp', thermodeCommand)
+                    # poll_for_change('RUNNING')
+                    sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 3):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][0])
                 if thermode_exists == 1:
                     thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]] 
                     sendCommand('select_tp', thermodeCommand)
+                    # poll_for_change('RUNNING')
+                    sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 4):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][1])
                 if thermode_exists == 1:
                     thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
                     sendCommand('select_tp', thermodeCommand)
-        ## Stimulus Trials:
+                    # poll_for_change('RUNNING')
+                    sendCommand('start')
+        ## Thermal Stimulation Trials:
         if trial_type in {1, 2, 3, 4, 7}:
             startTime = timeit.default_timer()
             if (trial_type == 1):
@@ -1245,7 +1250,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
 
             # ------Prepare to start Routine "StimTrial"-------
             continueRoutine = True
-            routineTimer.add(12.000000)
+            routineTimer.add(trialTime)
             # update component parameters for each repeat
             # keep track of which components have finished
             StimTrialComponents = [fix_cross]
@@ -1299,7 +1304,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                             win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
                 if fix_cross.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
-                    if tThisFlipGlobal > fix_cross.tStartRefresh + 12-frameTolerance:
+                    if tThisFlipGlobal > fix_cross.tStartRefresh + trialTime-frameTolerance:
                         # keep track of stop time/frame for later
                         fix_cross.tStop = t  # not accounting for scr refresh
                         fix_cross.frameNStop = frameN  # exact frame index
@@ -1362,7 +1367,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
 
             # ------Prepare to start Routine "NonStimTrial"-------
             continueRoutine = True
-            routineTimer.add(12.000000)
+            routineTimer.add(trialTime)
             # update component parameters for each repeat
             # keep track of which components have finished
             NonStimTrialComponents = [BodySiteCue, NonStimTrialText]
@@ -1401,7 +1406,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     BodySiteCue.setAutoDraw(True)
                 if BodySiteCue.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
-                    if tThisFlipGlobal > BodySiteCue.tStartRefresh + 12-frameTolerance:
+                    if tThisFlipGlobal > BodySiteCue.tStartRefresh + trialTime-frameTolerance:
                         # keep track of stop time/frame for later
                         BodySiteCue.tStop = t  # not accounting for scr refresh
                         BodySiteCue.frameNStop = frameN  # exact frame index
@@ -1418,7 +1423,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     NonStimTrialText.setAutoDraw(True)
                 if NonStimTrialText.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
-                    if tThisFlipGlobal > NonStimTrialText.tStartRefresh + 12-frameTolerance:
+                    if tThisFlipGlobal > NonStimTrialText.tStartRefresh + trialTime-frameTolerance:
                         # keep track of stop time/frame for later
                         NonStimTrialText.tStop = t  # not accounting for scr refresh
                         NonStimTrialText.frameNStop = frameN  # exact frame index
@@ -1464,12 +1469,12 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             thisExp.nextEntry()
             # completed 42 repeats of 'trials'
     """
-    7f. Begin post-run self-report questions
+    8f. Begin post-run self-report questions
     """        
     ############ ASK PAIN VALENCE #######################################
     # ------Prepare to start Routine "ValenceRating"-------
     continueRoutine = True
-    routineTimer.add(10.000000)
+    routineTimer.add(ratingTime)
     # update component parameters for each repeat
     # setup some python lists for storing info about the mouse
     
@@ -1530,7 +1535,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ValenceMouse.mouseClock.reset()
             prevButtonState = ValenceMouse.getPressed()  # if button is down already this ISN'T a new click
         if ValenceMouse.status == STARTED:  # only update if started and not finished!
-            if tThisFlipGlobal > ValenceMouse.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ValenceMouse.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ValenceMouse.tStop = t  # not accounting for scr refresh
                 ValenceMouse.frameNStop = frameN  # exact frame index
@@ -1555,7 +1560,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ValenceRating.setAutoDraw(True)
         if ValenceRating.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ValenceRating.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ValenceRating.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ValenceRating.tStop = t  # not accounting for scr refresh
                 ValenceRating.frameNStop = frameN  # exact frame index
@@ -1572,7 +1577,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ValenceBlackTriangle.setAutoDraw(True)
         if ValenceBlackTriangle.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ValenceBlackTriangle.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ValenceBlackTriangle.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ValenceBlackTriangle.tStop = t  # not accounting for scr refresh
                 ValenceBlackTriangle.frameNStop = frameN  # exact frame index
@@ -1589,7 +1594,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ValenceAnchors.setAutoDraw(True)
         if ValenceAnchors.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ValenceAnchors.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ValenceAnchors.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ValenceAnchors.tStop = t  # not accounting for scr refresh
                 ValenceAnchors.frameNStop = frameN  # exact frame index
@@ -1606,7 +1611,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ValencePrompt.setAutoDraw(True)
         if ValencePrompt.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ValencePrompt.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ValencePrompt.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ValencePrompt.tStop = t  # not accounting for scr refresh
                 ValencePrompt.frameNStop = frameN  # exact frame index
@@ -1655,7 +1660,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     ############ ASK PAIN INTENSITY #######################################
     # ------Prepare to start Routine "IntensityRating"-------
     continueRoutine = True
-    routineTimer.add(10.000000)
+    routineTimer.add(ratingTime)
     # update component parameters for each repeat
     # keep track of which components have finished
     IntensityMouse = event.Mouse(win=win, visible=False) # Re-initialize IntensityMouse
@@ -1714,7 +1719,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             IntensityMouse.mouseClock.reset()
             prevButtonState = IntensityMouse.getPressed()  # if button is down already this ISN'T a new click
         if IntensityMouse.status == STARTED:  # only update if started and not finished!
-            if tThisFlipGlobal > IntensityMouse.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > IntensityMouse.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 IntensityMouse.tStop = t  # not accounting for scr refresh
                 IntensityMouse.frameNStop = frameN  # exact frame index
@@ -1739,7 +1744,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             IntensityRating.setAutoDraw(True)
         if IntensityRating.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > IntensityRating.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > IntensityRating.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 IntensityRating.tStop = t  # not accounting for scr refresh
                 IntensityRating.frameNStop = frameN  # exact frame index
@@ -1756,7 +1761,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             IntensityBlackTriangle.setAutoDraw(True)
         if IntensityBlackTriangle.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > IntensityBlackTriangle.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > IntensityBlackTriangle.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 IntensityBlackTriangle.tStop = t  # not accounting for scr refresh
                 IntensityBlackTriangle.frameNStop = frameN  # exact frame index
@@ -1773,7 +1778,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             IntensityAnchors.setAutoDraw(True)
         if IntensityAnchors.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > IntensityAnchors.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > IntensityAnchors.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 IntensityAnchors.tStop = t  # not accounting for scr refresh
                 IntensityAnchors.frameNStop = frameN  # exact frame index
@@ -1790,7 +1795,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             IntensityPrompt.setAutoDraw(True)
         if IntensityPrompt.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > IntensityPrompt.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > IntensityPrompt.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 IntensityPrompt.tStop = t  # not accounting for scr refresh
                 IntensityPrompt.frameNStop = frameN  # exact frame index
@@ -1839,7 +1844,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     ############ ASK OVERALL LEVEL OF PHYSICAL DISCOMFORT #################
     # ------Prepare to start Routine "ComfortRating"-------
     continueRoutine = True
-    routineTimer.add(10.000000)
+    routineTimer.add(ratingTime)
     # update component parameters for each repeat
     # ComfortRating.reset()
     ComfortMouse = event.Mouse(win=win, visible=False) # Re-initialize ComfortMouse
@@ -1899,7 +1904,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortMouse.mouseClock.reset()
             prevButtonState = ComfortMouse.getPressed()  # if button is down already this ISN'T a new click
         if ComfortMouse.status == STARTED:  # only update if started and not finished!
-            if tThisFlipGlobal > ComfortMouse.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ComfortMouse.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ComfortMouse.tStop = t  # not accounting for scr refresh
                 ComfortMouse.frameNStop = frameN  # exact frame index
@@ -1924,7 +1929,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortRating.setAutoDraw(True)
         if ComfortRating.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ComfortRating.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ComfortRating.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ComfortRating.tStop = t  # not accounting for scr refresh
                 ComfortRating.frameNStop = frameN  # exact frame index
@@ -1941,7 +1946,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortBlackTriangle.setAutoDraw(True)
         if ComfortBlackTriangle.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ComfortBlackTriangle.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ComfortBlackTriangle.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ComfortBlackTriangle.tStop = t  # not accounting for scr refresh
                 ComfortBlackTriangle.frameNStop = frameN  # exact frame index
@@ -1958,7 +1963,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortAnchors.setAutoDraw(True)
         if ComfortAnchors.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ComfortAnchors.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ComfortAnchors.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ComfortAnchors.tStop = t  # not accounting for scr refresh
                 ComfortAnchors.frameNStop = frameN  # exact frame index
@@ -1975,18 +1980,16 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortPrompt.setAutoDraw(True)
         if ComfortPrompt.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > ComfortPrompt.tStartRefresh + 10-frameTolerance:
+            if tThisFlipGlobal > ComfortPrompt.tStartRefresh + ratingTime-frameTolerance:
                 # keep track of stop time/frame for later
                 ComfortPrompt.tStop = t  # not accounting for scr refresh
                 ComfortPrompt.frameNStop = frameN  # exact frame index
                 win.timeOnFlip(ComfortPrompt, 'tStopRefresh')  # time at next scr refresh
                 ComfortPrompt.setAutoDraw(False)
-
         # Autoresponder
         if t >= thisSimKey.rt and autorespond == 1:
             sliderValue = random.randint(-100,100)
             continueRoutine = False
-
 
         # check for quit (typically the Esc key)
         if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -2024,22 +2027,21 @@ for thisRunLoop in runLoop:                     # Loop through each run.
 
     ########################## END SELF REPORT RUNS #######################################################
     """
-    8. Save Run File
+    9. Save Run File
     """
     # file_savename = os.sep.join([main_dir, 'data', session_info['session_id'], 'practice.csv'])
     # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
     # each _%s refers to the respective field in the parentheses
-    
-    # format(i, '08b')
-    # df.to_csv(file_savename)
-    # bids_df.to_csv(bids_filename, sep="\t")
     ## This needs to be at the end of the run
-    bids_run_filename = _thisDir + os.sep + u'data/sub-%03d_ses-%02d_task-%s_acq-%s1%s2_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'bodymap', bodySites[runLoop.thisIndex][0].replace(" ", "").lower(), bodySites[runLoop.thisIndex][1].replace(" ", "").lower(), str(runLoop.thisIndex+1))
+    sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+    if not os.path.exists(sub_dir):
+        os.makedirs(sub_dir)
+    bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s1%s2_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'bodymap', bodySites[runLoop.thisIndex][0].replace(" ", "").lower(), bodySites[runLoop.thisIndex][1].replace(" ", "").lower(), str(runLoop.thisIndex+1))
     bodymap_bids_data = pd.DataFrame(bodymap_bids_data, columns = ['onset','duration','trial_type','body_site','temp'])
     bodymap_bids_data.to_csv(bids_run_filename, sep="\t")
 
     """
-    9. End of Run, Wait for Experimenter instructions to begin next run
+    10. End of Run, Wait for Experimenter instructions to begin next run
     """   
     message = visual.TextStim(win, text=in_between_run_msg, height=0.05, anchorHoriz='center')
     message.draw()
@@ -2052,7 +2054,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         event.waitKeys(keyList = 'e')
     routineTimer.reset()
 """
-10. Thanking the Participant
+11. Thanking the Participant
 """   
 # ------Prepare to start Routine "End"-------
 continueRoutine = True
@@ -2169,19 +2171,6 @@ win.flip()
 """
 9. Save data into Excel and .CSV formats and Tying up Loose Ends
 """ 
-# get names of stimulus parameters
-# if trials.trialList in ([], [None], None):
-#     params = []
-# else:
-#     params = trials.trialList[0].keys()
-# # save data for this loop
-# trials.saveAsExcel(psypy_filename + '.xlsx', sheetName='trials',
-#     stimOut=params,
-#     dataOut=['n','all_mean','all_std', 'all_raw'])
-# trials.saveAsText(psypy_filename + 'trials.csv', delim=',',
-#     stimOut=params,
-#     dataOut=['n','all_mean','all_std', 'all_raw']
-
 # these shouldn't be strictly necessary (should auto-save)
 thisExp.saveAsWideText(psypy_filename+'.csv', delim='auto')
 thisExp.saveAsPickle(psypy_filename)
@@ -2194,7 +2183,6 @@ if biopac_exists == 1:
 thisExp.abort()  # or data files will save again on exit
 win.close()  # close the window
 core.quit()
-
 """
 End of Experiment
 """

@@ -19,7 +19,7 @@ Following this format:
 all data headers are in lower snake_case.
 
 The paradigm will generate 8x of these files of name:
-sub-XX_task-Nback_run-X_events.tsv
+sub-XXXX_task-Nback_run-X_events.tsv
 
 42x trials per file with the following
 headers:
@@ -93,7 +93,7 @@ if autorespond == 1:
     thisSimKey=simKeys(keyList=['space'], 
         rtRange=[200,1000])
 """
-0c. Prepare Devices: Biopac Psychophysiological Acquisition and Medoc Thermode
+0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
 # Biopac parameters _________________________________________________
 # Relevant Biopac commands: 
@@ -140,28 +140,6 @@ if biopac_exists == 1:
     biopac.configIO(FIOAnalog=0, EIOAnalog=0)
     for FIONUM in range(8):
         biopac.setFIOState(fioNum = FIONUM, state=0)
-""" 
-0d. Setup the Window
-DBIC uses a Panasonic DW750 Projector with a native resolution of 1920x1200 (16:10)
-Configure a black window with a 16:10 aspect ratio during development (1280x800) and production (1920x1200)
-fullscr = False for testing, True for running participants
-"""
-if debug == 1: 
-    win = visual.Window(
-            size=[1280, 800], fullscr=False, 
-            screen=0,   # Change this to the appropriate display 
-            winType='pyglet', allowGUI=True, allowStencil=False,
-            monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
-            blendMode='avg', useFBO=True, 
-            units='height')
-else: 
-    win = visual.Window(
-            size=[1920, 1200], fullscr=True, 
-            screen=-1,   # Change this to the appropriate fMRI projector 
-            winType='pyglet', allowGUI=True, allowStencil=False,
-            monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
-            blendMode='avg', useFBO=True, 
-            units='height')
 """
 1. Experimental Parameters
 Clocks, paths, etc.
@@ -169,15 +147,11 @@ Clocks, paths, etc.
 # Clocks
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
-fmriClock = core.Clock()
-# kbClock = core.Clock()
-
 # Paths
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
-stimuli_dir = main_dir + os.sep + "stimuli"
 """
 2. Start Experimental Dialog Boxes
 """
@@ -185,13 +159,22 @@ stimuli_dir = main_dir + os.sep + "stimuli"
 # Store info about the experiment session
 psychopyVersion = '2020.2.10'
 expName = 'WASABI Nback'  # from the Builder filename that created this script
-expInfo = {
-'subject number': '1', 
-'gender': 'm',
-'session': '1',
-'handedness': 'r', 
-'scanner': 'MS'
-}
+if debug == 1:
+    expInfo = {
+    'subject number': '1', 
+    'gender': 'm',
+    'session': '1',
+    'handedness': 'r', 
+    'scanner': 'MS'
+    }
+else:
+    expInfo = {
+    'subject number': '', 
+    'gender': '',
+    'session': '',
+    'handedness': '', 
+    'scanner': '' 
+    }
 
 dlg = gui.DlgFromDict(title="WASABI Task-T1 Test", dictionary=expInfo, sortKeys=False) 
 if dlg.OK == False:
@@ -199,16 +182,38 @@ if dlg.OK == False:
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
+""" 
+3. Setup the Window
+fullscr = False for testing, True for running participants
+"""
+if debug == 1: 
+    win = visual.Window(
+            size=[1280, 720], fullscr=False, 
+            screen=0,   # Change this to the appropriate display 
+            winType='pyglet', allowGUI=True, allowStencil=False,
+            monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
+            blendMode='avg', useFBO=True, 
+            units='height')
+else: 
+    win = visual.Window(
+            size=[1920, 1080], fullscr=True, 
+            screen=-1,   # Change this to the appropriate fMRI projector 
+            winType='pyglet', allowGUI=True, allowStencil=False,
+            monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
+            blendMode='avg', useFBO=True, 
+            units='height')
 # store frame rate of monitor if we can measure it
 expInfo['frameRate'] = win.getActualFrameRate()
 if expInfo['frameRate'] != None:
     frameDur = 1.0 / round(expInfo['frameRate'])
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
+
+win.mouseVisible(False) # Make the mouse invisible for the remainder of the experiment
 """
-3. Prepare files to write
+4. Prepare files to write
 """
-psypy_filename = _thisDir + os.sep + u'data/%03d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
+psypy_filename = _thisDir + os.sep + u'data/%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -227,7 +232,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 nback_bids_trial = []
 nback_bids = []
 """
-4. Initialize Trial-level Components
+5. Initialize Trial-level Components
 """
 # General Instructional Text
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
@@ -273,7 +278,6 @@ fixation_2 = visual.TextStim(win=win, name='fixation_2',
     depth=-2.0)
 # Initialize components for Routine "N_back_2_trials"
 N_back_2_trialsClock = core.Clock()
-# fix_cross = visual.TextStim(win = win, text = '+', color = [1,1,1], height = 0.3)
 grid_lines_2 = visual.ImageStim(
     win=win,
     name='grid_lines_2', 
@@ -302,10 +306,11 @@ response_2 = keyboard.Keyboard()
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
 
-biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
-biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
+if biopac_exists:
+    biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
+    biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
 """
-5. Start Experimental Loops
+6. Start Experimental Loops
 """
 # set up handler to look after randomisation of conditions etc
 # Counterbalance between even and odd subject numbers to ensure comparable group ns
@@ -337,7 +342,7 @@ for thisCounterbalancer in counterbalancer:
         for paramName in thisCounterbalancer:
             exec('{} = thisCounterbalancer[paramName]'.format(paramName))
     """ 
-    6. Rest T1 Phase
+    7. Rest T1 Phase
     """
     # set up handler to look after randomisation of conditions etc
     RestT1Loop = data.TrialHandler(nReps=RestT1, method='random', 
@@ -393,7 +398,8 @@ for thisCounterbalancer in counterbalancer:
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
-                win.callOnFlip(biopac.setData, biopac, rest_t1)
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, rest_t1)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -422,7 +428,8 @@ for thisCounterbalancer in counterbalancer:
                 win.flip()
         
         # -------Ending Routine "RestT1"-------
-        biopac.setData(biopac, 0)
+        if biopac_exists:
+            biopac.setData(biopac, 0)
         for thisComponent in RestT1Components:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -503,7 +510,8 @@ for thisCounterbalancer in counterbalancer:
                 NbackInstructions.tStart = t  # local t and not account for scr refresh
                 NbackInstructions.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(NbackInstructions, 'tStartRefresh')  # time at next scr refresh
-                win.callOnFlip(biopac.setData, biopac, nback_instructions)
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, nback_instructions)
                 NbackInstructions.setAutoDraw(True)
             
             # *NbackStart* updates
@@ -550,7 +558,8 @@ for thisCounterbalancer in counterbalancer:
                 win.flip()
 
         # -------Ending Routine "NbackInstructions"-------
-        biopac.setData(biopac, 0)
+        if biopac_exists:
+            biopac.setData(biopac, 0)
         for thisComponent in NbackInstructionsComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -605,7 +614,8 @@ for thisCounterbalancer in counterbalancer:
                 fixation_2.tStart = t  # local t and not account for scr refresh
                 fixation_2.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_2, 'tStartRefresh')  # time at next scr refresh
-                win.callOnFlip(biopac.setData, biopac, nback_fixation)
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_2.setAutoDraw(True)
             if fixation_2.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -634,7 +644,8 @@ for thisCounterbalancer in counterbalancer:
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
-        biopac.setData(biopac, 0)
+        if biopac_exists:
+            biopac.setData(biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -700,7 +711,8 @@ for thisCounterbalancer in counterbalancer:
                     grid_lines_2.frameNStart = frameN  # exact frame index
                     grid_lines_2.tStart = t  # local t and not account for scr refresh
                     grid_lines_2.tStartRefresh = tThisFlipGlobal  # on global time
-                    win.callOnFlip(biopac.setData, biopac, nback_trial_start)
+                    if biopac_exists:
+                        win.callOnFlip(biopac.setData, biopac, nback_trial_start)
                     win.timeOnFlip(grid_lines_2, 'tStartRefresh')  # time at next scr refresh
                     grid_lines_2.setAutoDraw(True)
                 if grid_lines_2.status == STARTED:
@@ -776,10 +788,12 @@ for thisCounterbalancer in counterbalancer:
                         # was this correct?
                         if (response_2.keys == str(corrAns)) or (response_2.keys == corrAns):
                             response_2.corr = 1
-                            biopac.setData(biopac, nback_hit)
+                            if biopac_exists:
+                                biopac.setData(biopac, nback_hit)
                         else:
                             response_2.corr = 0
-                            biopac.setData(biopac, nback_miss)
+                            if biopac_exists:
+                                biopac.setData(biopac, nback_miss)
                 
                 # Autoresponder
                 if t >= thisSimKey.rt and autorespond == 1:
@@ -803,7 +817,8 @@ for thisCounterbalancer in counterbalancer:
                     win.flip()
             
             # -------Ending Routine "N_back_2_trials"-------
-            biopac.setData(biopac, 0)
+            if biopac_exists:
+                biopac.setData(biopac, 0)
             for thisComponent in N_back_2_trialsComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -842,8 +857,9 @@ for thisCounterbalancer in counterbalancer:
         message = visual.TextStim(win, text=in_between_run_msg, height=0.2)
         message.draw()
         win.callOnFlip(print, "Awaiting Experimenter to start next run...")
-        win.callOnFlip(biopac.setData, biopac,in_between_run_msg)
-        win.callOnFlip(biopac.setData,biopac,0)
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac,in_between_run_msg)
+            win.callOnFlip(biopac.setData,biopac,0)
         win.flip()
         # Autoresponder
         if autorespond != 1:
@@ -854,10 +870,15 @@ win.flip()
 """
 9. Save data into Excel and .CSV formats and Tying up Loose Ends
 """ 
-biopac.setData(biopac,end)
-biopac.setData(biopac,0)
+if biopac_exists:
+    biopac.setData(biopac,end)
+    biopac.setData(biopac,0)
 nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
-bids_filename = _thisDir + os.sep + u'data\\sub-%03d_ses-%02d_task-%s_acq-order-%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
+
+sub_dir = os.path.join(_thisDir, data, 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+if not os.path.exists(sub_dir):
+    os.makedirs(sub_dir)
+bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-order-%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
 nback_bids_data.to_csv(bids_filename, sep="\t")
 
 # these shouldn't be strictly necessary (should auto-save)
