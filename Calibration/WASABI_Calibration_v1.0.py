@@ -293,8 +293,8 @@ if not os.path.exists(sub_dir):
 
 # Data file name stem = absolute path + name later add .psyexp, .csv, .log, etc
 filename = sub_dir + os.sep + u'%05d_%s_%s' % (int(expInfo['participant']), expName, expInfo['date'])
-bids_filename = sub_dir + os.sep + u'data/sub-%05d_task-%s_beh.tsv' % (int(expInfo['participant']), expName)
-averaged_filename = sub_dir + os.sep + u'data/sub-%05d_task-%s_participants.tsv' % (int(expInfo['participant']), expName)
+bids_filename = sub_dir + os.sep + u'sub-%05d_task-%s_beh.tsv' % (int(expInfo['participant']), expName)
+averaged_filename = sub_dir + os.sep + u'sub-%05d_task-%s_participants.tsv' % (int(expInfo['participant']), expName)
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',

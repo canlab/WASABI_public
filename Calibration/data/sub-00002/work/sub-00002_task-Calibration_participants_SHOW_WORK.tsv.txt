@@ -1,0 +1,37 @@
+	date	participant_id	age	dob	gender	handedness	calibration_order	leftarm_st	rightarm_st	leftleg_st	rightleg_st	leftface_st	rightface_st	chest_st	abdomen_st	leftarm_ht	rightarm_ht	leftleg_ht	rightleg_ht	leftface_ht	rightface_ht	chest_ht	abdomen_ht	leftarm_v	rightarm_v	leftleg_v	rightleg_v	leftface_v	rightface_v	chest_v	abdomen_v	leftarm_i	rightarm_i	leftleg_i	rightleg_i	leftface_i	rightface_i	chest_i	abdomen_i
+0	2021_Mar_29_1313	2	22.81643836	6/10/1998	M	r	"['Left Face',
+'Chest',
+'Left Leg',
+'Right Leg',
+'Right Face',
+'Right Arm',
+'Left Arm',
+'Abdomen',
+'Right Face',
+'Left Arm',
+'Right Leg',
+'Left Face',
+'Left Leg',
+'Chest',
+'Right Arm',
+'Abdomen',
+'Left Arm',
+'Right Arm',
+'Left Leg',
+'Chest',
+'Left Face',
+'Right Leg',
+'Abdomen',
+'Right Face',
+'Left Leg',
+'Left Face',
+'Left Arm',
+'Chest',
+'Right Leg',
+'Right Arm',
+'Abdomen',
+'Right Face']"	39.5	38	43	38.5	41	40.5	40	40	46.5	43	45.5	45.5	48	49	44.5	46.5	-32	-30.33333333	-30.33333333	-27.33333333	-31	-40	-25.66666667	-18.66666667	26	19.66666667	24.33333333	25.33333333	31.66666667	37.33333333	24	13
+								41.5	35.5	45.5	37	44.5	43	40.5	39	47.5	43	46	46	49	49	45	47	-36	-26	-26	-22	-48	-35	-25	-22	42	20	12	24	48	36	22	14
+								39.5	39.5	41.5	42	40.5	40.5	41.5	39.5	47.5	43	46	46	49	49	45	47	-26	-32	-37	-21	-25	-37	-22	-18	16	18	25	27	15	39	32	15
+								37.5	39.5	42	37.5	39	39	39	41.5	45	44	45.5	44.5	46.5	49	44.5	45.5	-34	-33	-28	-39	-20	-48	-30	-16	20	21	36	25	32	37	18	10
+								39.5	38	43	38.5	41	40.5	40	40	46.5	43	45.5	45.5	48	49	44.5	46.5																
