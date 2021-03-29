@@ -83,7 +83,7 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
+debug = 1
 autorespond = 0
 # Device togglers
 biopac_exists = 1
@@ -116,88 +116,93 @@ thisSimKey=simKeys(keyList=['space'],
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 
 # biopac channels EDIT
-task_ID=1
-task_start=7
-task_end=8
-run_start=9
-run_end=10
-run_middle=11
-trial_start=12
-trial_end=13
-bodymapping_intro=14
-bodymapping_instruction=15
-imagination_instruction=16
-leftface_heat=17
-rightface_heat=18
-leftarm_heat=19
-rightarm_heat=20
-leftleg_heat=21
-rightleg_heat=22
-chest_heat=23
-abdomen_heat=24
-leftface_warm=25
-rightface_warm=26
-leftarm_warm=27
-rightarm_warm=28
-leftleg_warm=29
-rightleg_warm=30
-chest_warm=31
-abdomen_warm=32
-leftface_imagine=33
-rightface_imagine=34
-leftarm_imagine=35
-rightarm_imagine=36
-leftleg_imagine=37
-rightleg_imagine=38
-chest_imagine=39
-abdomen_imagine=40
-rest=41
-valence_rating=42
-intensity_rating=43
-comfort_rating=44
-between_run_msg=45
-end=46
+# task_ID=1
+# task_start=7
+# task_end=8
+# run_start=9
+# run_end=10
+# run_middle=11
+# trial_start=12
+# trial_end=13
+# bodymapping_intro=14
+# bodymapping_instruction=15
+# imagination_instruction=16
+# leftface_heat=17
+# rightface_heat=18
+# leftarm_heat=19
+# rightarm_heat=20
+# leftleg_heat=21
+# rightleg_heat=22
+# chest_heat=23
+# abdomen_heat=24
+# leftface_warm=25
+# rightface_warm=26
+# leftarm_warm=27
+# rightarm_warm=28
+# leftleg_warm=29
+# rightleg_warm=30
+# chest_warm=31
+# abdomen_warm=32
+# leftface_imagine=33
+# rightface_imagine=34
+# leftarm_imagine=35
+# rightarm_imagine=36
+# leftleg_imagine=37
+# rightleg_imagine=38
+# chest_imagine=39
+# abdomen_imagine=40
+# rest=41
+# valence_rating=42
+# intensity_rating=43
+# comfort_rating=44
+# between_run_msg=45
+# end=46
 
-# task_start=0
-# task_end=0
-# run_start=0
-# run_end=0
-# run_middle=0
-# trial_start=0
-# trial_end=0
-# bodymapping_intro=0
-# bodymapping_instruction=0
-# imagination_instruction=0
-# leftface_heat=1
-# rightface_heat=1
-# leftarm_heat=1
-# rightarm_heat=1
-# leftleg_heat=1
-# rightleg_heat=1
-# chest_heat=1
-# abdomen_heat=1
-# leftface_warm=2
-# rightface_warm=2
-# leftarm_warm=2
-# rightarm_warm=2
-# leftleg_warm=2
-# rightleg_warm=2
-# chest_warm=2
-# abdomen_warm=2
-# leftface_imagine=4
-# rightface_imagine=4
-# leftarm_imagine=4
-# rightarm_imagine=4
-# leftleg_imagine=4
-# rightleg_imagine=4
-# chest_imagine=4
-# abdomen_imagine=4
-# rest=8
-# valence_rating=16
-# intensity_rating=16
-# comfort_rating=16
-# between_run_msg=32
-# end=64
+task_ID=255
+task_start=0
+task_end=0
+run_start=0
+run_end=0
+run_middle=0
+trial_start=0
+trial_end=0
+bodymapping_intro=0
+bodymapping_instruction=0
+imagination_instruction=0
+leftface_heat=1
+rightface_heat=1
+leftarm_heat=1
+rightarm_heat=1
+leftleg_heat=1
+rightleg_heat=1
+chest_heat=1
+abdomen_heat=1
+leftface_warm=2
+rightface_warm=2
+leftarm_warm=2
+rightarm_warm=2
+leftleg_warm=2
+rightleg_warm=2
+chest_warm=2
+abdomen_warm=2
+
+thermode1 = 1
+thermode2 = 2
+
+leftface_imagine=4
+rightface_imagine=4
+leftarm_imagine=4
+rightarm_imagine=4
+leftleg_imagine=4
+rightleg_imagine=4
+chest_imagine=4
+abdomen_imagine=4
+rest=8
+valence_rating=16
+intensity_rating=16
+comfort_rating=16
+between_run_msg=32
+end=64
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -261,6 +266,7 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
+
 """
 2. Start Experimental Dialog Boxes
 """
@@ -396,6 +402,11 @@ expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
 
+# Make a new subject directory
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+if not os.path.exists(sub_dir):
+    os.makedirs(sub_dir)
+
 """ 
 3. Setup the Window
 DBIC uses a Panasonic DW750 Projector with a native resolution of 1920x1200 (16:10), but it is configured at 1920x1080 (16:9) at DBIC
@@ -404,7 +415,7 @@ fullscr = False for testing, True for running participants
 """
 if debug == 1:
     win = visual.Window(
-    size=[1920, 1080], fullscr=False, 
+    size=[1280, 720], fullscr=False, 
     screen=0,   # Change this to the appropriate display 
     winType='pyglet', allowGUI=True, allowStencil=True,
     monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
@@ -413,7 +424,7 @@ if debug == 1:
 else:
     win = visual.Window(
     size=[1920, 1080], fullscr=True, 
-    screen=4,   # Change this to the appropriate fMRI projector 
+    screen=0,   # Change this to the appropriate fMRI projector 
     winType='pyglet', allowGUI=True, allowStencil=True,
     monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -502,7 +513,7 @@ expInfo['body_site_order'] = str(bodySites)
 """
 6. Prepare files to write
 """
-psypy_filename = _thisDir + os.sep + u'data/%03d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
+psypy_filename = sub_dir + os.sep + u'%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='1',
@@ -1150,23 +1161,23 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     if thermode_exists == 1 and thisTrial['trial_type'] == 1:
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-        win.callOnFlip(poll_for_change, 'RUNNING')
-        win.callOnFlip(sendCommand, 'start')
+        # win.callOnFlip(poll_for_change, 'RUNNING')
+        # win.callOnFlip(sendCommand, 'start')
     elif thermode_exists == 1 and thisTrial['trial_type'] == 2:
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-        win.callOnFlip(poll_for_change, 'RUNNING')
-        win.callOnFlip(sendCommand, 'start')
+        # win.callOnFlip(poll_for_change, 'RUNNING')
+        # win.callOnFlip(sendCommand, 'start')
     elif thermode_exists == 1 and thisTrial['trial_type'] == 3:
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-        win.callOnFlip(poll_for_change, 'RUNNING')
-        win.callOnFlip(sendCommand, 'start')
+        # win.callOnFlip(poll_for_change, 'RUNNING')
+        # win.callOnFlip(sendCommand, 'start')
     elif thermode_exists == 1 and thisTrial['trial_type'] == 4:
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
         win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-        win.callOnFlip(poll_for_change, 'RUNNING')
-        win.callOnFlip(sendCommand, 'start')
+        # win.callOnFlip(poll_for_change, 'RUNNING')
+        # win.callOnFlip(sendCommand, 'start')
     win.flip()
 
     if autorespond != 1:
@@ -1196,30 +1207,34 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         next_trial = trials.getFutureTrial()
         if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2, 3, 4}):
             print("Loading Program")
-            if (trials.nRemaining > 0 and next_trial ['trial_type'] == 1):
+            if (trials.nRemaining > 0 and next_trial['trial_type'] == 1):
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][0])
                 if thermode_exists == 1:
                     thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
-                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
-                    if (poll_for_change('RUNNING')): sendCommand('start')
+                    # if (poll_for_change('IDLE')): 
+                    sendCommand('select_tp', thermodeCommand)
+                    #if (poll_for_change('RUNNING')): sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 2):
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][1])
                 if thermode_exists == 1:
                     thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
-                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
-                    if (poll_for_change('RUNNING')): sendCommand('start')
+                    #if (poll_for_change('IDLE')): 
+                    sendCommand('select_tp', thermodeCommand)
+                    # if (poll_for_change('RUNNING')): sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 3):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][0])
                 if thermode_exists == 1:
                     thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]] 
-                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
-                    if (poll_for_change('RUNNING')): sendCommand('start')
+                    # if (poll_for_change('IDLE')): 
+                    sendCommand('select_tp', thermodeCommand)
+                    # if (poll_for_change('RUNNING')): sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 4):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][1])
                 if thermode_exists == 1:
                     thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
-                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
-                    if (poll_for_change('RUNNING')): sendCommand('start')
+                    # if (poll_for_change('IDLE')): 
+                    sendCommand('select_tp', thermodeCommand)
+                    # if (poll_for_change('RUNNING')): sendCommand('start')
         ## Thermal Stimulation Trials:
         if trial_type in {1, 2, 3, 4, 7}:
             startTime = timeit.default_timer()
@@ -1280,23 +1295,29 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     win.timeOnFlip(fix_cross, 'tStartRefresh')  # time at next scr refresh
                     fix_cross.setAutoDraw(True)
                     win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
-                    if biopac_exists == 1:
+                    if biopac_exists == 1 & debug == 0:
                         win.callOnFlip(biopac.setData, biopac, BiopacChannel)
                     if trial_type == 1:
                         win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisIndex][0])
+                        if biopac_exists == 1 and debug == 1: win.callOnFlip(biopac.setData, biopac, thermode1)
                     elif trial_type == 2:
                         win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisIndex][1])
+                        if biopac_exists == 1 and debug == 1: win.callOnFlip(biopac.setData, biopac, thermode2)
                     elif trial_type == 3:
-                        win.callOnFlip(print, "Starting Warm Stimulation to ", bodySites[runLoop.thisIndex][0])
+                        win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisIndex][0])
+                        if biopac_exists == 1 and debug == 1: win.callOnFlip(biopac.setData, biopac, thermode1)
                     elif trial_type == 4:
-                        win.callOnFlip(print, "Starting Warm Stimulation to ", bodySites[runLoop.thisIndex][1])
+                        win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisIndex][1])
+                        if biopac_exists == 1 and debug == 1: win.callOnFlip(biopac.setData, biopac, thermode2)
                     elif trial_type == 7:
                         win.callOnFlip(print, "Resting")
                     if trial_type in {1, 2, 3, 4}:
                         win.callOnFlip(print, "Triggering")
                         if thermode_exists == 1:
+                            # win.callOnFlip(sendCommand, 'start')
+                            # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
-                            win.callOnFlip(sendCommand, 'start')
+                            # win.callOnFlip(sendCommand, 'start')
                             win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
                 if fix_cross.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
@@ -2029,9 +2050,6 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
     # each _%s refers to the respective field in the parentheses
     ## This needs to be at the end of the run
-    sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
-    if not os.path.exists(sub_dir):
-        os.makedirs(sub_dir)
     bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s1%s2_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'bodymap', bodySites[runLoop.thisIndex][0].replace(" ", "").lower(), bodySites[runLoop.thisIndex][1].replace(" ", "").lower(), str(runLoop.thisIndex+1))
     bodymap_bids_data = pd.DataFrame(bodymap_bids_data, columns = ['onset','duration','trial_type','body_site','temp'])
     bodymap_bids_data.to_csv(bids_run_filename, sep="\t")
