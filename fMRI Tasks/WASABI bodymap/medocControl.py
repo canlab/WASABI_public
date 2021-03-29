@@ -14,13 +14,13 @@ class ThermodeConfig():
     """
     address: hostName (IP), port: portNum (int), named_program: commandID (string?), other_parameters (optional depending on command) 
     """
-    address = '129.170.31.22' # Michael Office Computer
+#    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
-#    address = '10.64.1.10'
+    address = '10.64.1.10'
 #    address = '192.168.1.2'
     port = 20121
     debug = 1
-    timedelayformedoc = 0.2
+    timedelayformedoc = 0.3
     vas_search_program = '00011100'
     # Warm Thermode 1
     fmri_RH_32 = 101
