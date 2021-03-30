@@ -20,7 +20,7 @@ class ThermodeConfig():
     address = '192.168.1.2'
     port = 20121
     debug = 0
-    timedelayformedoc = 0.1
+    timedelayformedoc = 0.5
     vas_search_program = '00011100'
     # Warm Thermode 1
     fmri_RH_32 = 101
@@ -178,7 +178,7 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
     if config.debug:
         print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
     # now the connection part:
-    for attemps in range(3):
+    for attemps in range(50):
         try:
             s = socket.socket()
             s.connect((address, port))
