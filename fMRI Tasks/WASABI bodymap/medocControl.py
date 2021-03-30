@@ -16,11 +16,11 @@ class ThermodeConfig():
     """
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
-#    address = '10.64.1.10'
-    address = '192.168.1.2'
+    address = '10.64.1.10'
+#    address = '192.168.1.2'
     port = 20121
-    debug = 0
-    timedelayformedoc = 0.5
+    debug = 1
+    timedelayformedoc = 0.3
     vas_search_program = '00011100'
     # Warm Thermode 1
     fmri_RH_32 = 101
@@ -178,7 +178,7 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
     if config.debug:
         print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
     # now the connection part:
-    for attemps in range(50):
+    for attemps in range(3):
         try:
             s = socket.socket()
             s.connect((address, port))
@@ -201,7 +201,7 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
         el.wait_for_seconds(config.timedelayformedoc)
         # removed return statement because it is prematurely instantiated.
 
-def poll_for_change(desired_value,poll_interval=.1,poll_max=-1,verbose=False,server_lag=1.,reuse_socket=False):
+def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=-1,verbose=False,server_lag=1.,reuse_socket=False):
     """
     Poll system for a value change. Useful for waiting until the Medoc system has transitioned to a specific state in order to issue another command, but the transition length is unknowable.
 

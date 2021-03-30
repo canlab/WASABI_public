@@ -287,10 +287,14 @@ time_to_program = { 0: config.calib_RH_32,
 """
 5. Prepare files to write
 """
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['participant'])))
+if not os.path.exists(sub_dir):
+    os.makedirs(sub_dir)
+
 # Data file name stem = absolute path + name later add .psyexp, .csv, .log, etc
-filename = _thisDir + os.sep + u'data/%03d_%s_%s' % (int(expInfo['participant']), expName, expInfo['date'])
-bids_filename = _thisDir + os.sep + u'data/sub-%03d_task-%s_beh.tsv' % (int(expInfo['participant']), expName)
-averaged_filename = _thisDir + os.sep + u'data/sub-%03d_task-%s_participants.tsv' % (int(expInfo['participant']), expName)
+filename = sub_dir + os.sep + u'%05d_%s_%s' % (int(expInfo['participant']), expName, expInfo['date'])
+bids_filename = sub_dir + os.sep + u'sub-%05d_task-%s_beh.tsv' % (int(expInfo['participant']), expName)
+averaged_filename = sub_dir + os.sep + u'sub-%05d_task-%s_participants.tsv' % (int(expInfo['participant']), expName)
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -1836,6 +1840,7 @@ win.flip()
 """
 11. Saving data in BIDS and Psychopy
 """ 
+
 # these shouldn't be strictly necessary (should auto-save)
 bids_df = pd.DataFrame(bids_data, columns = ['repetition','confirm_time','body_site','stim_temp','calibration_onset','calibration_jitter','calibration_duration',
                                 'heat_onset','heat_jitter','heat_duration','hot_temp','valence_rating','intensity_rating'])

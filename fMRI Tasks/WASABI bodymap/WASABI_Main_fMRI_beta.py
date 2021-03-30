@@ -84,9 +84,9 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 0
-autorespond = 1
+autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -413,7 +413,7 @@ if debug == 1:
 else:
     win = visual.Window(
     size=[1920, 1080], fullscr=True, 
-    screen=0,   # Change this to the appropriate fMRI projector 
+    screen=4,   # Change this to the appropriate fMRI projector 
     winType='pyglet', allowGUI=True, allowStencil=True,
     monitor='testMonitor', color=[-1.000,-1.000,-1.000], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -1200,30 +1200,26 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][0])
                 if thermode_exists == 1:
                     thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
-                    sendCommand('select_tp', thermodeCommand)
-                    # poll_for_change('RUNNING')
-                    sendCommand('start')
+                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
+                    if (poll_for_change('RUNNING')): sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 2):
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][1])
                 if thermode_exists == 1:
                     thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
-                    sendCommand('select_tp', thermodeCommand)
-                    # poll_for_change('RUNNING')
-                    sendCommand('start')
+                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
+                    if (poll_for_change('RUNNING')): sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 3):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][0])
                 if thermode_exists == 1:
                     thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]] 
-                    sendCommand('select_tp', thermodeCommand)
-                    # poll_for_change('RUNNING')
-                    sendCommand('start')
+                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
+                    if (poll_for_change('RUNNING')): sendCommand('start')
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 4):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][1])
                 if thermode_exists == 1:
                     thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
-                    sendCommand('select_tp', thermodeCommand)
-                    # poll_for_change('RUNNING')
-                    sendCommand('start')
+                    if (poll_for_change('IDLE')): sendCommand('select_tp', thermodeCommand)
+                    if (poll_for_change('RUNNING')): sendCommand('start')
         ## Thermal Stimulation Trials:
         if trial_type in {1, 2, 3, 4, 7}:
             startTime = timeit.default_timer()
