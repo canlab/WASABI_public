@@ -178,7 +178,7 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
     if config.debug:
         print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
     # now the connection part:
-    for attemps in range(3):
+    for attemps in range(50):
         try:
             s = socket.socket()
             s.connect((address, port))
