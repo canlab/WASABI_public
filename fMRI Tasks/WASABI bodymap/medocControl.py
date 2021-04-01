@@ -16,7 +16,8 @@ class ThermodeConfig():
     """
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
-    address = '10.64.1.10' # DBIC
+    address = '172.18.168.185'
+#    address = '10.64.1.10' # DBIC
 #    address = '192.168.1.2'
 #    address = '192.168.0.114' # Testing Room C
     port = 20121
@@ -156,16 +157,16 @@ def commandBuilder(command, parameter=None):
         command = command_to_id[command.upper()]
     if type(parameter) is str:
         # then program code, e.g. '00000001'
-        parameter = int(parameter, 2)
+        parameter = int(parameter, 2)   # Convert to a binary integer (base 2)
     elif type(parameter) is float:
         parameter = 100*parameter
 #    commandbytes = intToBytes(socket.htons(int(time())), 4)
     commandbytes = intToBytes(int(time()), 4)
     commandbytes += intToBytes(int(command), 1)
     if parameter:
-        commandbytes += intToBytes(socket.ntohs(int(parameter)), 4)
+        commandbytes += intToBytes(socket.htonl(int(parameter)), 4) # Append a 4-byte command to the end
 #        commandbytes += intToBytes(int(parameter), 4)
-    return intToBytes(len(commandbytes), 4) + commandbytes 
+    return intToBytes(len(commandbytes), 4) + commandbytes # A byte string consisting of 4(length)+
     # prepending the command data with 4-bytes header that indicates the command data length
 
 # command sender:
@@ -187,7 +188,8 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
             s.send(commandbytes)
             data = msg = s.recv(1024)
             while data:
-                data = s.recv(17)
+#                 data = s.recv(17)
+                data = s.recv(34)
                 msg += data
                 resp = medocResponse(msg)
             if config.debug:
@@ -319,3 +321,10 @@ if __name__ == "__main__":
     sendCommand('vas', 10) # Set pain rating 10
     sleep(3)
     sendCommand('stop')
+
+    # Aggressive Methods
+    # def send_and_poll(command="", parameter=""):
+    #     if command in {}:
+    #         poll_for_change(desired_value, poll_max=3)
+    #         response = sendCommand(command)
+    #         if response.teststatestr == ''
