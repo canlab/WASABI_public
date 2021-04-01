@@ -1846,6 +1846,7 @@ bids_df = pd.DataFrame(bids_data, columns = ['repetition','confirm_time','body_s
                                 'heat_onset','heat_jitter','heat_duration','hot_temp','valence_rating','intensity_rating'])
 bids_df.to_csv(bids_filename, sep="\t")
 
+## STILL HAVE TO ROUND THESE MEANS DOWN TO THE NEAREST 0.5:
 averaged_data.extend([expInfo['date'], expInfo['participant'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['gender'], expInfo['handedness'], calibrationOrder,
                     bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1)]['stim_temp'].mean(), bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1)]['stim_temp'].mean(), 
                     bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1)]['stim_temp'].mean(), bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1)]['stim_temp'].mean(), 

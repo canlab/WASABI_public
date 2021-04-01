@@ -86,7 +86,7 @@ Set to 1 during development, 0 during production
 debug = 1
 autorespond = 1
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -112,92 +112,96 @@ thisSimKey=simKeys(keyList=['space'],
 # Biopac parameters _________________________________________________
 # Relevant Biopac commands: 
 #     To send a Biopac marker code to Acqknowledge, replace the FIO number with a value between 0-255(dec), or an 8-bit word(bin) 
-#     For instance, the following code would send a value of 15 by setting the first 4 bits to “1": biopac.setData(biopac, 15)
+#     For instance, the following code would send a value of 15 by setting the first 4 bits to “1": biopac.setData(15)
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 
 # biopac channels EDIT
-task_ID=1
-task_start=7
-task_end=8
-run_start=9
-run_end=10
-run_middle=11
-trial_start=12
-trial_end=13
-bodymapping_intro=14
-bodymapping_instruction=15
-imagination_instruction=16
-leftface_heat=17
-rightface_heat=18
-leftarm_heat=19
-rightarm_heat=20
-leftleg_heat=21
-rightleg_heat=22
-chest_heat=23
-abdomen_heat=24
-leftface_warm=25
-rightface_warm=26
-leftarm_warm=27
-rightarm_warm=28
-leftleg_warm=29
-rightleg_warm=30
-chest_warm=31
-abdomen_warm=32
-leftface_imagine=33
-rightface_imagine=34
-leftarm_imagine=35
-rightarm_imagine=36
-leftleg_imagine=37
-rightleg_imagine=38
-chest_imagine=39
-abdomen_imagine=40
-rest=41
-valence_rating=42
-intensity_rating=43
-comfort_rating=44
-between_run_msg=45
-end=46
+# task_ID=1
+# task_start=7
+# task_end=8
+# run_start=9
+# run_end=10
+# run_middle=11
+# trial_start=12
+# trial_end=13
+# bodymapping_intro=14
+# bodymapping_instruction=15
+# imagination_instruction=16
+# leftface_heat=17
+# rightface_heat=18
+# leftarm_heat=19
+# rightarm_heat=20
+# leftleg_heat=21
+# rightleg_heat=22
+# chest_heat=23
+# abdomen_heat=24
+# leftface_warm=25
+# rightface_warm=26
+# leftarm_warm=27
+# rightarm_warm=28
+# leftleg_warm=29
+# rightleg_warm=30
+# chest_warm=31
+# abdomen_warm=32
+# leftface_imagine=33
+# rightface_imagine=34
+# leftarm_imagine=35
+# rightarm_imagine=36
+# leftleg_imagine=37
+# rightleg_imagine=38
+# chest_imagine=39
+# abdomen_imagine=40
+# rest=41
+# valence_rating=42
+# intensity_rating=43
+# comfort_rating=44
+# between_run_msg=45
+# end=46
 
-# task_start=0
-# task_end=0
-# run_start=0
-# run_end=0
-# run_middle=0
-# trial_start=0
-# trial_end=0
-# bodymapping_intro=0
-# bodymapping_instruction=0
-# imagination_instruction=0
-# leftface_heat=1
-# rightface_heat=1
-# leftarm_heat=1
-# rightarm_heat=1
-# leftleg_heat=1
-# rightleg_heat=1
-# chest_heat=1
-# abdomen_heat=1
-# leftface_warm=2
-# rightface_warm=2
-# leftarm_warm=2
-# rightarm_warm=2
-# leftleg_warm=2
-# rightleg_warm=2
-# chest_warm=2
-# abdomen_warm=2
-# leftface_imagine=4
-# rightface_imagine=4
-# leftarm_imagine=4
-# rightarm_imagine=4
-# leftleg_imagine=4
-# rightleg_imagine=4
-# chest_imagine=4
-# abdomen_imagine=4
-# rest=8
-# valence_rating=16
-# intensity_rating=16
-# comfort_rating=16
-# between_run_msg=32
-# end=64
+task_ID=255
+task_start=0
+task_end=0
+run_start=0
+run_end=0
+run_middle=0
+trial_start=0
+trial_end=0
+bodymapping_intro=0
+bodymapping_instruction=0
+imagination_instruction=0
+leftface_heat=1
+rightface_heat=1
+leftarm_heat=1
+rightarm_heat=1
+leftleg_heat=1
+rightleg_heat=1
+chest_heat=1
+abdomen_heat=1
+leftface_warm=2
+rightface_warm=2
+leftarm_warm=2
+rightarm_warm=2
+leftleg_warm=2
+rightleg_warm=2
+chest_warm=2
+abdomen_warm=2
+leftface_imagine=4
+rightface_imagine=4
+leftarm_imagine=4
+rightarm_imagine=4
+leftleg_imagine=4
+rightleg_imagine=4
+chest_imagine=4
+abdomen_imagine=4
+rest=8
+valence_rating=16
+intensity_rating=16
+comfort_rating=16
+between_run_msg=32
+end=64
+
+thermode1 = 1
+thermode2 = 2
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -209,25 +213,38 @@ if biopac_exists == 1:
     # Make sure UD Driver (on Windows) or Exodriver (MacOSX or Linux) is installed: win.winHandle.set_visible(False) # Make the mainscreen invisible so that the dialog boxes appear
     # Make sure LabjackPython is installed: pip install LabJackPython; If need to install to a specific version of python, use the -m flag e.g., C:\ProgramData\Anaconda3\python.exe -m pip install LabJackPython
     # If you get an SSL module error, on Windows you need to install Windows OpenSSL: https://slproweb.com/products/Win32OpenSSL.html
-    try:
-        from psychopy.hardware.labjacks import U3
-        # from labjack import u3
-    except ImportError:
-        import u3
-    # Function defining setData to use the FIOports (address 6000)
-    def biopacSetData(self, byte, endian='big', address=6000): 
-        if endian=='big':
-            byteStr = '{0:08b}'.format(byte)[-1::-1]
-        else:
-            byteStr = '{0:08b}'.format(byte)
-        [self.writeRegister(address+pin, int(entry)) for (pin, entry) in enumerate(byteStr)]
+    # try:
+    #     from psychopy.hardware.labjacks import U3
+    #     # from labjack import u3
+    # except ImportError:
+    #     import u3
+    # # Function defining setData to use the FIOports (address 6000)
+    # def biopacSetData(self, byte, endian='big', address=6000): 
+    #     if endian=='big':
+    #         byteStr = '{0:08b}'.format(byte)[-1::-1]
+    #     else:
+    #         byteStr = '{0:08b}'.format(byte)
+    #     [self.writeRegister(address+pin, int(entry)) for (pin, entry) in enumerate(byteStr)]
     
-    biopac = U3()
-    biopac.setData = biopacSetData
-    # Set all FIO bits to digital output and set to low (i.e. “0")
-    # The list in square brackets represent what’s desired for the FIO, EIO, CIO ports. We will only change the FIO port's state.
-    biopac.configIO(FIOAnalog=0, EIOAnalog=0)
-    biopac.setData(biopac, byte=0)
+    # biopac = U3()
+    # biopac.setData = biopacSetData
+    # # Set all FIO bits to digital output and set to low (i.e. “0")
+    # # The list in square brackets represent what’s desired for the FIO, EIO, CIO ports. We will only change the FIO port's state.
+    # biopac.configIO(FIOAnalog=0, EIOAnalog=0)
+    # biopac.setData(byte=0)
+
+    """
+    0c. Prepare Devices: Biopac Psychophysiological Acquisition and Medoc Thermode
+    """
+    # Biopac MP160 parameters ______________________________________________
+    # Test if we have a parallel port to toggle Biopac Channels
+    # This is for the CANLAB Testing Room Setup that uses a DB25 parallel port to interface with the Biopac MP160 and STP100C
+    from psychopy import parallel
+    try:
+        biopac = parallel.ParallelPort(address=0x2FF8) # address for Testing Room C Participant Computer
+        biopac.setData(0)  # sets all pins low
+    except TypeError:
+        pass
 
 # 1. Medoc TSA2 parameters ______________________________________________
 # Initialize the Medoc TSA2 thermal stimulation delivery device
@@ -525,7 +542,7 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next run to start. \n Experimenter press [e] to continue.'
 end_msg = 'This is the end of the experiment. \nPlease wait for instructions from the experimenter'
 
-trialTime = 13 # trial time in seconds (ISI)
+trialTime = 25 # trial time in seconds (ISI)
 #############
 # Body Mapping Components
 #############
@@ -723,8 +740,8 @@ win.mouseVisible = False   # Turn the mouse cursor off during the duration of th
     trialLoop (prepare the trial_type for each trial)
 """
 if biopac_exists:
-    biopac.setData(biopac, task_ID) # Start demarcation of the bodymap task in Biopac Acqknowledge
-    biopac.setData(biopac, 0) 
+    biopac.setData(task_ID) # Start demarcation of the bodymap task in Biopac Acqknowledge
+    biopac.setData(0) 
 """
 8a. Body Mapping Introduction
 """
@@ -781,7 +798,7 @@ while continueRoutine:
         win.callOnFlip(print, "Starting Introduction")
         win.callOnFlip(print, "Cueing Biopac Channel: " + str(bodymapping_intro))
         if biopac_exists == 1:
-            win.callOnFlip(biopac.setData, biopac, bodymapping_intro)
+            win.callOnFlip(biopac.setData, bodymapping_intro)
         win.callOnFlip(BeginTask.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(BeginTask.clearEvents, eventType='keyboard')  # clear events on next screen flip
     if BeginTask.status == STARTED and not waitOnFlip:
@@ -817,7 +834,7 @@ while continueRoutine:
 # -------Ending Routine "Introduction"-------
 print("CueOff Channel: " + str(bodymapping_intro))
 if biopac_exists == 1:
-    biopac.setData(biopac, 0)
+    biopac.setData(0)
 for thisComponent in IntroductionComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
@@ -939,8 +956,8 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             win.callOnFlip(print, "Showing BodySite Instructions")
             win.callOnFlip(print, "Cueing Biopac Channel: " + str(bodymapping_instruction))
             if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, 0)
-                win.callOnFlip(biopac.setData, biopac, bodymapping_instruction)
+                win.callOnFlip(biopac.setData, 0)
+                win.callOnFlip(biopac.setData, bodymapping_instruction)
             win.callOnFlip(BodySiteInstructionRead.clock.reset)  # t=0 on next screen flip
             win.callOnFlip(BodySiteInstructionRead.clearEvents, eventType='keyboard')  # clear events on next screen flip
         if BodySiteInstructionRead.status == STARTED and not waitOnFlip:
@@ -976,7 +993,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     # -------Ending Routine "BodySiteInstruction"-------
     print("CueOff Channel: " + str(bodymapping_instruction))
     if biopac_exists == 1:
-        biopac.setData(biopac, 0)
+        biopac.setData(0)
     for thisComponent in BodySiteInstructionComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1058,7 +1075,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                 win.callOnFlip(print, "Showing Imagination Instructions")
                 win.callOnFlip(print, "Cue Biopac " + str(imagination_instruction))
                 if biopac_exists == 1:
-                    win.callOnFlip(biopac.setData, biopac, imagination_instruction)
+                    win.callOnFlip(biopac.setData, imagination_instruction)
                 win.callOnFlip(ImaginationInstructionRead.clock.reset)  # t=0 on next screen flip
                 win.callOnFlip(ImaginationInstructionRead.clearEvents, eventType='keyboard')  # clear events on next screen flip
             if ImaginationInstructionRead.status == STARTED and not waitOnFlip:
@@ -1071,8 +1088,8 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     print("Starting mainloop")
                     print("Cueing Biopac Channel " + str(task_start))
                     if biopac_exists == 1:
-                        biopac.setData(biopac, imagination_instruction)
-                        biopac.setData(biopac, 0)
+                        biopac.setData(imagination_instruction)
+                        biopac.setData(0)
                     continueRoutine = False
 
             # Autoresponder
@@ -1098,7 +1115,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         # -------Ending Routine "ImaginationInstruction"-------
         print("Cueing Biopac Channel " + str(task_start))
         if biopac_exists == 1:
-            biopac.setData(biopac, 0)
+            biopac.setData(0)
 
         for thisComponent in ImaginationInstructionComponents:
             if hasattr(thisComponent, "setAutoDraw"):
@@ -1133,6 +1150,11 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
     # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
+    
+    hot1 = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
+    hot2 = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
+    warm1 = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]]
+    warm2 = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
     """
     8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
     """
@@ -1143,25 +1165,27 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     start.draw()  # Automatically draw every frame
 
     # Experimenter: Check to make sure the program is loaded
-    if thisTrial['trial_type'] in {1, 2, 3, 4}: 
-        print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
-        if thermode_exists == 1 and thisTrial['trial_type'] == 1:
-            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
-        elif thermode_exists == 1 and thisTrial['trial_type'] == 2:
-            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
-        elif thermode_exists == 1 and thisTrial['trial_type'] == 3:
-            thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]]
-        elif thermode_exists == 1 and thisTrial['trial_type'] == 4:
-            thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
-        win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
-        win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-        win.flip()
-        # If auto-start is toggled off
-        if poll_for_change('READY'): sendCommand('start')
-        if poll_for_change('RUNNING'): sendCommand('start')
-    else:
-        print("No thermal program to load")
-        win.flip()
+    # if thisTrial['trial_type'] in {1, 2, 3, 4}: 
+    #     print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
+    #     if thermode_exists == 1 and thisTrial['trial_type'] == 1:
+    #         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
+    #     elif thermode_exists == 1 and thisTrial['trial_type'] == 2:
+    #         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
+    #     elif thermode_exists == 1 and thisTrial['trial_type'] == 3:
+    #         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]]
+    #     elif thermode_exists == 1 and thisTrial['trial_type'] == 4:
+    #         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
+    #     win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+    #     win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+    #     win.flip()
+    #     # If auto-start is toggled off
+    #     if poll_for_change('READY'): sendCommand('start')
+    #     if poll_for_change('RUNNING'): sendCommand('start')
+    # else:
+    #     print("No thermal program to load")
+    #     win.flip()
+
+    win.flip()
 
     if autorespond != 1:
         # Trigger
@@ -1172,8 +1196,8 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     print("Starting run " + str(runLoop.thisIndex+1))
     print("Cue Biopac Channel " + str(run_start))
     if biopac_exists == 1:
-        biopac.setData(biopac, run_start)
-        biopac.setData(biopac, 0)
+        biopac.setData(run_start)
+        biopac.setData(0)
     routineTimer.reset()
 
     if thisTrial != None:
@@ -1187,47 +1211,55 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                 exec('{} = thisTrial[paramName]'.format(paramName))
 
         # Setup the bext trial if it is a thermal stimulation condition    
-        next_trial = trials.getFutureTrial()
-        if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2, 3, 4}):
-            print("Loading Program")
-            if (trials.nRemaining > 0 and next_trial ['trial_type'] == 1):
-                print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][0])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
-            elif (trials.nRemaining > 0 and next_trial['trial_type'] == 2):
-                print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][1])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
-            elif (trials.nRemaining > 0 and next_trial['trial_type'] == 3):
-                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][0])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]] 
-            elif (trials.nRemaining > 0 and next_trial['trial_type'] == 4):
-                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][1])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
-            if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)        
-            if poll_for_change('READY'): sendCommand('start')
-            if poll_for_change('RUNNING'): sendCommand('start')
-        ## Thermal Stimulation Trials:
+        # next_trial = trials.getFutureTrial()
+        # if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2, 3, 4}):
+        #     print("Loading Program")
+        #     if (trials.nRemaining > 0 and next_trial ['trial_type'] == 1):
+        #         print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][0])
+        #         if thermode_exists == 1:
+        #             thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
+        #     elif (trials.nRemaining > 0 and next_trial['trial_type'] == 2):
+        #         print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][1])
+        #         if thermode_exists == 1:
+        #             thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
+        #     elif (trials.nRemaining > 0 and next_trial['trial_type'] == 3):
+        #         print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][0])
+        #         if thermode_exists == 1:
+        #             thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]] 
+        #     elif (trials.nRemaining > 0 and next_trial['trial_type'] == 4):
+        #         print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][1])
+        #         if thermode_exists == 1:
+        #             thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
+        #     if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)        
+        #     if poll_for_change('READY'): sendCommand('start')
+        #     if poll_for_change('RUNNING'): sendCommand('start')
+        ## Thermal Stimulation Trials:        
         if trial_type in {1, 2, 3, 4, 7}:
             startTime = timeit.default_timer()
             if (trial_type == 1):
-                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisIndex][0]]
+#                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisIndex][0]]
+                BiopacChannel = thermode1
                 bodySiteData = bodySites[runLoop.thisIndex][0]
                 temperature = participant_settingsHeat[bodySites[runLoop.thisIndex][0]]
+                thermodeCommand = hot1
             elif (trial_type == 2):
-                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisIndex][1]]
+#                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisIndex][1]]
+                BiopacChannel = thermode2
                 bodySiteData = bodySites[runLoop.thisIndex][1]
                 temperature = participant_settingsHeat[bodySites[runLoop.thisIndex][1]]
+                thermodeCommand = hot2
             elif (trial_type == 3):
-                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisIndex][0]]
+#                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisIndex][0]]
+                BiopacChannel = thermode1
                 bodySiteData = bodySites[runLoop.thisIndex][0]
                 temperature = participant_settingsWarm[bodySites[runLoop.thisIndex][0]]
+                thermodeCommand = warm1
             elif (trial_type == 4):
-                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisIndex][1]]
+#                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisIndex][1]]
+                BiopacChannel = thermode2
                 bodySiteData = bodySites[runLoop.thisIndex][1]
                 temperature = participant_settingsWarm[bodySites[runLoop.thisIndex][1]]
+                thermodeCommand = warm2
             elif (trial_type == 7):
                 BiopacChannel = rest
                 bodySiteData = None
@@ -1270,7 +1302,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     fix_cross.setAutoDraw(True)
                     win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
                     if biopac_exists == 1:
-                        win.callOnFlip(biopac.setData, biopac, BiopacChannel)
+                        win.callOnFlip(biopac.setData, BiopacChannel)
                     if trial_type == 1:
                         win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisIndex][0])
                     elif trial_type == 2:
@@ -1284,8 +1316,14 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     if trial_type in {1, 2, 3, 4}:
                         win.callOnFlip(print, "Triggering")
                         if thermode_exists == 1:
+                            win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+                            win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)  # Need an aggressive select_tp sendCommand
+                            win.callOnFlip(poll_for_change, 'READY')
+                            win.callOnFlip(sendCommand, 'start')
                             win.callOnFlip(poll_for_change, 'RUNNING')
-                            win.callOnFlip(sendCommand, 'trigger')
+                            win.callOnFlip(sendCommand, 'start')
+                            # win.callOnFlip(poll_for_change, 'RUNNING')
+                            # win.callOnFlip(sendCommand, 'trigger')
                             # win.callOnFlip(sendCommand, 'start')
                             win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
                 if fix_cross.status == STARTED:
@@ -1317,7 +1355,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             print("TrialEndTime: " + str(TrialEndTime))
             print("CueOff Biopac channel " + str(BiopacChannel))
             if biopac_exists == 1:
-                biopac.setData(biopac, 0)
+                biopac.setData(0)
             for thisComponent in StimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1388,7 +1426,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     win.timeOnFlip(BodySiteCue, 'tStartRefresh')  # time at next scr refresh
                     win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
                     if biopac_exists == 1:
-                        win.callOnFlip(biopac.setData, biopac, BiopacChannel)
+                        win.callOnFlip(biopac.setData, BiopacChannel)
                     BodySiteCue.setAutoDraw(True)
                 if BodySiteCue.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
@@ -1439,7 +1477,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             print("TrialEndTime: " + str(TrialEndTime))
             print("CueOff Biopac Channel " + str(BiopacChannel))
             if biopac_exists == 1:
-                biopac.setData(biopac, 0)
+                biopac.setData(0)
             for thisComponent in NonStimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1541,7 +1579,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ValenceRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Valence Rating")
             if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, valence_rating)
+                win.callOnFlip(biopac.setData, valence_rating)
             win.timeOnFlip(ValenceRating, 'tStartRefresh')  # time at next scr refresh
             ValenceRating.setAutoDraw(True)
         if ValenceRating.status == STARTED:
@@ -1629,7 +1667,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     # -------Ending Routine "ValenceRating"-------
     print("CueOff Channel " + str(valence_rating))
     if biopac_exists == 1:
-        biopac.setData(biopac, valence_rating)
+        biopac.setData(valence_rating)
     for thisComponent in ValenceRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1725,7 +1763,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             IntensityRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Intensity Rating")
             if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, intensity_rating)
+                win.callOnFlip(biopac.setData, intensity_rating)
             win.timeOnFlip(IntensityRating, 'tStartRefresh')  # time at next scr refresh
             IntensityRating.setAutoDraw(True)
         if IntensityRating.status == STARTED:
@@ -1813,7 +1851,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     # -------Ending Routine "IntensityRating"-------
     print("CueOff Channel " + str(intensity_rating))
     if biopac_exists == 1:
-        biopac.setData(biopac, 0)
+        biopac.setData(0)
     for thisComponent in IntensityRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1910,7 +1948,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             ComfortRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Comfort Rating")
             if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, comfort_rating)
+                win.callOnFlip(biopac.setData, comfort_rating)
             win.timeOnFlip(ComfortRating, 'tStartRefresh')  # time at next scr refresh
             ComfortRating.setAutoDraw(True)
         if ComfortRating.status == STARTED:
@@ -1997,7 +2035,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     # -------Ending Routine "ComfortRating"-------
     print("CueOff Channel " + str(comfort_rating))
     if biopac_exists == 1:
-        biopac.setData(biopac, 0)
+        biopac.setData(0)
     for thisComponent in ComfortRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -2033,7 +2071,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     message.draw()
     win.callOnFlip(print, "Awaiting Experimenter to start next run...")
     if biopac_exists == 1:
-        win.callOnFlip(biopac.setData, biopac, between_run_msg)
+        win.callOnFlip(biopac.setData, between_run_msg)
     win.flip()
     # Autoresponder
     if autorespond != 1:
@@ -2094,7 +2132,7 @@ while continueRoutine:
         waitOnFlip = True
         win.callOnFlip(print, "Thanking the participant")
         if biopac_exists == 1:
-            win.callOnFlip(biopac.setData, biopac, end)
+            win.callOnFlip(biopac.setData, end)
         win.callOnFlip(ConfirmEnd.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(ConfirmEnd.clearEvents, eventType='keyboard')  # clear events on next screen flip
     if ConfirmEnd.status == STARTED and not waitOnFlip:
@@ -2130,7 +2168,7 @@ while continueRoutine:
 # -------Ending Routine "End"-------
 print("Biopac CueOff " + str(end))
 if biopac_exists == 1:
-    biopac.setData(biopac, 0)
+    biopac.setData(0)
 for thisComponent in EndComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)

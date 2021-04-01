@@ -16,10 +16,10 @@ class ThermodeConfig():
     """
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
-    address = '172.18.168.185'
+#    address = '172.18.168.185'
 #    address = '10.64.1.10' # DBIC
 #    address = '192.168.1.2'
-#    address = '192.168.0.114' # Testing Room C
+    address = '192.168.0.114' # Testing Room C
     port = 20121
     debug = 1
     timedelayformedoc = 0.3
@@ -126,7 +126,7 @@ test_states = {
     0 : 'IDLE',                     # Often, waiting for external control
     1 : 'RUNNING',                  # Test Screen is now up. Could mean Waiting for Trigger or Stimulation has been Triggered.
     2 : 'PAUSED',
-    3 : 'READY'                     # I never see this
+    3 : 'READY'                     # Is present when Auto-Start is not enabled. This status if prior to the pre-test.
 }
 
 states = {
@@ -164,7 +164,8 @@ def commandBuilder(command, parameter=None):
     commandbytes = intToBytes(int(time()), 4)
     commandbytes += intToBytes(int(command), 1)
     if parameter:
-        commandbytes += intToBytes(socket.htonl(int(parameter)), 4) # Append a 4-byte command to the end
+        # commandbytes += intToBytes(socket.htonl(int(parameter)), 4) # Append a 4-byte command to the end
+        commandbytes += intToBytes(socket.htonl(parameter), 4) # Append a 4-byte command to the end
 #        commandbytes += intToBytes(int(parameter), 4)
     return intToBytes(len(commandbytes), 4) + commandbytes # A byte string consisting of 4(length)+
     # prepending the command data with 4-bytes header that indicates the command data length
@@ -178,8 +179,8 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
     """
     # convert command to bytes:
     commandbytes = commandBuilder(command, parameter=parameter)
-    if config.debug:
-        print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
+    # if config.debug:
+    #     print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
     # now the connection part:
     for attemps in range(50):
         try:
@@ -188,14 +189,24 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
             s.send(commandbytes)
             data = msg = s.recv(1024)
             while data:
-#                 data = s.recv(17)
-                data = s.recv(34)
+                data = s.recv(17)
+#                data = s.recv(34)
                 msg += data
                 resp = medocResponse(msg)
             if config.debug:
-                print("Received: ")
-                print(resp)
-            return resp         # Replaced this break with a return so I can access the response
+                # print("Received: ")
+                # print(resp)
+                # if (resp.command == 0):
+                    # print("Polling while " + resp.teststatestr)
+                # else:
+                if (resp.command != 0):
+                    print("Attempting to " + id_to_command[resp.command] + " while status: " + resp.teststatestr + ". " + resp.respstr)
+            if (resp.command == 1 and resp.teststatestr == 'IDLE'):
+                s.close()
+                el.wait_for_seconds(config.timedelayformedoc)
+                pass
+            else:
+                return resp         # Replaced this break with a return so I can access the response
         except ConnectionResetError:
             print("==> ConnectionResetError")
             attemps += 1
@@ -205,7 +216,7 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
         el.wait_for_seconds(config.timedelayformedoc)
         # removed return statement because it is prematurely instantiated.
 
-def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=5,verbose=False,server_lag=1.,reuse_socket=False):
+def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=10,verbose=False,server_lag=1.,reuse_socket=False):
     """
     Poll system for a value change. Useful for waiting until the Medoc system has transitioned to a specific state in order to issue another command, but the transition length is unknowable.
 
