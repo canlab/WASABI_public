@@ -186,9 +186,14 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
         try:
             s = socket.socket()
             s.connect((address, port))
-            s.send(commandbytes)
+            s.setblocking(False)    #
+            s.settimeout(0.5)
+            s.setdefaulttimeout(20) 
+            s.send(commandbytes) 
+            time.sleep(0.01)
             data = msg = s.recv(1024)
             while data:
+                time.sleep(0.01)
                 data = s.recv(17)
 #                data = s.recv(34)
                 msg += data
@@ -206,14 +211,17 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
                 el.wait_for_seconds(config.timedelayformedoc)
                 pass
             else:
+                s.close()           # 
                 return resp         # Replaced this break with a return so I can access the response
         except ConnectionResetError:
             print("==> ConnectionResetError")
             attemps += 1
             s.close()
             el.wait_for_seconds(config.timedelayformedoc)
+            time.sleep(0.5)
             pass
         el.wait_for_seconds(config.timedelayformedoc)
+        time.sleep(0.1)         #
         # removed return statement because it is prematurely instantiated.
 
 def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=10,verbose=False,server_lag=1.,reuse_socket=False):
