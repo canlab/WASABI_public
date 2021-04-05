@@ -16,8 +16,10 @@ class ThermodeConfig():
     """
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
-    address = '10.64.1.10'
+#    address = '172.18.168.185'
+#    address = '10.64.1.10' # DBIC
 #    address = '192.168.1.2'
+    address = '192.168.0.114' # Testing Room C
     port = 20121
     debug = 1
     timedelayformedoc = 0.3
@@ -121,20 +123,20 @@ command_to_id = {
 # make the same as above but reversed:
 id_to_command = {item:key for key, item in command_to_id.items()}
 test_states = {
-    0 : 'IDLE',
-    1 : 'RUNNING',
+    0 : 'IDLE',                     # Often, waiting for external control
+    1 : 'RUNNING',                  # Test Screen is now up. Could mean Waiting for Trigger or Stimulation has been Triggered.
     2 : 'PAUSED',
-    3 : 'READY'
+    3 : 'READY'                     # Is present when Auto-Start is not enabled. This status if prior to the pre-test.
 }
 
 states = {
     0 : "IDLE",
-    1 : "READY",
-    2 : "TEST IN PROGRESS"
+    1 : "READY",                    # Machine is Idling, ready to receive commands.
+    2 : "TEST IN PROGRESS"          # Test Screen is now up. Could mean Waiting for Trigger or Stimulation has been Triggered.
 }
 
 response_codes = { 0 : "OK",
-    1 : "FAIL: ILLEGAL PARAMETER",
+    1 : "FAIL: ILLEGAL PARAMETER",              
     2 : "FAIL: ILLEGAL STATE TO SEND THIS",
     3 : "FAIL: NOT THE PROPER TEST STATE",
     4096: "DEVICE COMMUNICATION ERROR",
@@ -155,16 +157,18 @@ def commandBuilder(command, parameter=None):
         command = command_to_id[command.upper()]
     if type(parameter) is str:
         # then program code, e.g. '00000001'
-        parameter = int(parameter, 2)
+        parameter = int(parameter, 2)   # Convert to a binary integer (base 2)
     elif type(parameter) is float:
         parameter = 100*parameter
-    commandbytes = intToBytes(socket.htonl(int(time())), 4)
+#    commandbytes = intToBytes(socket.htons(int(time())), 4)
+    commandbytes = intToBytes(int(time()), 4)
     commandbytes += intToBytes(int(command), 1)
     if parameter:
-        commandbytes += intToBytes(socket.htonl(int(parameter)), 4)
-    return intToBytes(len(commandbytes), 4) + commandbytes 
+        # commandbytes += intToBytes(socket.htonl(int(parameter)), 4) # Append a 4-byte command to the end
+        commandbytes += intToBytes(socket.htonl(parameter), 4) # Append a 4-byte command to the end
+#        commandbytes += intToBytes(int(parameter), 4)
+    return intToBytes(len(commandbytes), 4) + commandbytes # A byte string consisting of 4(length)+
     # prepending the command data with 4-bytes header that indicates the command data length
-
 
 # command sender:
 def sendCommand(command, parameter=None, address=config.address, port=config.port, el=ThermodeEventListener(), verbose=False):
@@ -175,33 +179,52 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
     """
     # convert command to bytes:
     commandbytes = commandBuilder(command, parameter=parameter)
-    if config.debug:
-        print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
+    # if config.debug:
+    #     print(f'Sending the following bytes: {binascii.hexlify(commandbytes)} -- {len(commandbytes)} bytes')
     # now the connection part:
     for attemps in range(50):
         try:
             s = socket.socket()
             s.connect((address, port))
-            s.send(commandbytes)
+            s.setblocking(False)    #
+            s.settimeout(0.5)
+            s.setdefaulttimeout(20) 
+            s.send(commandbytes) 
+            time.sleep(0.01)
             data = msg = s.recv(1024)
             while data:
+                time.sleep(0.01)
                 data = s.recv(17)
+#                data = s.recv(34)
                 msg += data
                 resp = medocResponse(msg)
             if config.debug:
-                print("Received: ")
-                print(resp)
-            return resp         # Replaced this break with a return so I can access the response
+                # print("Received: ")
+                # print(resp)
+                # if (resp.command == 0):
+                    # print("Polling while " + resp.teststatestr)
+                # else:
+                if (resp.command != 0):
+                    print("Attempting to " + id_to_command[resp.command] + " while status: " + resp.teststatestr + ". " + resp.respstr)
+            if (resp.command == 1 and resp.teststatestr == 'IDLE'):
+                s.close()
+                el.wait_for_seconds(config.timedelayformedoc)
+                pass
+            else:
+                s.close()           # 
+                return resp         # Replaced this break with a return so I can access the response
         except ConnectionResetError:
             print("==> ConnectionResetError")
             attemps += 1
             s.close()
             el.wait_for_seconds(config.timedelayformedoc)
+            time.sleep(0.5)
             pass
         el.wait_for_seconds(config.timedelayformedoc)
+        time.sleep(0.1)         #
         # removed return statement because it is prematurely instantiated.
 
-def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=-1,verbose=False,server_lag=1.,reuse_socket=False):
+def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=10,verbose=False,server_lag=1.,reuse_socket=False):
     """
     Poll system for a value change. Useful for waiting until the Medoc system has transitioned to a specific state in order to issue another command, but the transition length is unknowable.
 
@@ -247,7 +270,7 @@ class medocResponse():
     def __init__(self, response):
         self.length = struct.unpack_from('H', response[0:4])[0]
         self.timestamp = intFromBytes(response[4:8])
-        self.datetime = datetime.utcfromtimestamp(self.timestamp) # Had to change fromtimestamp to utcfromtimestamp to avoid windows errors
+        self.datetime = datetime.fromtimestamp(self.timestamp)
         self.strtime = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
         self.command = intFromBytes(response[8:9])
         self.state = intFromBytes(response[9:10])
@@ -317,3 +340,10 @@ if __name__ == "__main__":
     sendCommand('vas', 10) # Set pain rating 10
     sleep(3)
     sendCommand('stop')
+
+    # Aggressive Methods
+    # def send_and_poll(command="", parameter=""):
+    #     if command in {}:
+    #         poll_for_change(desired_value, poll_max=3)
+    #         response = sendCommand(command)
+    #         if response.teststatestr == ''
