@@ -19,7 +19,8 @@ class ThermodeConfig():
 #    address = '172.18.168.185'
 #    address = '10.64.1.10' # DBIC
 #    address = '192.168.1.2'
-    address = '192.168.0.114' # Testing Room C
+    address = '192.168.1.127'
+#    address = '192.168.0.114' # Testing Room C
     port = 20121
     debug = 1
     timedelayformedoc = 0.3
@@ -186,14 +187,14 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
         try:
             s = socket.socket()
             s.connect((address, port))
-            s.setblocking(False)    #
-            s.settimeout(0.5)
-            s.setdefaulttimeout(20) 
+            # s.setblocking(False)    #
+            # s.settimeout(20)
+            # s.setdefaulttimeout(20) 
             s.send(commandbytes) 
-            time.sleep(0.01)
+            # sleep(0.01)
             data = msg = s.recv(1024)
             while data:
-                time.sleep(0.01)
+                # sleep(0.01)
                 data = s.recv(17)
 #                data = s.recv(34)
                 msg += data
@@ -206,22 +207,24 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
                 # else:
                 if (resp.command != 0):
                     print("Attempting to " + id_to_command[resp.command] + " while status: " + resp.teststatestr + ". " + resp.respstr)
-            if (resp.command == 1 and resp.teststatestr == 'IDLE'):
-                s.close()
-                el.wait_for_seconds(config.timedelayformedoc)
-                pass
-            else:
-                s.close()           # 
-                return resp         # Replaced this break with a return so I can access the response
+            # if (resp.command == 1 and resp.teststatestr == 'IDLE'):
+            #     s.close()
+            #     el.wait_for_seconds(config.timedelayformedoc)
+            #     pass
+            # else:
+            s.close()           # 
+            return resp         # Replaced this break with a return so I can access the response
         except ConnectionResetError:
             print("==> ConnectionResetError")
             attemps += 1
             s.close()
-            el.wait_for_seconds(config.timedelayformedoc)
-            time.sleep(0.5)
+            sendCommand(0) # This bizarrely wakes it up again for some reason.
+            # s.close()
+            # el.wait_for_seconds(config.timedelayformedoc)
+            # sleep(0.5)
             pass
         el.wait_for_seconds(config.timedelayformedoc)
-        time.sleep(0.1)         #
+        # sleep(0.1)         #
         # removed return statement because it is prematurely instantiated.
 
 def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=10,verbose=False,server_lag=1.,reuse_socket=False):
