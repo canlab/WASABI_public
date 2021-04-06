@@ -16,7 +16,7 @@ import serial
 #prefs.general['audioLib'] = ['pyo']
 from psychopy import sound, visual, data, event, core, gui, logging, clock
 
-
+biopac_exists = 0
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
@@ -62,10 +62,13 @@ if biopac_exists == 1:
     biopac.setData = biopacSetData
     # Set all FIO bits to digital output and set to low (i.e. “0")
     # The list in square brackets represent what’s desired for the FIO, EIO, CIO ports. We will only change the FIO port's state.
+    # biopac.configIO(FIOAnalog=0, EIOAnalog=0)
+    # for FIONUM in range(8):
+    #     biopac.setFIOState(fioNum = FIONUM, state=0)
+    # Set all FIO bits to digital output and set to low (i.e. “0")
+    # The list in square brackets represent what’s desired for the FIO, EIO, CIO ports. We will only change the FIO port's state.
     biopac.configIO(FIOAnalog=0, EIOAnalog=0)
-    for FIONUM in range(8):
-        biopac.setFIOState(fioNum = FIONUM, state=0)
-
+    biopac.setData(biopac, byte=0)
 # PARSE INPUTS - test or not
 # parser=argparse.ArgumentParser(description= 'This script runs a psychopy version of the pinel task for an fmri experiment.')
 # parser.add_argument('--test',action='store_true',default=False,help="Indicate whether we're testing and should expect scanner triggers. Otherwise start experiment with spacebar.")
@@ -101,7 +104,7 @@ elif test == int(0):
 
 # SET EXPERIMENT GLOBALS
 base_dir = './'
-data_dir = os.path.join(base_dir, 'data', 'sub-%05d' % (int(subID)), 'ses-%02d' % (int(session))
+data_dir = os.path.join(base_dir, 'data', 'sub-%05d' % (int(subID)), 'ses-%02d' % (int(session)))
 stim_dir = os.path.join(base_dir, 'stim')
 
 # triggers

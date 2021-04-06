@@ -17,9 +17,9 @@ class ThermodeConfig():
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
 #    address = '172.18.168.185'
-#    address = '10.64.1.10' # DBIC
+    address = '10.64.1.10' # DBIC
 #    address = '192.168.1.2'
-    address = '192.168.1.127'
+ #   address = '192.168.1.127'
 #    address = '192.168.0.114' # Testing Room C
     port = 20121
     debug = 1
@@ -202,10 +202,10 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
             if config.debug:
                 # print("Received: ")
                 # print(resp)
-                # if (resp.command == 0):
-                    # print("Polling while " + resp.teststatestr)
-                # else:
-                if (resp.command != 0):
+                if (resp.command == 0):
+                    print("Polling while " + resp.teststatestr)
+                else:
+                # if (resp.command != 0):
                     print("Attempting to " + id_to_command[resp.command] + " while status: " + resp.teststatestr + ". " + resp.respstr)
             # if (resp.command == 1 and resp.teststatestr == 'IDLE'):
             #     s.close()
@@ -227,7 +227,7 @@ def sendCommand(command, parameter=None, address=config.address, port=config.por
         # sleep(0.1)         #
         # removed return statement because it is prematurely instantiated.
 
-def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=10,verbose=False,server_lag=1.,reuse_socket=False):
+def poll_for_change(desired_value,poll_interval=config.timedelayformedoc,poll_max=20,verbose=False,server_lag=1.,reuse_socket=False):
     """
     Poll system for a value change. Useful for waiting until the Medoc system has transitioned to a specific state in order to issue another command, but the transition length is unknowable.
 

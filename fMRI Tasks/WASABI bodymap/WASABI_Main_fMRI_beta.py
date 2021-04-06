@@ -83,10 +83,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-autorespond = 1
+debug = 0
+autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -158,6 +158,7 @@ comfort_rating=44
 between_run_msg=45
 end=46
 
+# task_ID=255
 # task_start=0
 # task_end=0
 # run_start=0
@@ -198,6 +199,10 @@ end=46
 # comfort_rating=16
 # between_run_msg=32
 # end=64
+
+# thermode1 = 1
+# thermode2 = 2
+
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -525,7 +530,8 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next run to start. \n Experimenter press [e] to continue.'
 end_msg = 'This is the end of the experiment. \nPlease wait for instructions from the experimenter'
 
-trialTime = 13 # trial time in seconds (ISI)
+stimtrialTime = 1 # Add 10 seconds for the Medoc Delay
+nonstimtrialTime = 20 # trial time in seconds (ISI)
 #############
 # Body Mapping Components
 #############
@@ -843,22 +849,22 @@ else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
 runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder), seed=None, name='runLoop')
    
 thisExp.addLoop(runLoop)  # add the loop to the experiment
-thisRunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
+thisrunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
 
-# abbreviate parameter names if possible (e.g. rgb = thisRunLoop.rgb)
-if thisRunLoop != None:
-    for paramName in thisRunLoop:
-        exec('{} = thisRunLoop[paramName]'.format(paramName))
+# abbreviate parameter names if possible (e.g. rgb = thisrunLoop.rgb)
+if thisrunLoop != None:
+    for paramName in thisrunLoop:
+        exec('{} = thisrunLoop[paramName]'.format(paramName))
 
 """
 8c. Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
 """
-for thisRunLoop in runLoop:                     # Loop through each run.
+for thisrunLoop in runLoop:                     # Loop through each run.
     currentLoop = runLoop
-    # abbreviate parameter names if possible (e.g. rgb = thisRunLoop.rgb)
-    if thisRunLoop != None:
-        for paramName in thisRunLoop:
-            exec('{} = thisRunLoop[paramName]'.format(paramName))
+    # abbreviate parameter names if possible (e.g. rgb = thisrunLoop.rgb)
+    if thisrunLoop != None:
+        for paramName in thisrunLoop:
+            exec('{} = thisrunLoop[paramName]'.format(paramName))
 
     # ------Prepare to start Routine "BodySiteInstruction"-------
     continueRoutine = True
@@ -867,7 +873,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     BodySiteInstructionRead.rt = []
     _BodySiteInstructionRead_allKeys = []
     ## Update instructions and cues based on current run's body-sites:
-    BodySiteInstructionText.text="Experimenter: \nPlease place thermode 1 on the: \n" + bodySites[runLoop.thisIndex][0].lower() + "\nand thermode 2 on the: \n" + bodySites[runLoop.thisIndex][1].lower()
+    BodySiteInstructionText.text="Experimenter: \nPlease place thermode 1 on the: \n" + bodySites[runLoop.thisTrialN][0].lower() + "\nand thermode 2 on the: \n" + bodySites[runLoop.thisTrialN][1].lower()
     # keep track of which components have finished
     BodySiteInstructionComponents = [BodySiteInstructionText, BodySiteImg1, BodySiteImg2, BodySiteInstructionRead]
 
@@ -904,7 +910,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
 
         # *BodySiteImg1* updates
         if BodySiteImg1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            BodySiteImg1.image = bodysite_word2img[bodySites[runLoop.thisIndex][0]]
+            BodySiteImg1.image = bodysite_word2img[bodySites[runLoop.thisTrialN][0]]
             BodySiteImg1.pos = (-0.3, .2)
             # keep track of start time/frame for later
             BodySiteImg1.frameNStart = frameN  # exact frame index
@@ -915,7 +921,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         
         # *BodySiteImg2* updates
         if BodySiteImg2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            BodySiteImg2.image = bodysite_word2img[bodySites[runLoop.thisIndex][1]]
+            BodySiteImg2.image = bodysite_word2img[bodySites[runLoop.thisTrialN][1]]
             BodySiteImg2.pos = (0.3, .2)
             # keep track of start time/frame for later
             BodySiteImg2.frameNStart = frameN  # exact frame index
@@ -1000,7 +1006,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     """
     7c. Undergo the imagination instruction with the participant on the first run
     """
-    if runLoop.thisIndex == 0:
+    if runLoop.thisTrialN == 0:
         # ------Prepare to start Routine "ImaginationInstruction"-------
         # Initialize trial stimuli
         ###########################################################################################
@@ -1129,10 +1135,15 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             6. Imagine Heat applied to body-site 2
     """
     # set up handler to look after randomisation of conditions etc
-    trials = data.TrialHandler(nReps=1, method='sequential', extraInfo=expInfo, originPath=-1, trialList=runLoop.trialList[runLoop.thisIndex]['runSeq'], seed=None, name='trials')
+    trials = data.TrialHandler(nReps=1, method='sequential', extraInfo=expInfo, originPath=-1, trialList=runLoop.trialList[runLoop.thisTrialN]['runSeq'], seed=None, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
     # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
+
+    hot1 = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN][0]]]
+    hot2 = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN][1]]]
+    warm1 = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][0]]]
+    warm2 = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][1]]]
     """
     8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
     """
@@ -1145,20 +1156,25 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     # Experimenter: Check to make sure the program is loaded
     if thisTrial['trial_type'] in {1, 2, 3, 4}: 
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
-        if thermode_exists == 1 and thisTrial['trial_type'] == 1:
-            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
-        elif thermode_exists == 1 and thisTrial['trial_type'] == 2:
-            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
-        elif thermode_exists == 1 and thisTrial['trial_type'] == 3:
-            thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]]
-        elif thermode_exists == 1 and thisTrial['trial_type'] == 4:
-            thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
-        win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
-        win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+        if thisTrial['trial_type'] == 1:
+            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN][0]]]
+        elif thisTrial['trial_type'] == 2:
+            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN][1]]]
+        elif thisTrial['trial_type'] == 3:
+            thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][0]]]
+        elif thisTrial['trial_type'] == 4:
+            thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][1]]]
+        if thermode_exists == 1:
+            win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+            win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+            win.callOnFlip(poll_for_change, 'READY')
+            win.callOnFlip(sendCommand, 'start', thermodeCommand)
         win.flip()
         # If auto-start is toggled off
-        if poll_for_change('READY'): sendCommand('start')
-        if poll_for_change('RUNNING'): sendCommand('start')
+        # if thermode_exists == 1:
+        #     if poll_for_change('READY'): sendCommand('start')
+            # if poll_for_change('RUNNING'): sendCommand('start')
+
     else:
         print("No thermal program to load")
         win.flip()
@@ -1169,7 +1185,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         event.waitKeys(keyList='5')   # fMRI trigger
         TR = 0.46
         core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
-    print("Starting run " + str(runLoop.thisIndex+1))
+    print("Starting run " + str(runLoop.thisTrialN+1))
     print("Cue Biopac Channel " + str(run_start))
     if biopac_exists == 1:
         biopac.setData(biopac, run_start)
@@ -1191,43 +1207,51 @@ for thisRunLoop in runLoop:                     # Loop through each run.
         if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2, 3, 4}):
             print("Loading Program")
             if (trials.nRemaining > 0 and next_trial ['trial_type'] == 1):
-                print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][0])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][0]]]
+                print("Loading Thermal Program for Heat to", bodySites[runLoop.thisTrialN][0])
+                thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN][0]]]
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 2):
-                print("Loading Thermal Program for Heat to", bodySites[runLoop.thisIndex][1])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisIndex][1]]]
+                print("Loading Thermal Program for Heat to", bodySites[runLoop.thisTrialN][1])
+                thermodeCommand = thermode2_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN][1]]]
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 3):
-                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][0])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][0]]] 
+                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN][0])
+                thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][0]]] 
             elif (trials.nRemaining > 0 and next_trial['trial_type'] == 4):
-                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisIndex][1])
-                if thermode_exists == 1:
-                    thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisIndex][1]]]
-            if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)        
-            if poll_for_change('READY'): sendCommand('start')
-            if poll_for_change('RUNNING'): sendCommand('start')
-        ## Thermal Stimulation Trials:
+                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN][1])
+                thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][1]]]
+            elif (trials.nRemaining > 0):
+                print("Loading Empty Thermal Program")
+                thermodeCommand = thermode2_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN][1]]]
+            if thermode_exists == 1:
+                if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)        
+                if poll_for_change('READY'): sendCommand('start')
+                # if poll_for_change('RUNNING'): sendCommand('start')
+        ## Thermal Stimulation Trials:        
         if trial_type in {1, 2, 3, 4, 7}:
             startTime = timeit.default_timer()
             if (trial_type == 1):
-                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisIndex][0]]
-                bodySiteData = bodySites[runLoop.thisIndex][0]
-                temperature = participant_settingsHeat[bodySites[runLoop.thisIndex][0]]
+                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisTrialN][0]]
+                #BiopacChannel = thermode1
+                bodySiteData = bodySites[runLoop.thisTrialN][0]
+                temperature = participant_settingsHeat[bodySites[runLoop.thisTrialN][0]]
+                thermodeCommand = hot1
             elif (trial_type == 2):
-                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisIndex][1]]
-                bodySiteData = bodySites[runLoop.thisIndex][1]
-                temperature = participant_settingsHeat[bodySites[runLoop.thisIndex][1]]
+                BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisTrialN][1]]
+                # BiopacChannel = thermode2
+                bodySiteData = bodySites[runLoop.thisTrialN][1]
+                temperature = participant_settingsHeat[bodySites[runLoop.thisTrialN][1]]
+                thermodeCommand = hot2
             elif (trial_type == 3):
-                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisIndex][0]]
-                bodySiteData = bodySites[runLoop.thisIndex][0]
-                temperature = participant_settingsWarm[bodySites[runLoop.thisIndex][0]]
+                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisTrialN][0]]
+                # BiopacChannel = thermode1
+                bodySiteData = bodySites[runLoop.thisTrialN][0]
+                temperature = participant_settingsWarm[bodySites[runLoop.thisTrialN][0]]
+                thermodeCommand = warm1
             elif (trial_type == 4):
-                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisIndex][1]]
-                bodySiteData = bodySites[runLoop.thisIndex][1]
-                temperature = participant_settingsWarm[bodySites[runLoop.thisIndex][1]]
+                BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisTrialN][1]]
+                #BiopacChannel = thermode2
+                bodySiteData = bodySites[runLoop.thisTrialN][1]
+                temperature = participant_settingsWarm[bodySites[runLoop.thisTrialN][1]]
+                thermodeCommand = warm2
             elif (trial_type == 7):
                 BiopacChannel = rest
                 bodySiteData = None
@@ -1235,7 +1259,10 @@ for thisRunLoop in runLoop:                     # Loop through each run.
 
             # ------Prepare to start Routine "StimTrial"-------
             continueRoutine = True
-            routineTimer.add(trialTime)
+            routineTimer.reset()
+            if trial_type == 7:
+                stimtrialTime = nonstimtrialTime
+            routineTimer.add(stimtrialTime)
             # update component parameters for each repeat
             # keep track of which components have finished
             StimTrialComponents = [fix_cross]
@@ -1272,25 +1299,25 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     if biopac_exists == 1:
                         win.callOnFlip(biopac.setData, biopac, BiopacChannel)
                     if trial_type == 1:
-                        win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisIndex][0])
+                        win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisTrialN][0])
                     elif trial_type == 2:
-                        win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisIndex][1])
+                        win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisTrialN][1])
                     elif trial_type == 3:
-                        win.callOnFlip(print, "Starting Warm Stimulation to ", bodySites[runLoop.thisIndex][0])
+                        win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisTrialN][0])
                     elif trial_type == 4:
-                        win.callOnFlip(print, "Starting Warm Stimulation to ", bodySites[runLoop.thisIndex][1])
+                        win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisTrialN][1])
                     elif trial_type == 7:
                         win.callOnFlip(print, "Resting")
                     if trial_type in {1, 2, 3, 4}:
                         win.callOnFlip(print, "Triggering")
                         if thermode_exists == 1:
                             win.callOnFlip(poll_for_change, 'RUNNING')
-                            win.callOnFlip(sendCommand, 'trigger')
-                            # win.callOnFlip(sendCommand, 'start')
-                            win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
+                            # win.callOnFlip(sendCommand, 'trigger')
+                            win.callOnFlip(sendCommand, 'start')
+                            # win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
                 if fix_cross.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
-                    if tThisFlipGlobal > fix_cross.tStartRefresh + trialTime-frameTolerance:
+                    if tThisFlipGlobal > fix_cross.tStartRefresh + stimtrialTime-frameTolerance:
                         # keep track of stop time/frame for later
                         fix_cross.tStop = t  # not accounting for scr refresh
                         fix_cross.frameNStop = frameN  # exact frame index
@@ -1313,11 +1340,11 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                 if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                     win.flip()
             # -------Ending Routine "StimTrial"-------
-            TrialEndTime = timeit.default_timer()-startTime
-            print("TrialEndTime: " + str(TrialEndTime))
-            print("CueOff Biopac channel " + str(BiopacChannel))
-            if biopac_exists == 1:
-                biopac.setData(biopac, 0)
+            # TrialEndTime = timeit.default_timer()-startTime
+            # print("TrialEndTime: " + str(TrialEndTime))
+            # print("CueOff Biopac channel " + str(BiopacChannel))
+            # if biopac_exists == 1:
+            #     biopac.setData(biopac, 0)  # This will always turn off too early
             for thisComponent in StimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1325,7 +1352,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             # onset, duration, trial_type, body_site,temp
             # duration <- TTL triggers?
-            duration = TrialEndTime
+            duration = 12
             bodymap_trial = []
             bodymap_trial.extend((fix_cross.tStartRefresh, duration, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
@@ -1338,22 +1365,23 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                 print("Starting Imagine Site 1")
                 BodySiteCue = BodySiteImg1
                 BodySiteCue.pos = (0,0)
-                NonStimTrialText.text="Picture your " + bodySites[runLoop.thisIndex][0].lower() + " being held up against a glowing hot metal or fire. \nVisualize the skin on your " + bodySites[runLoop.thisIndex][0].lower() + " sizzling, melting and bubbling "
-                BiopacChannel = bodysite_word2imaginecode[bodySites[runLoop.thisIndex][0]]
-                bodySiteData = bodySites[runLoop.thisIndex][0]
+                NonStimTrialText.text="Picture your " + bodySites[runLoop.thisTrialN][0].lower() + " being held up against a glowing hot metal or fire. \nVisualize the skin on your " + bodySites[runLoop.thisTrialN][0].lower() + " sizzling, melting and bubbling "
+                BiopacChannel = bodysite_word2imaginecode[bodySites[runLoop.thisTrialN][0]]
+                bodySiteData = bodySites[runLoop.thisTrialN][0]
                 temperature = None
             elif (trial_type == 6):
                 print("Starting Imagine Site 2")
                 BodySiteCue = BodySiteImg2
                 BodySiteCue.pos = (0,0)
-                NonStimTrialText.text="Picture your " + bodySites[runLoop.thisIndex][1].lower() + " being held up against a glowing hot metal or fire. \nVisualize the skin on your " + bodySites[runLoop.thisIndex][1].lower() + " sizzling, melting and bubbling "
-                BiopacChannel = bodysite_word2imaginecode[bodySites[runLoop.thisIndex][1]]
-                bodySiteData = bodySites[runLoop.thisIndex][1]
+                NonStimTrialText.text="Picture your " + bodySites[runLoop.thisTrialN][1].lower() + " being held up against a glowing hot metal or fire. \nVisualize the skin on your " + bodySites[runLoop.thisTrialN][1].lower() + " sizzling, melting and bubbling "
+                BiopacChannel = bodysite_word2imaginecode[bodySites[runLoop.thisTrialN][1]]
+                bodySiteData = bodySites[runLoop.thisTrialN][1]
                 temperature = None
 
             # ------Prepare to start Routine "NonStimTrial"-------
             continueRoutine = True
-            routineTimer.add(trialTime)
+            routineTimer.reset()
+            routineTimer.add(nonstimtrialTime)
             # update component parameters for each repeat
             # keep track of which components have finished
             NonStimTrialComponents = [BodySiteCue, NonStimTrialText]
@@ -1388,11 +1416,14 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     win.timeOnFlip(BodySiteCue, 'tStartRefresh')  # time at next scr refresh
                     win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
                     if biopac_exists == 1:
+                        # TrialEndTime = timeit.default_timer()-startTime
+                        # win.callOnFlip(print, "TrialEndTime: " + str(TrialEndTime))
+                        win.callOnFlip(biopac.setData, biopac, 0)
                         win.callOnFlip(biopac.setData, biopac, BiopacChannel)
                     BodySiteCue.setAutoDraw(True)
                 if BodySiteCue.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
-                    if tThisFlipGlobal > BodySiteCue.tStartRefresh + trialTime-frameTolerance:
+                    if tThisFlipGlobal > BodySiteCue.tStartRefresh + nonstimtrialTime-frameTolerance:
                         # keep track of stop time/frame for later
                         BodySiteCue.tStop = t  # not accounting for scr refresh
                         BodySiteCue.frameNStop = frameN  # exact frame index
@@ -1409,7 +1440,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     NonStimTrialText.setAutoDraw(True)
                 if NonStimTrialText.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
-                    if tThisFlipGlobal > NonStimTrialText.tStartRefresh + trialTime-frameTolerance:
+                    if tThisFlipGlobal > NonStimTrialText.tStartRefresh + nonstimtrialTime-frameTolerance:
                         # keep track of stop time/frame for later
                         NonStimTrialText.tStop = t  # not accounting for scr refresh
                         NonStimTrialText.frameNStop = frameN  # exact frame index
@@ -1435,11 +1466,11 @@ for thisRunLoop in runLoop:                     # Loop through each run.
                     win.flip()
             
             # -------Ending Routine "NonStimTrial"-------
-            TrialEndTime = timeit.default_timer()-startTime
-            print("TrialEndTime: " + str(TrialEndTime))
-            print("CueOff Biopac Channel " + str(BiopacChannel))
-            if biopac_exists == 1:
-                biopac.setData(biopac, 0)
+            # TrialEndTime = timeit.default_timer()-startTime
+            # print("TrialEndTime: " + str(TrialEndTime))
+            # print("CueOff Biopac Channel " + str(BiopacChannel))
+            # if biopac_exists == 1:
+            #     biopac.setData(biopac, 0) # This ends too early if have to prepare a stim trial
             for thisComponent in NonStimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1447,7 +1478,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
             trials.addData('BodySiteCue.stopped', BodySiteCue.tStopRefresh)
             trials.addData('NonStimTrialText.started', NonStimTrialText.tStartRefresh)
             trials.addData('NonStimTrialText.stopped', NonStimTrialText.tStopRefresh)
-            duration = TrialEndTime
+            # duration = TrialEndTime
             bodymap_trial = []
             bodymap_trial.extend((BodySiteCue.tStartRefresh, duration, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
@@ -2022,7 +2053,7 @@ for thisRunLoop in runLoop:                     # Loop through each run.
     sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
     if not os.path.exists(sub_dir):
         os.makedirs(sub_dir)
-    bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s1%s2_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'bodymap', bodySites[runLoop.thisIndex][0].replace(" ", "").lower(), bodySites[runLoop.thisIndex][1].replace(" ", "").lower(), str(runLoop.thisIndex+1))
+    bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s1%s2_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'bodymap', bodySites[runLoop.thisTrialN][0].replace(" ", "").lower(), bodySites[runLoop.thisTrialN][1].replace(" ", "").lower(), str(runLoop.thisTrialN+1))
     bodymap_bids_data = pd.DataFrame(bodymap_bids_data, columns = ['onset','duration','trial_type','body_site','temp'])
     bodymap_bids_data.to_csv(bids_run_filename, sep="\t")
 
