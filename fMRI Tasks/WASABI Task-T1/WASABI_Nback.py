@@ -69,7 +69,7 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
+debug = 0
 autorespond = 0
 # Device togglers
 biopac_exists = 0
@@ -260,7 +260,7 @@ fixation_1 = visual.TextStim(win=win, name='fixation_2',
 # Initialize components for Routine "NbackInstructions"
 NbackInstructionsClock = core.Clock()
 NbackInstructions = visual.TextStim(win=win, name='Nbackinstructions',
-    text='In this task you will be required to press space whenever the square appears in the same position as on the position \n\ntwo trials before. \n\nFor example if the square appeared in left down corner on trial 1, you should [press space] if the square appears in the left down corner on trial 3. \nPress [space] to continue.',
+    text='In this task you will be required to click the left mouse button whenever the square appears in the same position as on the position \n\ntwo trials before. \n\nFor example if the square appeared in left down corner on trial 1, you should [click] if the square appears in the left down corner on trial 3. \nPress [click] to continue.',
     font='Arial',
     pos=(0, 0), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
@@ -350,9 +350,7 @@ for thisCounterbalancer in counterbalancer:
     if autorespond != 1:
         # Trigger
         event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
-        event.waitKeys(keyList='5')   # fMRI trigger
-        TR = 0.46
-        core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
+
     # set up handler to look after randomisation of conditions etc
     RestT1Loop = data.TrialHandler(nReps=RestT1, method='random', 
         extraInfo=expInfo, originPath=-1,
@@ -451,7 +449,7 @@ for thisCounterbalancer in counterbalancer:
         """   
         message = visual.TextStim(win, text=in_between_run_msg, height=0.05, units='height')
         message.draw()
-        win.callOnFlip(print, "Awaiting Experimenter to start next run...")
+        win.callOnFlip(print, "Awaiting Experimenter to start next run...\nPress [e] to continue.")
         win.flip()
         # Autoresponder
         if autorespond != 1:
@@ -594,9 +592,7 @@ for thisCounterbalancer in counterbalancer:
         if autorespond != 1:
             # Trigger
             event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
-            event.waitKeys(keyList='5')   # fMRI trigger
-            TR = 0.46
-            core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
+
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         routineTimer.add(1.000000)
@@ -873,9 +869,9 @@ for thisCounterbalancer in counterbalancer:
         """
         8. End of Run, Wait for Experimenter instructions to begin next run
         """   
-        message = visual.TextStim(win, text=in_between_run_msg, height=0.2)
+        message = visual.TextStim(win, text=in_between_run_msg, height=0.05, units='height')
         message.draw()
-        win.callOnFlip(print, "Awaiting Experimenter to start next run...")
+        win.callOnFlip(print, "Awaiting Experimenter to start next run...\nPress [e] to continue")
         if biopac_exists:
             win.callOnFlip(biopac.setData, biopac,in_between_run_msg)
             win.callOnFlip(biopac.setData,biopac,0)

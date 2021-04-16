@@ -83,10 +83,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
+debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -492,8 +492,8 @@ with open("thermode1_programs.txt") as f:
 5. Create Body-Site Pairs for each run for this participant
 """
 # a. Initialize two runs worth of body-site arrays
-# bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-bodySites = ["Left Face", "Left Arm", "Chest"] # For remaining runs
+bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+# bodySites = ["Left Face", "Left Arm", "Chest"] # For remaining runs
 # bodySites1 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
 # bodySites2 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
 random.shuffle(bodySites)
@@ -531,8 +531,8 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next run to start. \n Experimenter press [e] to continue.'
 end_msg = 'This is the end of the experiment. \nPlease wait for instructions from the experimenter'
 
-stimtrialTime = 12 # Add 10 seconds for the Medoc Delay
-nonstimtrialTime = 12 # trial time in seconds (ISI)
+stimtrialTime = 13 # Add 10 seconds for the Medoc Delay
+nonstimtrialTime = 13 # trial time in seconds (ISI)
 #############
 # Body Mapping Components
 #############
@@ -1309,7 +1309,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             # onset, duration, trial_type, body_site,temp
             # duration <- TTL triggers?
-            duration = 12
+            duration = timeit.default_timer()-startTime
             bodymap_trial = []
             bodymap_trial.extend((fix_cross.tStartRefresh, duration, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
@@ -1432,7 +1432,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             trials.addData('BodySiteCue.stopped', BodySiteCue.tStopRefresh)
             trials.addData('NonStimTrialText.started', NonStimTrialText.tStartRefresh)
             trials.addData('NonStimTrialText.stopped', NonStimTrialText.tStopRefresh)
-            # duration = TrialEndTime
+            duration = timeit.default_timer()-startTime
             bodymap_trial = []
             bodymap_trial.extend((BodySiteCue.tStartRefresh, duration, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)

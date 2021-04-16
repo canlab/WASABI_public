@@ -17,8 +17,8 @@ class ThermodeConfig():
 #    address = '129.170.31.22' # Michael Office Computer
 #    address = '172.17.96.1'
 #    address = '172.18.168.185'
-    # address = '10.64.1.10' # DBIC
-    address = '192.168.1.127'
+    address = '10.64.1.10' # DBIC
+#    address = '192.168.1.127'
 #    address = '192.168.1.2'
  #   address = '192.168.1.127'
 #    address = '192.168.0.114' # Testing Room C
