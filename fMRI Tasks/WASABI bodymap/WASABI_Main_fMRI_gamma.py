@@ -580,7 +580,7 @@ ImaginationInstructionClock = core.Clock()
 ImaginationInstructionRead = keyboard.Keyboard()
 # Create experimenter instructions
 ImagineInstructionText = visual.TextStim(win, name='ImageInstructionText', 
-    text="During this scan, you will occasionally see picture cues of the body part where the thermode is attached. When you see this, try to imagine as hard as you can that the thermal stimulations are more painful than they are. Try to focus on how unpleasant the pain is, for instance, how strongly you would like to remove yourself from it. Pay attention to the burning, stinging and shooting sensations. You can use your mind to turn up the dial of the pain, much like turning up the volume dial on a stereo. As you feel the pain rise in intensity, imagine it rising faster and faster and going higher and higher. Picture your skin being held up against a glowing hot metal or fire. Think of how disturbing it is to be burned, and visualize your skin sizzling, melting and bubbling as a result of the intense heat.",
+    text="During this scan, you will occasionally see picture cues of the body part where the thermode is attached. When you see this, try to imagine as hard as you can that the thermal stimulations are more painful than they are. Try to focus on how unpleasant the pain is, for instance, how strongly you would like to remove yourself from it. Pay attention to the burning, stinging and shooting sensations. You can use your mind to turn up the dial of the pain, much like turning up the volume dial on a stereo. As you feel the pain rise in intensity, imagine it rising faster and faster and going higher and higher. Picture your skin being held up against a glowing hot metal or fire. Think of how disturbing it is to be burned, and visualize your skin sizzling, melting, and bubbling as a result of the intense heat.",
     font = 'Arial',
     pos=(0, 0), height=0.06, wrapWidth=1.5, ori=0,      # Edit wrapWidth for the 1920 full screen
     color='white', colorSpace='rgb', opacity=1, 
@@ -1137,23 +1137,18 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     start.draw()  # Automatically draw every frame
 
     # Experimenter: Check to make sure the program is loaded
-    if thisTrial['trial_type'] in {1, 3}:
+    if thisTrial['trial_type'] == 1:
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
         if thermode_exists == 1:
             # win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-    if thisTrial['trial_type'] == {2, 4}:
+    if thisTrial['trial_type'] == 2:
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
         if thermode_exists == 1:
             # win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-    # if thisTrial['trial_type'] == {5, 6, 7}:
-    #     print("Loading Empty Thermal Program")
-    #     thermodeCommand = 101
-            # win.callOnFlip(poll_for_change, 'READY')
-            # win.callOnFlip(sendCommand, 'start', thermodeCommand)
 
         # If auto-start is toggled off
         # if thermode_exists == 1:
@@ -1191,12 +1186,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
         # Setup the next trial if it is a thermal stimulation condition    
         next_trial = trials.getFutureTrial()
-        if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2, 3, 4}):
+        if (trials.nRemaining > 0 and next_trial['trial_type'] in {1, 2}):
             print("Loading Program")
-            if (next_trial['trial_type'] in {1, 3}):
+            if (next_trial['trial_type'] == 1):
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
                 if thermode_exists == 1:
+<<<<<<< Updated upstream
                     # if (poll_for_change('IDLE', poll_max=-1)): 
                     sendCommand('select_tp', thermodeCommand)  
             elif (next_trial['trial_type'] in {2, 4}):
@@ -1212,22 +1208,31 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             #     if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)        
                 # if poll_for_change('READY'): sendCommand('start')
                 # if poll_for_change('RUNNING'): sendCommand('start')
+=======
+                    if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)  
+            elif (next_trial['trial_type'] == 2):
+                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN])
+                thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
+                if thermode_exists == 1:
+                    if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)
+
+>>>>>>> Stashed changes
         ## Thermal Stimulation Trials:        
-        if trial_type in {1, 2, 3, 4, 7}:
+        if trial_type in {1, 2, 4}:
             startTime = timeit.default_timer()
-            if (trial_type in {1, 3}):
+            if (trial_type == 1):
                 BiopacChannel = bodysite_word2heatcode[bodySites[runLoop.thisTrialN]]
                 #BiopacChannel = thermode1
                 bodySiteData = bodySites[runLoop.thisTrialN]
                 temperature = participant_settingsHeat[bodySites[runLoop.thisTrialN]]
                 thermodeCommand = hot
-            elif (trial_type in {2, 4}):
+            elif (trial_type == 2):
                 BiopacChannel = bodysite_word2warmcode[bodySites[runLoop.thisTrialN]]
                 # BiopacChannel = thermode2
                 bodySiteData = bodySites[runLoop.thisTrialN]
                 temperature = participant_settingsWarm[bodySites[runLoop.thisTrialN]]
                 thermodeCommand = warm
-            elif (trial_type == 7):
+            elif (trial_type == 4):
                 BiopacChannel = rest
                 bodySiteData = None
                 temperature = None
@@ -1235,7 +1240,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             # ------Prepare to start Routine "StimTrial"-------
             continueRoutine = True
             routineTimer.reset()
-            if trial_type == 7:
+            if trial_type == 4:
                 stimtrialTime = nonstimtrialTime
             routineTimer.add(stimtrialTime)
             # update component parameters for each repeat
@@ -1272,19 +1277,27 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
                     if biopac_exists == 1:
                         win.callOnFlip(biopac.setData, biopac, BiopacChannel)
-                    if trial_type in {1,3}:
+                    if trial_type == 1:
                         win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
                             # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
+<<<<<<< Updated upstream
                             win.callOnFlip(print, "Triggering")
                     elif trial_type in {2,4}:
+=======
+                    elif trial_type == 2:
+>>>>>>> Stashed changes
                         win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
                             # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
+<<<<<<< Updated upstream
                             win.callOnFlip(print, "Triggering")
                     elif trial_type == 7:
+=======
+                    elif trial_type == 4:
+>>>>>>> Stashed changes
                         win.callOnFlip(print, "Resting")
                             # win.callOnFlip(sendCommand, 'start')
                             # win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
@@ -1315,11 +1328,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                     win.flip()
             # -------Ending Routine "StimTrial"-------
-            # TrialEndTime = timeit.default_timer()-startTime
-            # print("TrialEndTime: " + str(TrialEndTime))
-            # print("CueOff Biopac channel " + str(BiopacChannel))
-            # if biopac_exists == 1:
-            #     biopac.setData(biopac, 0)  # This will always turn off too early
             for thisComponent in StimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1334,13 +1342,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             routineTimer.reset()
 
         ## Nonstimulus Trials
-        elif (trial_type in {5, 6}):
+        elif (trial_type == 3):
             startTime = timeit.default_timer()
-            if (trial_type in {5, 6}):
+            if (trial_type == 3):
                 print("Starting Imagine Site")
                 BodySiteCue = BodySiteImg
                 BodySiteCue.pos = (0,0)
-                NonStimTrialText.text="Picture your " + bodySites[runLoop.thisTrialN].lower() + " being held up against a glowing hot metal or fire. \nVisualize the skin on your " + bodySites[runLoop.thisTrialN].lower() + " sizzling, melting and bubbling "
+                NonStimTrialText.text="Picture your " + bodySites[runLoop.thisTrialN].lower() + " being held up against a glowing hot metal or fire. \nVisualize the skin on your " + bodySites[runLoop.thisTrialN].lower() + " sizzling, melting, and bubbling."
                 BiopacChannel = bodysite_word2imaginecode[bodySites[runLoop.thisTrialN]]
                 bodySiteData = bodySites[runLoop.thisTrialN]
                 temperature = None
