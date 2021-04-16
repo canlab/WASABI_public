@@ -1192,31 +1192,15 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
                 if thermode_exists == 1:
-<<<<<<< Updated upstream
-                    # if (poll_for_change('IDLE', poll_max=-1)): 
+                    #if (poll_for_change('IDLE', poll_max=-1)): 
                     sendCommand('select_tp', thermodeCommand)  
-            elif (next_trial['trial_type'] in {2, 4}):
-                print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN])
-                thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
-                if thermode_exists == 1:
-                    # if (poll_for_change('IDLE', poll_max=-1)): 
-                    sendCommand('select_tp', thermodeCommand)  
-            # else:
-            #     print("Loading Empty Thermal Program")
-            #     thermodeCommand = 101
-            # if thermode_exists == 1:
-            #     if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)        
-                # if poll_for_change('READY'): sendCommand('start')
-                # if poll_for_change('RUNNING'): sendCommand('start')
-=======
-                    if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)  
             elif (next_trial['trial_type'] == 2):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
                 if thermode_exists == 1:
-                    if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)
+                    #if (poll_for_change('IDLE', poll_max=-1)): 
+                    sendCommand('select_tp', thermodeCommand)
 
->>>>>>> Stashed changes
         ## Thermal Stimulation Trials:        
         if trial_type in {1, 2, 4}:
             startTime = timeit.default_timer()
@@ -1282,22 +1266,12 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                         if thermode_exists == 1:
                             # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
-<<<<<<< Updated upstream
-                            win.callOnFlip(print, "Triggering")
-                    elif trial_type in {2,4}:
-=======
                     elif trial_type == 2:
->>>>>>> Stashed changes
                         win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
                             # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
-<<<<<<< Updated upstream
-                            win.callOnFlip(print, "Triggering")
-                    elif trial_type == 7:
-=======
                     elif trial_type == 4:
->>>>>>> Stashed changes
                         win.callOnFlip(print, "Resting")
                             # win.callOnFlip(sendCommand, 'start')
                             # win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
