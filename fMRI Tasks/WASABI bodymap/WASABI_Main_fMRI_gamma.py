@@ -83,10 +83,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
+debug = 1
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 
 class simKeys:
@@ -492,7 +492,8 @@ with open("thermode1_programs.txt") as f:
 5. Create Body-Site Pairs for each run for this participant
 """
 # a. Initialize two runs worth of body-site arrays
-bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+# bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+bodySites = ["Left Face", "Left Arm", "Chest"] # For remaining runs
 # bodySites1 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
 # bodySites2 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
 random.shuffle(bodySites)
@@ -530,8 +531,8 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next run to start. \n Experimenter press [e] to continue.'
 end_msg = 'This is the end of the experiment. \nPlease wait for instructions from the experimenter'
 
-stimtrialTime = 1 # Add 10 seconds for the Medoc Delay
-nonstimtrialTime = 16 # trial time in seconds (ISI)
+stimtrialTime = 12 # Add 10 seconds for the Medoc Delay
+nonstimtrialTime = 12 # trial time in seconds (ISI)
 #############
 # Body Mapping Components
 #############
@@ -1140,13 +1141,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
         if thermode_exists == 1:
-            win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+            # win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
     if thisTrial['trial_type'] == {2, 4}:
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
         if thermode_exists == 1:
-            win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+            # win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
     # if thisTrial['trial_type'] == {5, 6, 7}:
     #     print("Loading Empty Thermal Program")
@@ -1196,12 +1197,14 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
                 if thermode_exists == 1:
-                    if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)  
+                    # if (poll_for_change('IDLE', poll_max=-1)): 
+                    sendCommand('select_tp', thermodeCommand)  
             elif (next_trial['trial_type'] in {2, 4}):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
                 if thermode_exists == 1:
-                    if (poll_for_change('IDLE', poll_max=-1)): sendCommand('select_tp', thermodeCommand)  
+                    # if (poll_for_change('IDLE', poll_max=-1)): 
+                    sendCommand('select_tp', thermodeCommand)  
             # else:
             #     print("Loading Empty Thermal Program")
             #     thermodeCommand = 101
@@ -1272,16 +1275,17 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     if trial_type in {1,3}:
                         win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
-                            win.callOnFlip(poll_for_change, 'RUNNING')
+                            # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
+                            win.callOnFlip(print, "Triggering")
                     elif trial_type in {2,4}:
                         win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
-                            win.callOnFlip(poll_for_change, 'RUNNING')
+                            # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
+                            win.callOnFlip(print, "Triggering")
                     elif trial_type == 7:
                         win.callOnFlip(print, "Resting")
-                    win.callOnFlip(print, "Triggering")
                             # win.callOnFlip(sendCommand, 'start')
                             # win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
 

@@ -103,7 +103,7 @@ elif test == int(0):
     fName = 'Pinel_sub-%s_task-pinel_ses-%s.txt' % (subID,session)
 
 # SET EXPERIMENT GLOBALS
-base_dir = './'
+base_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(base_dir, 'data', 'sub-%05d' % (int(subID)), 'ses-%02d' % (int(session)))
 stim_dir = os.path.join(base_dir, 'stim')
 
@@ -129,7 +129,7 @@ blank_dur = 1.3
 
 # SETUP DATAFILE
 if not os.path.exists(data_dir):
-    os.mkdir(data_dir)
+    os.makedirs(data_dir)
 
 # make sure we don't overwrite a file- must click okay to overwrite
 fPath = os.path.join(data_dir, fName)

@@ -69,10 +69,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
+debug = 1
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 
 class simKeys:
     '''
@@ -87,11 +87,10 @@ class simKeys:
         self.name=np.random.choice(keyList)
         self.rt = np.random.choice(np.linspace(rtRange[0], rtRange[1])/1000)
 
-if autorespond == 1:
-    # pick an RT
-    thisRT=randint(0,5)
-    thisSimKey=simKeys(keyList=['space'], 
-        rtRange=[200,1000])
+# pick an RT
+thisRT=randint(0,5)
+thisSimKey=simKeys(keyList=['space'], 
+    rtRange=[200,1000])
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
@@ -209,7 +208,7 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
-win.mouseVisible(False) # Make the mouse invisible for the remainder of the experiment
+win.mouseVisible = False # Make the mouse invisible for the remainder of the experiment
 """
 4. Prepare files to write
 """
@@ -236,7 +235,7 @@ nback_bids = []
 """
 # General Instructional Text
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
-in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [n] to continue.'
+in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
 end_msg = 'Please wait for instructions from the experimenter'
 
 # create a default keyboard (e.g. to check for escape)
@@ -260,10 +259,10 @@ fixation_1 = visual.TextStim(win=win, name='fixation_2',
 ######################
 # Initialize components for Routine "NbackInstructions"
 NbackInstructionsClock = core.Clock()
-NbackInstructions = visual.TextBox2(win=win, name='Nbackinstructions',
-    text='In this task you will be required to press space whenever the square appears in the same position as on the position <b>two trials before</b>. For example if the square appeared in left down corner on trial 1, you should press space if the square appears in the left down corner on trial 3. Press space to continue.',
+NbackInstructions = visual.TextStim(win=win, name='Nbackinstructions',
+    text='In this task you will be required to press space whenever the square appears in the same position as on the position \n\ntwo trials before. \n\nFor example if the square appeared in left down corner on trial 1, you should [press space] if the square appears in the left down corner on trial 3. \nPress [space] to continue.',
     font='Arial',
-    pos=(0, 0), units='height', letterHeight=0.05, 
+    pos=(0, 0), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
 NbackStart = keyboard.Keyboard()
 
@@ -281,7 +280,7 @@ N_back_2_trialsClock = core.Clock()
 grid_lines_2 = visual.ImageStim(
     win=win,
     name='grid_lines_2', 
-    image='grid', mask=None,
+    image='grid.png', mask=None,
     ori=0, pos=(0, 0), size=(0.6, 0.6),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
@@ -309,6 +308,7 @@ routineTimer = core.CountdownTimer()  # to track time remaining of each (non-sli
 if biopac_exists:
     biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
     biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
+
 """
 6. Start Experimental Loops
 """
@@ -344,6 +344,15 @@ for thisCounterbalancer in counterbalancer:
     """ 
     7. Rest T1 Phase
     """
+    start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
+    start.draw()  # Automatically draw every frame
+    win.flip()
+    if autorespond != 1:
+        # Trigger
+        event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
+        event.waitKeys(keyList='5')   # fMRI trigger
+        TR = 0.46
+        core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
     # set up handler to look after randomisation of conditions etc
     RestT1Loop = data.TrialHandler(nReps=RestT1, method='random', 
         extraInfo=expInfo, originPath=-1,
@@ -440,7 +449,7 @@ for thisCounterbalancer in counterbalancer:
         """
         6. End of Run, Wait for Experimenter instructions to begin next run
         """   
-        message = visual.TextStim(win, text=in_between_run_msg, height=0.2)
+        message = visual.TextStim(win, text=in_between_run_msg, height=0.05, units='height')
         message.draw()
         win.callOnFlip(print, "Awaiting Experimenter to start next run...")
         win.flip()
@@ -579,6 +588,15 @@ for thisCounterbalancer in counterbalancer:
         """ 
         7ii. Working Memory N-Back Fixation Cross
         """
+        start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
+        start.draw()  # Automatically draw every frame
+        win.flip()
+        if autorespond != 1:
+            # Trigger
+            event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
+            event.waitKeys(keyList='5')   # fMRI trigger
+            TR = 0.46
+            core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         routineTimer.add(1.000000)
@@ -653,9 +671,10 @@ for thisCounterbalancer in counterbalancer:
         thisExp.addData('fixation_2.stopped', fixation_2.tStopRefresh)
 
         # set up handler to look after randomisation of conditions etc
+        Nback2 = os.sep.join([_thisDir,"N-back-2.xlsx"])
         trials_2 = data.TrialHandler(nReps=1, method='sequential', 
             extraInfo=expInfo, originPath=-1,
-            trialList=data.importConditions('N-back-2.xlsx'),
+            trialList=data.importConditions(Nback2),
             seed=None, name='trials_2')
         thisExp.addLoop(trials_2)  # add the loop to the experiment
         thisTrial_2 = trials_2.trialList[0]  # so we can initialise stimuli with some values
@@ -875,10 +894,10 @@ if biopac_exists:
     biopac.setData(biopac,0)
 nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
 
-sub_dir = os.path.join(_thisDir, data, 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-order-%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
+bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-order%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
 nback_bids_data.to_csv(bids_filename, sep="\t")
 
 # these shouldn't be strictly necessary (should auto-save)
@@ -886,7 +905,7 @@ thisExp.saveAsWideText(psypy_filename+'.csv', delim='auto')
 thisExp.saveAsPickle(psypy_filename)
 logging.flush()
 # make sure everything is closed down
-message = visual.TextStim(win, text=end_msg)
+message = visual.TextStim(win, text=end_msg, height=0.05, units='height')
 message.draw()
 if biopac_exists == 1:
     biopac.close()  # Close the labjack U3 device to end communication with the Biopac MP150
