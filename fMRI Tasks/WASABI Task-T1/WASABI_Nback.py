@@ -74,6 +74,8 @@ autorespond = 0
 # Device togglers
 biopac_exists = 0
 
+T1_time = 5      # should be 258 seconds
+
 class simKeys:
     '''
     an object to simulate key presses
@@ -260,7 +262,7 @@ fixation_1 = visual.TextStim(win=win, name='fixation_2',
 # Initialize components for Routine "NbackInstructions"
 NbackInstructionsClock = core.Clock()
 NbackInstructions = visual.TextStim(win=win, name='Nbackinstructions',
-    text='In this task you will be required to click the left mouse button whenever the square appears in the same position as on the position \n\ntwo trials before. \n\nFor example if the square appeared in left down corner on trial 1, you should [click] if the square appears in the left down corner on trial 3. \nPress [click] to continue.',
+    text='In this task you will be required to click the left mouse button whenever the square appears in the same position as on the position \n\ntwo trials before. \n\nFor example if the square appeared in left down corner on trial 1, you should [click] if the square appears in the left down corner on trial 3. \n\nExperimenter press [space] to continue.',
     font='Arial',
     pos=(0, 0), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
@@ -299,7 +301,9 @@ fixation_3 = visual.TextStim(win=win, name='fixation_3',
     color='white', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-2.0)
-response_2 = keyboard.Keyboard()
+# response_2 = keyboard.Keyboard()
+response_2 = event.Mouse(win=win)
+response_2.mouseClock = core.Clock()
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
@@ -308,6 +312,8 @@ routineTimer = core.CountdownTimer()  # to track time remaining of each (non-sli
 if biopac_exists:
     biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
     biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
+
+win.mouseVisible = False
 
 """
 6. Start Experimental Loops
@@ -344,13 +350,6 @@ for thisCounterbalancer in counterbalancer:
     """ 
     7. Rest T1 Phase
     """
-    start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
-    start.draw()  # Automatically draw every frame
-    win.flip()
-    if autorespond != 1:
-        # Trigger
-        event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
-
     # set up handler to look after randomisation of conditions etc
     RestT1Loop = data.TrialHandler(nReps=RestT1, method='random', 
         extraInfo=expInfo, originPath=-1,
@@ -370,9 +369,17 @@ for thisCounterbalancer in counterbalancer:
             for paramName in thisRestT1Loop:
                 exec('{} = thisRestT1Loop[paramName]'.format(paramName))
         
+        start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
+        start.draw()  # Automatically draw every frame
+        win.flip()
+        if autorespond != 1:
+            # Trigger
+            event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
+        routineTimer.reset()
+
         # ------Prepare to start Routine "RestT1"-------
         continueRoutine = True
-        routineTimer.add(258)
+        routineTimer.add(T1_time)
         # update component parameters for each repeat
         # keep track of which components have finished
         RestT1Components = [fixation_1]
@@ -410,7 +417,7 @@ for thisCounterbalancer in counterbalancer:
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + 258-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + T1_time-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -454,6 +461,7 @@ for thisCounterbalancer in counterbalancer:
         # Autoresponder
         if autorespond != 1:
             event.waitKeys(keyList = 'e')
+        routineTimer.reset()
     # completed RestT1 repeats of 'RestT1Loop'
     """ 
     7. Task T1 Phase
@@ -693,9 +701,16 @@ for thisCounterbalancer in counterbalancer:
             routineTimer.add(2.000000)
             # update component parameters for each repeat
             target_square_2.setPos(location)
-            response_2.keys = []
+            # response_2.keys = []
+            # response_2.rt = []
+            # _response_2_allKeys = []
+            response_2 = event.Mouse(win=win, visible=False) # Re-initialize
+            response_2.click = []
             response_2.rt = []
-            _response_2_allKeys = []
+            response_2.corr = []
+            # _response_2_allClicks = []
+            
+
             # keep track of which components have finished
             N_back_2_trialsComponents = [grid_lines_2, target_square_2, fixation_3, response_2]
             for thisComponent in N_back_2_trialsComponents:
@@ -773,46 +788,83 @@ for thisCounterbalancer in counterbalancer:
                         win.timeOnFlip(fixation_3, 'tStopRefresh')  # time at next scr refresh
                         fixation_3.setAutoDraw(False)
                 
+                # # *response_2* updates
+                # waitOnFlip = False
+                # if response_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                #     # keep track of start time/frame for later
+                #     response_2.frameNStart = frameN  # exact frame index
+                #     response_2.tStart = t  # local t and not account for scr refresh
+                #     response_2.tStartRefresh = tThisFlipGlobal  # on global time
+                #     win.timeOnFlip(response_2, 'tStartRefresh')  # time at next scr refresh
+                #     response_2.status = STARTED
+                #     # keyboard checking is just starting
+                #     waitOnFlip = True
+                #     win.callOnFlip(response_2.clock.reset)  # t=0 on next screen flip
+                #     win.callOnFlip(response_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
+                # if response_2.status == STARTED:
+                #     # is it time to stop? (based on global clock, using actual start)
+                #     if tThisFlipGlobal > response_2.tStartRefresh + 2-frameTolerance:
+                #         # keep track of stop time/frame for later
+                #         response_2.tStop = t  # not accounting for scr refresh
+                #         response_2.frameNStop = frameN  # exact frame index
+                #         win.timeOnFlip(response_2, 'tStopRefresh')  # time at next scr refresh
+                #         response_2.status = FINISHED
+                # if response_2.status == STARTED and not waitOnFlip:
+                #     theseKeys = response_2.getKeys(keyList=['space'], waitRelease=False)
+                #     _response_2_allKeys.extend(theseKeys)
+                #     if len(_response_2_allKeys):
+                #         response_2.keys = _response_2_allKeys[-1].name  # just the last key pressed
+                #         response_2.rt = _response_2_allKeys[-1].rt
+                #         # was this correct?
+                #         if (response_2.keys == str(corrAns)) or (response_2.keys == corrAns):
+                #             response_2.corr = 1
+                #             if biopac_exists:
+                #                 biopac.setData(biopac, nback_hit)
+                #         else:
+                #             response_2.corr = 0
+                #             if biopac_exists:
+                #                 biopac.setData(biopac, nback_miss)
+                
                 # *response_2* updates
                 waitOnFlip = False
-                if response_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                if response_2.status == NOT_STARTED and t >= 0.0-frameTolerance:
                     # keep track of start time/frame for later
                     response_2.frameNStart = frameN  # exact frame index
                     response_2.tStart = t  # local t and not account for scr refresh
                     response_2.tStartRefresh = tThisFlipGlobal  # on global time
                     win.timeOnFlip(response_2, 'tStartRefresh')  # time at next scr refresh
                     response_2.status = STARTED
-                    # keyboard checking is just starting
                     waitOnFlip = True
-                    win.callOnFlip(response_2.clock.reset)  # t=0 on next screen flip
-                    win.callOnFlip(response_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
-                if response_2.status == STARTED:
-                    # is it time to stop? (based on global clock, using actual start)
+                    win.callOnFlip(response_2.mouseClock.reset) # t=0 on next screen flip
+                    win.callOnFlip(response_2.clickReset) # t=0 on next screen flip
+                if response_2.status == STARTED:  # only update if started and not finished!
                     if tThisFlipGlobal > response_2.tStartRefresh + 2-frameTolerance:
                         # keep track of stop time/frame for later
                         response_2.tStop = t  # not accounting for scr refresh
-                        response_2.frameNStop = frameN  # exact frame index
                         win.timeOnFlip(response_2, 'tStopRefresh')  # time at next scr refresh
                         response_2.status = FINISHED
                 if response_2.status == STARTED and not waitOnFlip:
-                    theseKeys = response_2.getKeys(keyList=['space'], waitRelease=False)
-                    _response_2_allKeys.extend(theseKeys)
-                    if len(_response_2_allKeys):
-                        response_2.keys = _response_2_allKeys[-1].name  # just the last key pressed
-                        response_2.rt = _response_2_allKeys[-1].rt
-                        # was this correct?
-                        if (response_2.keys == str(corrAns)) or (response_2.keys == corrAns):
-                            response_2.corr = 1
-                            if biopac_exists:
-                                biopac.setData(biopac, nback_hit)
+                    response_2.click, response_2.rt = response_2.getPressed(getTime = True)
+                    response_2.click = response_2.click[0]
+                    response_2.rt = response_2.rt[0]
+                    if response_2.click == 1:
+                        response_2.corr = 1
+                        if biopac_exists:
+                            biopac.setData(biopac, nback_hit)
+                    elif response_2.click == 0:  # No response was made
+                        response_2.click = None
+                        response_2.rt = None
+                        # was no response the correct answer?!
+                        if str(corrAns).lower() == 'none':
+                            response_2.corr = 1;  # correct non-response
                         else:
-                            response_2.corr = 0
+                            response_2.corr = 0;  # failed to respond (incorrectly)
                             if biopac_exists:
-                                biopac.setData(biopac, nback_miss)
-                
-                # Autoresponder
-                if t >= thisSimKey.rt and autorespond == 1:
-                    _response_2_allKeys.extend([thisSimKey])
+                                biopac.setData(biopac, nback_comiss) # mark comission error
+
+                # # Autoresponder
+                # if t >= thisSimKey.rt and autorespond == 1:
+                #     _response_2_allKeys.extend([thisSimKey])
 
                 # check for quit (typically the Esc key)
                 if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -843,18 +895,28 @@ for thisCounterbalancer in counterbalancer:
             trials_2.addData('target_square_2.stopped', target_square_2.tStopRefresh)
             trials_2.addData('fixation_3.started', fixation_3.tStartRefresh)
             trials_2.addData('fixation_3.stopped', fixation_3.tStopRefresh)
+            # # check responses
+            # if response_2.keys in ['', [], None]:  # No response was made
+            #     response_2.keys = None
+            #     # was no response the correct answer?!
+            #     if str(corrAns).lower() == 'none':
+            #         response_2.corr = 1;  # correct non-response
+            #     else:
+            #         response_2.corr = 0;  # failed to respond (incorrectly)
+
             # check responses
-            if response_2.keys in ['', [], None]:  # No response was made
-                response_2.keys = None
+            if response_2.click == 0:  # No response was made
+                response_2.click = None
                 # was no response the correct answer?!
                 if str(corrAns).lower() == 'none':
                     response_2.corr = 1;  # correct non-response
                 else:
                     response_2.corr = 0;  # failed to respond (incorrectly)
+
             # store data for trials_2 (TrialHandler)
-            trials_2.addData('response_2.keys',response_2.keys)
+            trials_2.addData('response_2.click',response_2.click)
             trials_2.addData('response_2.corr', response_2.corr)
-            if response_2.keys != None:  # we had a response
+            if response_2.click != None:  # we had a response
                 trials_2.addData('response_2.rt', response_2.rt)
             trials_2.addData('response_2.started', response_2.tStartRefresh)
             trials_2.addData('response_2.stopped', response_2.tStopRefresh)

@@ -388,6 +388,8 @@ end_msg = visual.TextStim(win=window, name='end_msg',
 # EXPERIMENT START
 trigger = ''
 wait_stim.draw()
+window.callOnFlip(biopac.setData, biopac, task_ID)
+window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
 
 # wait until trigger is pressed- or fMRI scanner trigger
@@ -435,6 +437,7 @@ for key, task in task_order.items():
                     stim = check[1]
 
                 stim.draw()
+                window.callOnFlip(biopac.setData, biopac, flashingCheck_vert)
                 window.flip()
 
             else:  # horizontal checkerboard
@@ -446,6 +449,7 @@ for key, task in task_order.items():
                     stim = check[3]
 
                 stim.draw()
+                window.callOnFlip(biopac.setData, biopac, flashingCheck_horiz)
                 window.flip()
 
             duration = clock.getTime() - trial_start
