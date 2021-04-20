@@ -16,7 +16,7 @@ import serial
 #prefs.general['audioLib'] = ['pyo']
 from psychopy import sound, visual, data, event, core, gui, logging, clock
 
-biopac_exists = 0
+biopac_exists = 1
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
@@ -29,6 +29,7 @@ biopac_exists = 0
 
 # biopac channels EDIT
 task_ID=2
+fixation=53
 audio1=54
 audio2=55
 visual3=56
@@ -132,107 +133,107 @@ audio100=153
 end=154
 
 word2biopaccode = {
-"fixation": fixation
-"audio1": audio1
-"audio2": audio2
-"visual3": visual3
-"checker4": checker4
-"visual5": visual5
-"audio6": audio6
-"audio7": audio7
-"audio8": audio8
-"visual9": visual9
-"audio10": audio10
-"audio11": audio11
-"checker12": checker12
-"visual13": visual13
-"visual14": visual14
-"visual15": visual15
-"visual16": visual16
-"visual17": visual17
-"visual18": visual18
-"visual19": visual19
-"visual20": visual20
-"checker21": checker21
-"visual22": visual22
-"visual23": visual23
-"audio24": audio24
-"audio25": audio25
-"visual26": visual26
-"visual27": visual27
-"visual28": visual28
-"visual29": visual29
-"visual30": visual30
-"audio31": audio31
-"visual32": visual32
-"checker33": checker33
-"visual34": visual34
-"visual35": visual35
-"visual36": visual36
-"visual37": visual37
-"visual38": visual38
-"visual39": visual39
-"audio40": audio40
-"audio41": audio41
-"checker42": checker42
-"audio43": audio43
-"visual44": visual44
-"visual45": visual45
-"visual46": visual46
-"visual47": visual47
-"checker48": checker48
-"visual49": visual49
-"audio50": audio50
-"checker51": checker51
-"audio52": audio52
-"checker53": checker53
-"visual54": visual54
-"visual55": visual55
-"audio56": audio56
-"visual57": visual57
-"visual58": visual58
-"visual59": visual59
-"checker60": checker60
-"visual61": visual61
-"visual62": visual62
-"visual63": visual63
-"checker64": checker64
-"visual65": visual65
-"visual66": visual66
-"audio67": audio67
-"audio68": audio68
-"checker69": checker69
-"checker70": checker70
-"checker71": checker71
-"audio72": audio72
-"audio73": audio73
-"checker74": checker74
-"audio75": audio75
-"checker76": checker76
-"audio77": audio77
-"visual78": visual78
-"audio79": audio79
-"audio80": audio80
-"visual81": visual81
-"visual82": visual82
-"visual83": visual83
-"checker84": checker84
-"visual85": visual85
-"visual86": visual86
-"visual87": visual87
-"audio88": audio88
-"checker89": checker89
-"checker90": checker90
-"checker91": checker91
-"visual92": visual92
-"audio93": audio93
-"checker94": checker94
-"visual95": visual95
-"audio96": audio96
-"visual97": visual97
-"audio98": audio98
-"audio99": audio99
-"audio100": audio100
+"fixation": fixation,
+"audio1": audio1,
+"audio2": audio2,
+"visual3": visual3,
+"checker4": checker4,
+"visual5": visual5,
+"audio6": audio6,
+"audio7": audio7,
+"audio8": audio8,
+"visual9": visual9,
+"audio10": audio10,
+"audio11": audio11,
+"checker12": checker12,
+"visual13": visual13,
+"visual14": visual14,
+"visual15": visual15,
+"visual16": visual16,
+"visual17": visual17,
+"visual18": visual18,
+"visual19": visual19,
+"visual20": visual20,
+"checker21": checker21,
+"visual22": visual22,
+"visual23": visual23,
+"audio24": audio24,
+"audio25": audio25,
+"visual26": visual26,
+"visual27": visual27,
+"visual28": visual28,
+"visual29": visual29,
+"visual30": visual30,
+"audio31": audio31,
+"visual32": visual32,
+"checker33": checker33,
+"visual34": visual34,
+"visual35": visual35,
+"visual36": visual36,
+"visual37": visual37,
+"visual38": visual38,
+"visual39": visual39,
+"audio40": audio40,
+"audio41": audio41,
+"checker42": checker42,
+"audio43": audio43,
+"visual44": visual44,
+"visual45": visual45,
+"visual46": visual46,
+"visual47": visual47,
+"checker48": checker48,
+"visual49": visual49,
+"audio50": audio50,
+"checker51": checker51,
+"audio52": audio52,
+"checker53": checker53,
+"visual54": visual54,
+"visual55": visual55,
+"audio56": audio56,
+"visual57": visual57,
+"visual58": visual58,
+"visual59": visual59,
+"checker60": checker60,
+"visual61": visual61,
+"visual62": visual62,
+"visual63": visual63,
+"checker64": checker64,
+"visual65": visual65,
+"visual66": visual66,
+"audio67": audio67,
+"audio68": audio68,
+"checker69": checker69,
+"checker70": checker70,
+"checker71": checker71,
+"audio72": audio72,
+"audio73": audio73,
+"checker74": checker74,
+"audio75": audio75,
+"checker76": checker76,
+"audio77": audio77,
+"visual78": visual78,
+"audio79": audio79,
+"audio80": audio80,
+"visual81": visual81,
+"visual82": visual82,
+"visual83": visual83,
+"checker84": checker84,
+"visual85": visual85,
+"visual86": visual86,
+"visual87": visual87,
+"audio88": audio88,
+"checker89": checker89,
+"checker90": checker90,
+"checker91": checker91,
+"visual92": visual92,
+"audio93": audio93,
+"checker94": checker94,
+"visual95": visual95,
+"audio96": audio96,
+"visual97": visual97,
+"audio98": audio98,
+"audio99": audio99,
+"audio100": audio100,
 "end": end
 }
 
@@ -658,7 +659,7 @@ for key, task in task_order.items():
         Text.text = '+'
         Text.draw()
         if biopac_exists:
-            window.callOnFlip(biopac.setData, biopac, fixation)
+            window.callOnFlip(biopac.setData, biopac, word2biopaccode['fixation'])
         window.flip()
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
@@ -797,7 +798,7 @@ for key, task in task_order.items():
         Text.text = '+'
         Text.draw()
         if biopac_exists:
-            window.callOnFlip(biopac.setData, biopac, fixation)
+            window.callOnFlip(biopac.setData, biopac, word2biopaccode['fixation'])
         window.flip()
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
@@ -819,7 +820,7 @@ for key, task in task_order.items():
 # message
 end_msg.draw()
 if biopac_exists:
-    window.callOnFlip(biopac.setData, biopac, end)
+    window.callOnFlip(biopac.setData, biopac, word2biopaccode['end'])
     window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
 timer.add(2.0)

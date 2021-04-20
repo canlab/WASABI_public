@@ -72,9 +72,9 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
-T1_time = 5      # should be 258 seconds
+T1_time = 258      # should be 258 seconds
 
 class simKeys:
     '''
@@ -104,7 +104,7 @@ thisSimKey=simKeys(keyList=['space'],
 #     Another command that may work: biopac.setData(byte)
 
 # biopac channels EDIT
-task_ID=2
+task_ID=3
 intro=46
 rest_t1=47
 nback_instructions=48
@@ -112,8 +112,8 @@ nback_fixation=49
 nback_trial_start=50
 in_between_run_msg=51
 nback_hit=52
-nback_miss=53
-end=54
+nback_comiss=53
+end_task = 54
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -848,7 +848,7 @@ for thisCounterbalancer in counterbalancer:
                     response_2.click = response_2.click[0]
                     response_2.rt = response_2.rt[0]
                     if response_2.click == 1:
-                        if int(corrAns) == 1:
+                        if corrAns:
                             response_2.corr = 1
                             if biopac_exists:
                                 biopac.setData(biopac, nback_hit)
