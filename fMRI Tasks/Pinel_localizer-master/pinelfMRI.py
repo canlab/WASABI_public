@@ -29,15 +29,212 @@ biopac_exists = 0
 
 # biopac channels EDIT
 task_ID=2
-intro=46
-rest_t1=47
-nback_instructions=48
-nback_fixation=49
-nback_trial_start=50
-in_between_run_msg=51
-nback_hit=52
-nback_miss=53
-end=54
+audio1=54
+audio2=55
+visual3=56
+checker4=57
+visual5=58
+audio6=59
+audio7=60
+audio8=61
+visual9=62
+audio10=63
+audio11=64
+checker12=65
+visual13=66
+visual14=67
+visual15=68
+visual16=69
+visual17=70
+visual18=71
+visual19=72
+visual20=73
+checker21=74
+visual22=75
+visual23=76
+audio24=77
+audio25=78
+visual26=79
+visual27=80
+visual28=81
+visual29=82
+visual30=83
+audio31=84
+visual32=85
+checker33=86
+visual34=87
+visual35=88
+visual36=89
+visual37=90
+visual38=91
+visual39=92
+audio40=93
+audio41=94
+checker42=95
+audio43=96
+visual44=97
+visual45=98
+visual46=99
+visual47=100
+checker48=101
+visual49=102
+audio50=103
+checker51=104
+audio52=105
+checker53=106
+visual54=107
+visual55=108
+audio56=109
+visual57=110
+visual58=111
+visual59=112
+checker60=113
+visual61=114
+visual62=115
+visual63=116
+checker64=117
+visual65=118
+visual66=119
+audio67=120
+audio68=121
+checker69=122
+checker70=123
+checker71=124
+audio72=125
+audio73=126
+checker74=127
+audio75=128
+checker76=129
+audio77=130
+visual78=131
+audio79=132
+audio80=133
+visual81=134
+visual82=135
+visual83=136
+checker84=137
+visual85=138
+visual86=139
+visual87=140
+audio88=141
+checker89=142
+checker90=143
+checker91=144
+visual92=145
+audio93=146
+checker94=147
+visual95=148
+audio96=149
+visual97=150
+audio98=151
+audio99=152
+audio100=153
+end=154
+
+word2biopaccode = {
+"fixation": fixation
+"audio1": audio1
+"audio2": audio2
+"visual3": visual3
+"checker4": checker4
+"visual5": visual5
+"audio6": audio6
+"audio7": audio7
+"audio8": audio8
+"visual9": visual9
+"audio10": audio10
+"audio11": audio11
+"checker12": checker12
+"visual13": visual13
+"visual14": visual14
+"visual15": visual15
+"visual16": visual16
+"visual17": visual17
+"visual18": visual18
+"visual19": visual19
+"visual20": visual20
+"checker21": checker21
+"visual22": visual22
+"visual23": visual23
+"audio24": audio24
+"audio25": audio25
+"visual26": visual26
+"visual27": visual27
+"visual28": visual28
+"visual29": visual29
+"visual30": visual30
+"audio31": audio31
+"visual32": visual32
+"checker33": checker33
+"visual34": visual34
+"visual35": visual35
+"visual36": visual36
+"visual37": visual37
+"visual38": visual38
+"visual39": visual39
+"audio40": audio40
+"audio41": audio41
+"checker42": checker42
+"audio43": audio43
+"visual44": visual44
+"visual45": visual45
+"visual46": visual46
+"visual47": visual47
+"checker48": checker48
+"visual49": visual49
+"audio50": audio50
+"checker51": checker51
+"audio52": audio52
+"checker53": checker53
+"visual54": visual54
+"visual55": visual55
+"audio56": audio56
+"visual57": visual57
+"visual58": visual58
+"visual59": visual59
+"checker60": checker60
+"visual61": visual61
+"visual62": visual62
+"visual63": visual63
+"checker64": checker64
+"visual65": visual65
+"visual66": visual66
+"audio67": audio67
+"audio68": audio68
+"checker69": checker69
+"checker70": checker70
+"checker71": checker71
+"audio72": audio72
+"audio73": audio73
+"checker74": checker74
+"audio75": audio75
+"checker76": checker76
+"audio77": audio77
+"visual78": visual78
+"audio79": audio79
+"audio80": audio80
+"visual81": visual81
+"visual82": visual82
+"visual83": visual83
+"checker84": checker84
+"visual85": visual85
+"visual86": visual86
+"visual87": visual87
+"audio88": audio88
+"checker89": checker89
+"checker90": checker90
+"checker91": checker91
+"visual92": visual92
+"audio93": audio93
+"checker94": checker94
+"visual95": visual95
+"audio96": audio96
+"visual97": visual97
+"audio98": audio98
+"audio99": audio99
+"audio100": audio100
+"end": end
+}
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -116,7 +313,7 @@ textColor = 'gray'
 textFont = 'Arial'
 textHeight = .20
 testWinSize = (640, 480)  # 1280, 1024
-expWinSize = (1280, 1024)
+expWinSize = (1920, 1080)
 alignText = 'center'
 alignVert = 'center'
 
@@ -353,6 +550,8 @@ task_order = OrderedDict([
     ("audio99", subtraction[8]),
     ("audio100", subtraction[9])])
 
+
+
 # print task_order
 ITIs = [2.4, 3.3, 3.0, 2.7, 3.6, 3.0, 2.7, 3.0, 3.0, 3.0, 3.3, 2.4, 3.6, 2.7, 3.0, 3.3, 2.7, 3.0, 2.7, 3.3, 2.7, 3.6,
         3.0, 2.4, 3.6, 3.0, 2.4, 3.0, 3.6, 2.7, 3.3, 3.0, 3.0, 3.0, 3.0, 3.0, 2.4, 3.3, 3.0, 2.7, 3.3, 2.7, 3.6, 2.4,
@@ -388,8 +587,9 @@ end_msg = visual.TextStim(win=window, name='end_msg',
 # EXPERIMENT START
 trigger = ''
 wait_stim.draw()
-window.callOnFlip(biopac.setData, biopac, task_ID)
-window.callOnFlip(biopac.setData, biopac, 0)
+if biopac_exists:
+    window.callOnFlip(biopac.setData, biopac, task_ID)
+    window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
 
 # wait until trigger is pressed- or fMRI scanner trigger
@@ -416,6 +616,8 @@ timer = core.Clock()
 for key, task in task_order.items():
     print
     key  # get rid of this
+    if biopac_exists:
+        window.callOnFlip(biopac.setData, biopac, word2biopaccode[key])
 
     # if task is flashing checkerboard
     if "checker" in key:
@@ -437,7 +639,6 @@ for key, task in task_order.items():
                     stim = check[1]
 
                 stim.draw()
-                window.callOnFlip(biopac.setData, biopac, flashingCheck_vert)
                 window.flip()
 
             else:  # horizontal checkerboard
@@ -449,7 +650,6 @@ for key, task in task_order.items():
                     stim = check[3]
 
                 stim.draw()
-                window.callOnFlip(biopac.setData, biopac, flashingCheck_horiz)
                 window.flip()
 
             duration = clock.getTime() - trial_start
@@ -457,6 +657,8 @@ for key, task in task_order.items():
         # Present SOA from ITIs List
         Text.text = '+'
         Text.draw()
+        if biopac_exists:
+            window.callOnFlip(biopac.setData, biopac, fixation)
         window.flip()
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
@@ -465,7 +667,6 @@ for key, task in task_order.items():
             # if type is audio file
     elif "audio" in key:
         name = os.path.split(task)[-1]
-
         # audio press right task
         if "press_right" in task:
             # create sound stimuli
@@ -532,7 +733,7 @@ for key, task in task_order.items():
             timer.add(duration)  # is this supposed to be .8 or 1.3
             while timer.getTime() < 0:
                 pass
-
+        
         # Present SOA
         Text.text = '+'
         Text.draw()
@@ -547,7 +748,6 @@ for key, task in task_order.items():
     # "visual" in key - ex sentences, subtraction, press left/right, blank
     else:
         name = str(task)
-
         # if blank
         if "blank" in task:
             Text.text = ''
@@ -596,6 +796,8 @@ for key, task in task_order.items():
         # duration = clock.getTime()- preztime
         Text.text = '+'
         Text.draw()
+        if biopac_exists:
+            window.callOnFlip(biopac.setData, biopac, fixation)
         window.flip()
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
@@ -616,6 +818,9 @@ for key, task in task_order.items():
 # after all stimuli presented show end message
 # message
 end_msg.draw()
+if biopac_exists:
+    window.callOnFlip(biopac.setData, biopac, end)
+    window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
 timer.add(2.0)
 while timer.getTime()<0:

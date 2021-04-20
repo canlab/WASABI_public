@@ -848,19 +848,16 @@ for thisCounterbalancer in counterbalancer:
                     response_2.click = response_2.click[0]
                     response_2.rt = response_2.rt[0]
                     if response_2.click == 1:
-                        response_2.corr = 1
-                        if biopac_exists:
-                            biopac.setData(biopac, nback_hit)
-                    elif response_2.click == 0:  # No response was made
-                        response_2.click = None
-                        response_2.rt = None
-                        # was no response the correct answer?!
-                        if str(corrAns).lower() == 'none':
-                            response_2.corr = 1;  # correct non-response
+                        if int(corrAns) == 1:
+                            response_2.corr = 1
+                            if biopac_exists:
+                                biopac.setData(biopac, nback_hit)
+                                biopac.setData(biopac, 0)
                         else:
                             response_2.corr = 0;  # failed to respond (incorrectly)
                             if biopac_exists:
                                 biopac.setData(biopac, nback_comiss) # mark comission error
+                                biopac.setData(biopac, 0) # mark comission error
 
                 # # Autoresponder
                 # if t >= thisSimKey.rt and autorespond == 1:
@@ -907,6 +904,7 @@ for thisCounterbalancer in counterbalancer:
             # check responses
             if response_2.click == 0:  # No response was made
                 response_2.click = None
+                response_2.rt = None
                 # was no response the correct answer?!
                 if str(corrAns).lower() == 'none':
                     response_2.corr = 1;  # correct non-response
