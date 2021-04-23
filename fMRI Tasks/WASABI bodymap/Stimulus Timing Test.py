@@ -17,11 +17,11 @@ while True:
         print("Running " + str(command)) 
         sendCommand('select_tp', command)        
     # print("start time: " + str(startTime))
-    if poll_for_change('READY'): sendCommand('start'); print("First start command took: " + str(timeit.default_timer() - startTime) + "s past polling")
-    startTime2 = timeit.default_timer()
-    if poll_for_change('RUNNING'): sendCommand('start'); print("Second start command took " + str(timeit.default_timer() - startTime2) + "s past polling")
+    # if poll_for_change('READY'): sendCommand('start'); print("First start command took: " + str(timeit.default_timer() - startTime) + "s past polling")
+    # startTime2 = timeit.default_timer()
+    # if poll_for_change('RUNNING'): sendCommand('start'); print("Second start command took " + str(timeit.default_timer() - startTime2) + "s past polling")
     # print("Selected TP at: " + str(timeit.default_timer()-startTime))
-    # if poll_for_change('RUNNING'): sendCommand('trigger')
+    if poll_for_change('RUNNING'): sendCommand('trigger')
     # print("end polling time: {}".format(datetime.now() - startTime))
     print("Stim started " + str(timeit.default_timer() - startTime) + "s past polling")
     
@@ -47,8 +47,8 @@ while True:
         # print("Post-stimulation selection latency {}".format(datetime.now() - startTime2) + " past polling")
         # print("Running " + str(command)); 
         sendCommand('select_tp', command)
-    if poll_for_change('READY'): sendCommand('start')
-    if poll_for_change('RUNNING'): sendCommand('start')
+    # if poll_for_change('READY'): sendCommand('start')
+    # if poll_for_change('RUNNING'): sendCommand('start')
     # print("stimclock: " + str(timeit.default_timer()))
     print("Second stimulation begins at : " + str(timeit.default_timer()-startTime))
 
