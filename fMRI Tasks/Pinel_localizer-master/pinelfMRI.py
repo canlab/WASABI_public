@@ -589,6 +589,7 @@ end_msg = visual.TextStim(win=window, name='end_msg',
 trigger = ''
 wait_stim.draw()
 if biopac_exists:
+    window.callOnFlip(biopac.setData, biopac, 0)
     window.callOnFlip(biopac.setData, biopac, task_ID)
     window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
@@ -618,6 +619,7 @@ for key, task in task_order.items():
     print
     key  # get rid of this
     if biopac_exists:
+        window.callOnFlip(biopac.setData, biopac, 0)
         window.callOnFlip(biopac.setData, biopac, word2biopaccode[key])
 
     # if task is flashing checkerboard
@@ -659,6 +661,7 @@ for key, task in task_order.items():
         Text.text = '+'
         Text.draw()
         if biopac_exists:
+            window.callOnFlip(biopac.setData, biopac, 0)
             window.callOnFlip(biopac.setData, biopac, word2biopaccode['fixation'])
         window.flip()
         timer.add(ITIs[ITI_counter] - duration)
@@ -798,6 +801,7 @@ for key, task in task_order.items():
         Text.text = '+'
         Text.draw()
         if biopac_exists:
+            window.callOnFlip(biopac.setData, biopac, 0)
             window.callOnFlip(biopac.setData, biopac, word2biopaccode['fixation'])
         window.flip()
         timer.add(ITIs[ITI_counter] - duration)
@@ -820,6 +824,7 @@ for key, task in task_order.items():
 # message
 end_msg.draw()
 if biopac_exists:
+    window.callOnFlip(biopac.setData, biopac, 0)
     window.callOnFlip(biopac.setData, biopac, word2biopaccode['end'])
     window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
