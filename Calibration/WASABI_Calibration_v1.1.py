@@ -79,26 +79,87 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 1
-autorespond = 0
-thermode_exists = 1
+autorespond = 1
+biopac_exists = 0
+thermode_exists = 0
 waitSetting = 0
 
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition and Medoc Thermode
 """
+# Biopac parameters _________________________________________________
+# Relevant Biopac commands: 
+#     To send a Biopac marker code to Acqknowledge, replace the FIO number with a value between 0-255(dec), or an 8-bit word(bin) 
+#     For instance, the following code would send a value of 15 by setting the first 4 bits to “1": biopac.setData(15)
+
+# biopac channels EDIT
+# The channel codes are assigned to mirror the fmri bodymapping sessions
+task_ID=255
+task_start=7
+task_end=8
+run_start=9
+run_end=10
+run_middle=11
+trial_start=12
+trial_end=13
+calibration_intro=14
+cue_experimenter=15
+leftface_heat=17
+rightface_heat=18
+leftarm_heat=19
+rightarm_heat=20
+leftleg_heat=21
+rightleg_heat=22
+chest_heat=23
+abdomen_heat=24
+leftface_calib=25
+rightface_calib=26
+leftarm_calib=27
+rightarm_calib=28
+leftleg_calib=29
+rightleg_calib=30
+chest_calib=31
+abdomen_calib=32
+stim_threshold=33
+heat_threshold=34
+jitter=41
+valence_rating=42
+intensity_rating=43
+end=46
+
+bodysite_word2calibcode = {"Left Face": leftface_heat, 
+                        "Right Face": rightface_heat, 
+                        "Left Arm": leftarm_heat, 
+                        "Right Arm": rightarm_heat, 
+                        "Left Leg": leftleg_heat, 
+                        "Right Leg": rightleg_heat, 
+                        "Chest": chest_heat,
+                        "Abdomen": abdomen_heat 
+                        }
+
+bodysite_word2heatcode = {"Left Face": leftface_heat, 
+                        "Right Face": rightface_heat, 
+                        "Left Arm": leftarm_heat, 
+                        "Right Arm": rightarm_heat, 
+                        "Left Leg": leftleg_heat, 
+                        "Right Leg": rightleg_heat, 
+                        "Chest": chest_heat,
+                        "Abdomen": abdomen_heat 
+                        }
+
 # Biopac MP160 parameters ______________________________________________
 # Test if we have a parallel port to toggle Biopac Channels
 # This is for the CANLAB Testing Room Setup that uses a DB25 parallel port to interface with the Biopac MP160 and STP100C
 try:
-    port = parallel.ParallelPort(address=0x0378) # address for parallel port on many machines
-    port.setData(0)  # sets all pins low
+    biopac = parallel.ParallelPort(address=0x0378) # address for parallel port on many machines
+    biopac.setData(0)  # sets all pins low
     ## Relevant commands:
         # pinNumber = 2  # choose a pin to write to (2-9).
         # parallel.setPin(2, 1)  # sets just this pin to be high
-        # port.readPin(2)
-        # port.setPin(2, 1)
-        # port.setData(byte)
-        # port.setData(int("8_bit_code", 2))
+        # biopac.readPin(2)
+        # biopac.setPin(2, 1)
+        # biopac.setData(byte)
+        # biopac.setData(int("8_bit_code", 2))
 except TypeError:
     pass
 # Medoc TSA2 parameters ______________________________________________
@@ -137,7 +198,13 @@ def triggerThermode(trialtype):
 
 @dispatch(str, int)
 def triggerThermode(trialtype, jittertime):
+    print("Cue biopac channel " + str(jitter))
+    if biopac_exists == 1:
+        biopac.setData(0)
+        biopac.setData(jitter)
     core.wait(jittertime)
+    if biopac_exists == 1:
+        biopac.setData(0)
     print("Jitter time " + str(jittertime) + ". Triggering thermode for " + trialtype)
     if thermode_exists == 1:
         if (poll_for_change('RUNNING')): sendCommand('TRIGGER')
@@ -308,8 +375,6 @@ averaged_filename = sub_dir + os.sep + u'sub-%05d_task-%s_participants.tsv' % (i
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
-    ## EDIT THIS originpath
-    # originPath='F:\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\Calibration\\WASABI\\WASABI_Calibration.py',
     savePickle=True, saveWideText=True,
     dataFileName=filename)
 # save a log file for detail verbose info
@@ -588,7 +653,7 @@ while continueRoutine:
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
-        
+
     # *WhiteBack1* updates
     if WhiteBack1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
         # keep track of start time/frame for later
@@ -597,6 +662,12 @@ while continueRoutine:
         WhiteBack1.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(WhiteBack1, 'tStartRefresh')  # time at next scr refresh
         WhiteBack1.setAutoDraw(True)
+        
+        # Cue biopac on
+        win.callOnFlip(print, "Cue biopac channel " + str(calibration_intro))
+        if biopac_exists == 1:
+            win.callOnFlip(biopac.setData, 0)
+            win.callOnFlip(biopac.setData, calibration_intro)
 
     # *Logo* updates
     if Logo.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
@@ -762,6 +833,11 @@ for thisTrial in trials:
             WhiteBack2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(WhiteBack2, 'tStartRefresh')  # time at next scr refresh
             WhiteBack2.setAutoDraw(True)
+            # Cue biopac on
+            win.callOnFlip(print, "Cue biopac channel " + str(cue_experimenter))
+            if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, 0)
+                win.callOnFlip(biopac.setData, cue_experimenter)
         
         # *BodySiteCue1* updates
         if BodySiteCue1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
@@ -996,7 +1072,7 @@ for thisTrial in trials:
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
-                
+
         # *WhiteBack4* updates
         if WhiteBack4.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
             # keep track of start time/frame for later
@@ -1005,6 +1081,12 @@ for thisTrial in trials:
             WhiteBack4.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(WhiteBack4, 'tStartRefresh')  # time at next scr refresh
             WhiteBack4.setAutoDraw(True)
+            # Cue biopac on
+            win.callOnFlip(print, "Cue biopac channel " + str(bodysite_word2calibcode[thisTrial["bodySite"]]))
+            if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, 0)
+                win.callOnFlip(biopac.setData, bodysite_word2calibcode[thisTrial["bodySite"]])
+                win.callOnFlip(biopac.setData, 0)
         if WhiteBack4.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
             if tThisFlipGlobal > WhiteBack4.tStartRefresh + 40-frameTolerance:
@@ -1081,6 +1163,12 @@ for thisTrial in trials:
                 ThresholdSet.rt = _ThresholdSet_allKeys[-1].rt
                 # a response ends the routine
                 continueRoutine = False
+                # Cue biopac on
+                print("Cue biopac channel " + str(stim_threshold))
+                if biopac_exists == 1:
+                    biopac.setData(0)
+                    biopac.setData(stim_threshold)
+                    biopac.setData(0)
         
         # Autoresponder
         if t >= thisSimKey.rt and autorespond == 1:
@@ -1187,7 +1275,7 @@ for thisTrial in trials:
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
-                    
+            
             # *WhiteBack5* updates
             if WhiteBack5.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
                 # keep track of start time/frame for later
@@ -1292,6 +1380,13 @@ for thisTrial in trials:
                         sendCommand('stop')
                         poll_for_change('IDLE') 
                         sendCommand('select_tp', time_to_program[stop_time])
+                    # Cue biopac on
+                    print("Cue biopac channel " + str(heat_threshold))
+                    if biopac_exists == 1:
+                        biopac.setData(0)
+                        biopac.setData(heat_threshold)
+                        biopac.setData(0)
+
                     continueRoutine = False
             
             # Autoresponder
@@ -1373,7 +1468,7 @@ for thisTrial in trials:
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
-        
+
         # *WhiteBack6* updates
         if WhiteBack6.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
             # keep track of start time/frame for later
@@ -1388,6 +1483,11 @@ for thisTrial in trials:
             # else: 
             jitter2 = randint(0,4)
             win.callOnFlip(triggerThermode, "heat", jitter2)
+            # Cue biopac on
+            win.callOnFlip(print, "Cue biopac channel " + str(bodysite_word2heatcode[thisTrial["bodySite"]]))
+            if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, 0)
+                win.callOnFlip(biopac.setData, bodysite_word2heatcode[thisTrial["bodySite"]])
         if WhiteBack6.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
             if tThisFlipGlobal > WhiteBack6.tStartRefresh + 15-frameTolerance:
@@ -1529,6 +1629,12 @@ for thisTrial in trials:
             WhiteBack7.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(WhiteBack7, 'tStartRefresh')  # time at next scr refresh
             WhiteBack7.setAutoDraw(True)
+
+            # Cue biopac on
+            win.callOnFlip(print, "Cue biopac channel " + str(valence_rating))
+            if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, 0)
+                win.callOnFlip(biopac.setData, valence_rating)
         
         # *BodySiteCue6* updates
         if BodySiteCue6.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
@@ -1638,6 +1744,11 @@ for thisTrial in trials:
             WhiteBack8.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(WhiteBack8, 'tStartRefresh')  # time at next scr refresh
             WhiteBack8.setAutoDraw(True)
+            # Cue biopac on
+            win.callOnFlip(print, "Cue biopac channel " + str(intensity_rating))
+            if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, 0)
+                win.callOnFlip(biopac.setData, intensity_rating)
         # *BodySiteCue7* updates
         if BodySiteCue7.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
             # keep track of start time/frame for later
@@ -1767,7 +1878,12 @@ while continueRoutine:
         WhiteBack9.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(WhiteBack9, 'tStartRefresh')  # time at next scr refresh
         WhiteBack9.setAutoDraw(True)
-    
+        # Cue biopac on
+        win.callOnFlip(print, "Cue biopac channel " + str(end))
+        if biopac_exists == 1:
+            win.callOnFlip(biopac.setData, 0)
+            win.callOnFlip(biopac.setData, end)
+            win.callOnFlip(biopac.setData, 0)
     # *EndingImage* updates
     if EndingImage.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
         # keep track of start time/frame for later
