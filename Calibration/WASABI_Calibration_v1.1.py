@@ -78,10 +78,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-autorespond = 1
-biopac_exists = 0
-thermode_exists = 0
+debug = 0
+autorespond = 0
+biopac_exists = 1
+thermode_exists = 1
 waitSetting = 0
 
 """
