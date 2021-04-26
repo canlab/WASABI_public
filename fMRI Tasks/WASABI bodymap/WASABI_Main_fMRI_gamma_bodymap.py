@@ -75,7 +75,7 @@ import random
 import timeit
 
 __author__ = "Michael Sun"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -83,10 +83,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
-autorespond = 0
+debug = 1
+autorespond = 1
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 
 class simKeys:
@@ -158,6 +158,7 @@ comfort_rating=44
 between_run_msg=45
 end=46
 
+# Biopac Channels for debugging
 # task_ID=255
 # task_start=0
 # task_end=0
@@ -233,7 +234,7 @@ if biopac_exists == 1:
     biopac.configIO(FIOAnalog=0, EIOAnalog=0)
     biopac.setData(biopac, byte=0)
 
-# 1. Medoc TSA2 parameters ______________________________________________
+# Medoc TSA2 parameters ______________________________________________
 # Initialize the Medoc TSA2 thermal stimulation delivery device
     # Medoc Troubleshooting:
     # To find the computer IP address, check with MMS Arbel's External Control (or Windows ipconfig alternatively)
@@ -246,7 +247,6 @@ if biopac_exists == 1:
     #     Pause a program: sendCommand('pause')
     #     Stop a program: sendCommand('stop')
 if thermode_exists == 1:
-    # ip= '129.170.31.22' # Michael Wetlab C
     # Import medocControl library, python library custom written for Medoc with pyMedoc pollforchange functionality. 
     # Make sure medocControl.py is in the same directory 
     from medocControl import *
@@ -256,8 +256,8 @@ if thermode_exists == 1:
 Clocks, paths, etc.
 """
 # Clocks
-globalClock = core.Clock()  # to track the time since experiment started
-routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
+globalClock = core.Clock()              # to track the time since experiment started
+routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine 
 
 # Paths
 # Ensure that relative paths start from the same directory as this script
@@ -270,14 +270,15 @@ stimuli_dir = main_dir + os.sep + "stimuli"
 """
 # Upload participant file: Browse for file
 psychopyVersion = '2020.2.5'
-expName = 'bodysite'  # from the Builder filename that created this script
 expInfo = {
 'subject number': '', 
 'gender': '',
+'bodymap first- or second-half (1 or 2)': '',
 'session': '',
 'handedness': '', 
 'scanner': ''
 }
+
 ## Limit the entries of this to hot temperatures (32-49 degrees in half-degree-steps)
 participant_settingsHeat = {
     'Left Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for left face
@@ -304,11 +305,12 @@ participant_settingsWarm = {
 # Load the subject's calibration file and ensure that it is valid
 if debug==1:
     expInfo = {
-        'subject number': '1', 
+        'subject number': '999', 
         'gender': 'm',
-        'session': '1',
+        'bodymap first- or second-half (1 or 2)': '2',
+        'session': '99',
         'handedness': 'r', 
-        'scanner': 'MS'
+        'scanner': 'TEST'
     }
     participant_settingsHeat = {
         'Left Face': 46,
@@ -367,12 +369,15 @@ else:
                 participant_settingsWarm['Abdomen'] =  p_info['abdomen_st']+1
                 
                 # count number of existing sessions and set the session number
-                num = 1 
+                bodymap_num = 1
+                ses_num = 1 
                 expInfo2 = {
-                'session': num,
+                'bodymap first- or second-half (1 or 2)': bodymap_num,
+                'session': ses_num,
                 'scanner': ''
                 }
                 dlg2 = gui.DlgFromDict(title="WASABI Body-Site Scan", dictionary=expInfo2, sortKeys=False) 
+                expInfo['bodymap first- or second-half (1 or 2)']
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
                 if dlg2.OK == False:
@@ -401,8 +406,13 @@ else:
             core.quit()
 
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
-expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
+if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
+    expName = 'bodymap1'
+if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
+    expName = 'bodymap2'
+expInfo['expName'] = expName
+
 
 """ 
 3. Setup the Window
@@ -480,57 +490,42 @@ bodysite_word2imaginecode = {"Left Face": leftface_imagine,
                         "Abdomen": abdomen_imagine 
                         }
 
+# Set up a dictionary for all the configured Medoc programs for the main thermode
 thermode1_temp2program = {}
 with open("thermode1_programs.txt") as f:
     for line in f:
        (key, val) = line.split()
        thermode1_temp2program[float(key)] = int(val)
-# thermode2_temp2program = {}
-# with open("thermode2_programs.txt") as f:
-#     for line in f:
-#        (key, val) = line.split()
-#        thermode2_temp2program[float(key)] = int(val)
 
 """
 5. Create Body-Site Pairs for each run for this participant
 """
 # EAFP: Easier to ask forgiveness than permission style
+# See if bodysite order was generated by the calibration file, otherwise make a new one.
 try:
     bodySites
 except NameError:
     bodySites_exists = False
 else:
     bodySites_exists = True
-
 if bodySites_exists == False:
     # a. Initialize 4 runs worth of body-site arrays
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     bodySites = bodySites[0:4]
-    # b. Initialize 8 runs worth of body-site arrays
-    # bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-    # bodySites = ["Left Face", "Left Arm", "Chest"] # For remaining runs
-    # bodySites1 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-    # bodySites2 = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-
 random.shuffle(bodySites)
-# random.shuffle(bodySites2)
-# b. Create 8 array-pairs of body-site for focal stimulation:
-# bodySites = []
-# while (bodySites1):
-#     bodySites.append([bodySites1.pop(), bodySites1.pop()])
-# while (bodySites2):
-#     bodySites.append([bodySites2.pop(), bodySites2.pop()])
+
 expInfo['body_site_order'] = str(bodySites)
 """
 6. Prepare files to write
 """
-psypy_filename = _thisDir + os.sep + u'data/%03d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+if not os.path.exists(sub_dir):
+    os.makedirs(sub_dir)
+psypy_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_%s' % (int(expInfo['subject number']), int(expInfo['session']), expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
-thisExp = data.ExperimentHandler(name=expName, version='1',
+thisExp = data.ExperimentHandler(name=expName, version='1.1.0',
     extraInfo=expInfo, runtimeInfo=None,
-    ## EDIT THIS originpath
-    # originPath='F:\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\WASABI_Main\\WASABI_Main_fMRI.py',
     savePickle=True, saveWideText=True,
     dataFileName=psypy_filename)
 # save a log file for detail verbose info
@@ -547,7 +542,8 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next run to start. \n Experimenter press [e] to continue.'
 end_msg = 'This is the end of the experiment. \nPlease wait for instructions from the experimenter'
 
-stimtrialTime = 13 # Add 10 seconds for the Medoc Delay
+stimtrialTime = 13 # This becomes very unreliable with the use of poll_for_change().
+poststimTime = 5 # Ensure that nonstimtrialTime - poststimTime is at least 5 or 6 seconds.
 nonstimtrialTime = 13 # trial time in seconds (ISI)
 #############
 # Body Mapping Components
@@ -582,14 +578,6 @@ BodySiteImg = visual.ImageStim(
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=512, interpolate=True, depth=0.0)
-# BodySiteImg2 = visual.ImageStim(
-#     win=win,
-#     name='BodySiteImg2', 
-#     mask=None,
-#     ori=0, pos=(0.3, .2), size=(.40,.40),
-#     color=[1,1,1], colorSpace='rgb', opacity=1,
-#     flipHoriz=False, flipVert=False,
-#     texRes=512, interpolate=True, depth=0.0)
 
 # Initialize components for Routine "ImaginationInstruction"
 ImaginationInstructionClock = core.Clock()
@@ -606,14 +594,13 @@ ImagineInstructionText = visual.TextStim(win, name='ImageInstructionText',
 ImagineInstructionText.size=(1,1)
 
 # Initialize components for Routine "StimTrial"
-# Four Conditions: Hot, Warm, Rest
+# Three Conditions: Hot, Warm, Rest
 StimTrialClock = core.Clock()
 fix_cross = visual.TextStim(win = win, text = '+', color = [1,1,1], height = 0.3, anchorHoriz='center')
 
 # Initialize components for Routine "NonStimTrial"
-# 2 Conditions: Imagine
+# One Condition: Imagine
 NonStimTrialClock = core.Clock()
-# fix_cross = visual.TextStim(win = win, text = '+', color = [1,1,1], height = 0.3)
 image_shortinstr = "Your skin is being held up against a glowing hot metal or fire. \nVisualize your skin sizzling, melting and bubbling "
 NonStimTrialText = visual.TextStim(win, name='NonStimTrialText', 
     text=image_shortinstr,
@@ -736,17 +723,18 @@ EndingText = visual.TextStim(win=win, name='EndingText',
 ConfirmEnd = keyboard.Keyboard()
 
 # create a default keyboard (e.g. to check for escape)
-# We are not doing ratings for this study...No need for any keyboard except for escaping
 defaultKeyboard = keyboard.Keyboard()
-
-win.mouseVisible = False   # Turn the mouse cursor off during the duration of the scan
+# Turn the mouse cursor off during the duration of the scan
+win.mouseVisible = False
 """
 8. Start Experimental Loops: 
     runLoop (prepare the trial order for the run)
     trialLoop (prepare the trial_type for each trial)
 """
+# Start demarcation of the bodymap task in Biopac Acqknowledge
 if biopac_exists:
-    biopac.setData(biopac, task_ID) # Start demarcation of the bodymap task in Biopac Acqknowledge
+    biopac.setData(biopac, 0)     
+    biopac.setData(biopac, task_ID) 
     biopac.setData(biopac, 0) 
 """
 8a. Body Mapping Introduction
@@ -804,6 +792,7 @@ while continueRoutine:
         win.callOnFlip(print, "Starting Introduction")
         win.callOnFlip(print, "Cueing Biopac Channel: " + str(bodymapping_intro))
         if biopac_exists == 1:
+            win.callOnFlip(biopac.setData, biopac, 0)
             win.callOnFlip(biopac.setData, biopac, bodymapping_intro)
         win.callOnFlip(BeginTask.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(BeginTask.clearEvents, eventType='keyboard')  # clear events on next screen flip
@@ -839,8 +828,6 @@ while continueRoutine:
 
 # -------Ending Routine "Introduction"-------
 print("CueOff Channel: " + str(bodymapping_intro))
-if biopac_exists == 1:
-    biopac.setData(biopac, 0)
 for thisComponent in IntroductionComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
@@ -863,8 +850,12 @@ routineTimer.reset()
 """
 if int(expInfo['subject number']) % 2 == 0: subjectOrder = os.sep.join([stimuli_dir,"EvenOrders.xlsx"]) 
 else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
-runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder), seed=None, name='runLoop')
-   
+
+if expName == 'bodymap1':
+    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='0:4'), seed=None, name='runLoop')
+if expName == 'bodymap2':
+    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:9'), seed=None, name='runLoop')
+
 thisExp.addLoop(runLoop)  # add the loop to the experiment
 thisrunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
 
@@ -987,8 +978,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # -------Ending Routine "BodySiteInstruction"-------
     print("CueOff Channel: " + str(bodymapping_instruction))
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     for thisComponent in BodySiteInstructionComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1068,6 +1057,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 win.callOnFlip(print, "Showing Imagination Instructions")
                 win.callOnFlip(print, "Cue Biopac " + str(imagination_instruction))
                 if biopac_exists == 1:
+                    win.callOnFlip(biopac.setData, biopac, 0)
                     win.callOnFlip(biopac.setData, biopac, imagination_instruction)
                 win.callOnFlip(ImaginationInstructionRead.clock.reset)  # t=0 on next screen flip
                 win.callOnFlip(ImaginationInstructionRead.clearEvents, eventType='keyboard')  # clear events on next screen flip
@@ -1079,10 +1069,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     ImaginationInstructionRead.rt = _ImaginationInstructionRead_allKeys[-1].rt
                     # a response ends the routine
                     print("Starting mainloop")
-                    print("Cueing Biopac Channel " + str(task_start))
-                    if biopac_exists == 1:
-                        biopac.setData(biopac, imagination_instruction)
-                        biopac.setData(biopac, 0)
                     continueRoutine = False
 
             # Autoresponder
@@ -1107,9 +1093,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 win.flip()
         # -------Ending Routine "ImaginationInstruction"-------
         print("Cueing Biopac Channel " + str(task_start))
-        if biopac_exists == 1:
-            biopac.setData(biopac, 0)
-
         for thisComponent in ImaginationInstructionComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -1124,235 +1107,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         runLoop.addData('ImaginationInstructionRead.stopped', ImaginationInstructionRead.tStopRefresh)
         # the Routine "ImaginationInstruction" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
-
-
-    # ------Prepare to start Routine "MovementInstruction"-------
-    # Initialize trial stimuli
-    ###########################################################################################
-    continueRoutine = True
-    
-    # keep track of which components have finished
-    MovementInstructionComponents = [MovementInstructionText, MovementStartText]
-    for thisComponent in MovementInstructionComponents:
-        thisComponent.tStart = None
-        thisComponent.tStop = None
-        thisComponent.tStartRefresh = None
-        thisComponent.tStopRefresh = None
-        if hasattr(thisComponent, 'status'):
-            thisComponent.status = NOT_STARTED
-    # reset timers
-    t = 0
-    _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    MovementInstructionClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-    frameN = -1
-    
-    # -------Run Routine "MovementInstruction"-------
-    while continueRoutine:
-        # get current time
-        t = MovementInstructionClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=MovementInstructionClock)
-        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        
-        # *MovementInstructionText* updates
-        if MovementInstructionText.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            MovementInstructionText.frameNStart = frameN  # exact frame index
-            MovementInstructionText.tStart = t  # local t and not account for scr refresh
-            MovementInstructionText.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(MovementInstructionText, 'tStartRefresh')  # time at next scr refresh
-            MovementInstructionText.setAutoDraw(True)
-        
-        # *MovementInstructionRead* updates
-        waitOnFlip = False
-        if MovementInstructionRead.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            MovementInstructionRead.frameNStart = frameN  # exact frame index
-            MovementInstructionRead.tStart = t  # local t and not account for scr refresh
-            MovementInstructionRead.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(MovementInstructionRead, 'tStartRefresh')  # time at next scr refresh
-            MovementInstructionRead.status = STARTED
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(print, "Showing Imagination Instructions")
-            win.callOnFlip(print, "Cue Biopac " + str(imagination_instruction))
-            if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, imagination_instruction)
-            win.callOnFlip(MovementInstructionRead.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(MovementInstructionRead.clearEvents, eventType='keyboard')  # clear events on next screen flip
-        if MovementInstructionRead.status == STARTED and not waitOnFlip:
-            theseKeys = MovementInstructionRead.getKeys(keyList=['space'], waitRelease=False)
-            _MovementInstructionRead_allKeys.extend(theseKeys)
-            if len(_MovementInstructionRead_allKeys):
-                MovementInstructionRead.keys = _MovementInstructionRead_allKeys[-1].name  # just the last key pressed
-                MovementInstructionRead.rt = _MovementInstructionRead_allKeys[-1].rt
-                # a response ends the routine
-                print("Starting mainloop")
-                print("Cueing Biopac Channel " + str(task_start))
-                if biopac_exists == 1:
-                    biopac.setData(biopac, imagination_instruction)
-                    biopac.setData(biopac, 0)
-                continueRoutine = False
-
-        # Autoresponder
-        if t >= thisSimKey.rt and autorespond == 1:
-            _MovementInstructionRead_allKeys.extend([thisSimKey]) 
-
-        # check for quit (typically the Esc key)
-        if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in MovementInstructionComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    # -------Ending Routine "MovementInstruction"-------
-    print("Cueing Biopac Channel " + str(task_start))
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
-
-    for thisComponent in MovementInstructionComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-    runLoop.addData('MovementInstructionText.started', MovementInstructionText.tStartRefresh)
-    # check responses
-    if MovementInstructionRead.keys in ['', [], None]:  # No response was made
-        MovementInstructionRead.keys = None
-    runLoop.addData('MovementInstructionRead.keys',MovementInstructionRead.keys)
-    if MovementInstructionRead.keys != None:  # we had a response
-        runLoop.addData('MovementInstructionRead.rt', MovementInstructionRead.rt)
-    runLoop.addData('MovementInstructionRead.started', MovementInstructionRead.tStartRefresh)
-    runLoop.addData('MovementInstructionRead.stopped', MovementInstructionRead.tStopRefresh)
-    # the Routine "MovementInstruction" was not non-slip safe, so reset the non-slip timer
-    routineTimer.reset()
-
-
-    # ------Prepare to start Routine "MovementFixation"-------
-    # Initialize trial stimuli
-    ###########################################################################################
-    continueRoutine = True
-
-    # update component parameters for each repeat
-    MovementFixationRead.keys = []
-    MovementFixationRead.rt = []
-    _MovementFixationRead_allKeys = []
-    
-    # keep track of which components have finished
-    MovementFixationComponents = [MovementFixation, StopInstructionText]
-    for thisComponent in MovementFixationComponents:
-        thisComponent.tStart = None
-        thisComponent.tStop = None
-        thisComponent.tStartRefresh = None
-        thisComponent.tStopRefresh = None
-        if hasattr(thisComponent, 'status'):
-            thisComponent.status = NOT_STARTED
-    # reset timers
-    t = 0
-    _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    MovementFixationClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-    frameN = -1
-    
-    # -------Run Routine "MovementFixation"-------
-    while continueRoutine:
-        # get current time
-        t = MovementFixationClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=MovementFixationClock)
-        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        
-        # *MovementFixation* updates
-        if MovementFixation.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            MovementFixation.frameNStart = frameN  # exact frame index
-            MovementFixation.tStart = t  # local t and not account for scr refresh
-            MovementFixation.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(MovementFixation, 'tStartRefresh')  # time at next scr refresh
-            MovementFixation.setAutoDraw(True)
-        
-        # *MovementFixationRead* updates
-        waitOnFlip = False
-        if MovementFixationRead.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            MovementFixationRead.frameNStart = frameN  # exact frame index
-            MovementFixationRead.tStart = t  # local t and not account for scr refresh
-            MovementFixationRead.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(MovementFixationRead, 'tStartRefresh')  # time at next scr refresh
-            MovementFixationRead.status = STARTED
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(print, "Showing Imagination Instructions")
-            win.callOnFlip(print, "Cue Biopac " + str(imagination_instruction))
-            if biopac_exists == 1:
-                win.callOnFlip(biopac.setData, biopac, imagination_instruction)
-            win.callOnFlip(MovementFixationRead.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(MovementFixationRead.clearEvents, eventType='keyboard')  # clear events on next screen flip
-        if MovementFixationRead.status == STARTED and not waitOnFlip:
-            theseKeys = MovementFixationRead.getKeys(keyList=['space'], waitRelease=False)
-            _MovementFixationRead_allKeys.extend(theseKeys)
-            if len(_MovementFixationRead_allKeys):
-                MovementFixationRead.keys = _MovementFixationRead_allKeys[-1].name  # just the last key pressed
-                MovementFixationRead.rt = _MovementFixationRead_allKeys[-1].rt
-                # a response ends the routine
-                print("Starting mainloop")
-                print("Cueing Biopac Channel " + str(task_start))
-                if biopac_exists == 1:
-                    biopac.setData(biopac, imagination_instruction)
-                    biopac.setData(biopac, 0)
-                continueRoutine = False
-
-        # Autoresponder
-        if t >= thisSimKey.rt and autorespond == 1:
-            _MovementFixationRead_allKeys.extend([thisSimKey]) 
-
-        # check for quit (typically the Esc key)
-        if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in MovementFixationComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    # -------Ending Routine "MovementFixation"-------
-    print("Cueing Biopac Channel " + str(task_start))
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
-
-    for thisComponent in MovementFixationComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-    runLoop.addData('MovementFixation.started', MovementFixation.tStartRefresh)
-    # check responses
-    if MovementFixationRead.keys in ['', [], None]:  # No response was made
-        MovementFixationRead.keys = None
-    runLoop.addData('MovementFixationRead.keys',MovementFixationRead.keys)
-    if MovementFixationRead.keys != None:  # we had a response
-        runLoop.addData('MovementFixationRead.rt', MovementFixationRead.rt)
-    runLoop.addData('MovementFixationRead.started', MovementFixationRead.tStartRefresh)
-    runLoop.addData('MovementFixationRead.stopped', MovementFixationRead.tStopRefresh)
-    # the Routine "MovementFixation" was not non-slip safe, so reset the non-slip timer
-    routineTimer.reset()
-    
-    
-
-
 
     """
     8d. Begin the run of 42 trials. 
@@ -1382,40 +1136,33 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
     start.draw()  # Automatically draw every frame
 
-    # Experimenter: Check to make sure the program is loaded
+    # Experimenter: Check to make sure the program is loaded if the first trial is a heat stimulation trial 
     if thisTrial['trial_type'] == 1:
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
         thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
-        if thermode_exists == 1:
-            # win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+        tp_selected = 1
+        if thermode_exists == 1 & tp_selected ==1:
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
     if thisTrial['trial_type'] == 2:
         print("Loading Medoc Stimulation Program ", str(thisTrial['trial_type']))
         thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
-        if thermode_exists == 1:
-            # win.callOnFlip(poll_for_change, 'IDLE', poll_max=-1)
+        tp_selected = 1
+        if thermode_exists == 1 & tp_selected ==1:
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-
-        # If auto-start is toggled off
-        # if thermode_exists == 1:
-        #     if poll_for_change('READY'): sendCommand('start')
-            # if poll_for_change('RUNNING'): sendCommand('start')
-
-    # else:
-    #     print("No thermal program to load")
-    #     win.flip()
     win.flip()
+    tp_selected = 0
+
     if autorespond != 1:
         # Trigger
         event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
         event.waitKeys(keyList='5')   # fMRI trigger
         TR = 0.46
         core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
-    # else:
-    #     win.flip()
+
     print("Starting run " + str(runLoop.thisTrialN+1))
     print("Cue Biopac Channel " + str(run_start))
     if biopac_exists == 1:
+        biopac.setData(biopac, 0)
         biopac.setData(biopac, run_start)
         biopac.setData(biopac, 0)
     routineTimer.reset()
@@ -1437,15 +1184,16 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             if (next_trial['trial_type'] == 1):
                 print("Loading Thermal Program for Heat to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
-                if thermode_exists == 1:
-                    #if (poll_for_change('IDLE', poll_max=-1)): 
-                    sendCommand('select_tp', thermodeCommand)  
+                tp_selected = 1
+
+                # if thermode_exists == 1:
+                #     sendCommand('select_tp', thermodeCommand)  
             elif (next_trial['trial_type'] == 2):
                 print("Loading Thermal Program for Warm to", bodySites[runLoop.thisTrialN])
                 thermodeCommand = thermode1_temp2program[participant_settingsWarm[bodySites[runLoop.thisTrialN]]]
-                if thermode_exists == 1:
-                    #if (poll_for_change('IDLE', poll_max=-1)): 
-                    sendCommand('select_tp', thermodeCommand)
+                tp_selected = 1
+                # if thermode_exists == 1:
+                #     sendCommand('select_tp', thermodeCommand)
 
         ## Thermal Stimulation Trials:        
         if trial_type in {1, 2, 4}:
@@ -1504,26 +1252,25 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     fix_cross.tStart = t  # local t and not account for scr refresh
                     fix_cross.tStartRefresh = tThisFlipGlobal  # on global time
                     win.timeOnFlip(fix_cross, 'tStartRefresh')  # time at next scr refresh
-                    win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
-                    if biopac_exists == 1:
-                        win.callOnFlip(biopac.setData, biopac, BiopacChannel)
                     if trial_type == 1:
                         win.callOnFlip(print, "Starting Heat Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
-                            # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
                     elif trial_type == 2:
                         win.callOnFlip(print, "Starting Warm Stimulation to the", bodySites[runLoop.thisTrialN])
                         if thermode_exists == 1:
-                            # win.callOnFlip(poll_for_change, 'RUNNING')
                             win.callOnFlip(sendCommand, 'trigger')
                     elif trial_type == 4:
                         win.callOnFlip(print, "Resting")
-                            # win.callOnFlip(sendCommand, 'start')
-                            # win.callOnFlip(print, "StimTime: " + str(timeit.default_timer()-startTime))
-
+                    win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
+                    if biopac_exists == 1:
+                        win.callOnFlip(biopac.setData, biopac, 0)
+                        win.callOnFlip(biopac.setData, biopac, BiopacChannel)
                     fix_cross.setAutoDraw(True)
                 if fix_cross.status == STARTED:
+                    if thermode_exists == 1 and tp_selected == 1 and trial_type ==4 and tThisFlipGlobal > fix_cross.tStartRefresh + poststimTime-frameTolerance:
+                        sendCommand('select_tp', thermodeCommand)
+                        tp_selected = 0  
                     # is it time to stop? (based on global clock, using actual start)
                     if tThisFlipGlobal > fix_cross.tStartRefresh + stimtrialTime-frameTolerance:
                         # keep track of stop time/frame for later
@@ -1547,15 +1294,14 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 # refresh the screen
                 if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                     win.flip()
+
             # -------Ending Routine "StimTrial"-------
             for thisComponent in StimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
             trials.addData('fix_cross.started', fix_cross.tStartRefresh)
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
-            # onset, duration, trial_type, body_site,temp
-            # duration <- TTL triggers?
-            duration = timeit.default_timer()-startTime
+            duration = timeit.default_timer()-startTime # Consider comparing with TTLs output.
             bodymap_trial = []
             bodymap_trial.extend((fix_cross.tStartRefresh, duration, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
@@ -1602,11 +1348,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
                 # update/draw components on each frame
                 
-                # win.callOnFlip(print, "Triggering")
-                # if thermode_exists == 1:
-                #     win.callOnFlip(poll_for_change, 'RUNNING')
-                #     win.callOnFlip(sendCommand, 'trigger')
-
                 # *BodySiteCue* updates
                 if BodySiteCue.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
                     # keep track of start time/frame for later
@@ -1616,12 +1357,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     win.timeOnFlip(BodySiteCue, 'tStartRefresh')  # time at next scr refresh
                     win.callOnFlip(print, "Cue Biopac channel " + str(BiopacChannel))
                     if biopac_exists == 1:
-                        # TrialEndTime = timeit.default_timer()-startTime
-                        # win.callOnFlip(print, "TrialEndTime: " + str(TrialEndTime))
                         win.callOnFlip(biopac.setData, biopac, 0)
                         win.callOnFlip(biopac.setData, biopac, BiopacChannel)
                     BodySiteCue.setAutoDraw(True)
                 if BodySiteCue.status == STARTED:
+                    if thermode_exists == 1 and tp_selected == 1 and tThisFlipGlobal > BodySiteCue.tStartRefresh + poststimTime-frameTolerance:
+                        sendCommand('select_tp', thermodeCommand)
+                        tp_selected = 0  
                     # is it time to stop? (based on global clock, using actual start)
                     if tThisFlipGlobal > BodySiteCue.tStartRefresh + nonstimtrialTime-frameTolerance:
                         # keep track of stop time/frame for later
@@ -1662,15 +1404,12 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 
                 # refresh the screen
                 if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-                    # There are 49 codes for trials for each combination of trial_type (3x condition x 2x thermode numbers) and body site (8x) + rest
                     win.flip()
             
             # -------Ending Routine "NonStimTrial"-------
-            # TrialEndTime = timeit.default_timer()-startTime
-            # print("TrialEndTime: " + str(TrialEndTime))
-            # print("CueOff Biopac Channel " + str(BiopacChannel))
-            # if biopac_exists == 1:
-            #     biopac.setData(biopac, 0) # This ends too early if have to prepare a stim trial
+            TrialEndTime = timeit.default_timer()-startTime
+            print("TrialEndTime: " + str(TrialEndTime))
+            print("CueOff Biopac Channel " + str(BiopacChannel))
             for thisComponent in NonStimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1772,6 +1511,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             ValenceRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Valence Rating")
             if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(biopac.setData, biopac, valence_rating)
             win.timeOnFlip(ValenceRating, 'tStartRefresh')  # time at next scr refresh
             ValenceRating.setAutoDraw(True)
@@ -1859,8 +1599,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # -------Ending Routine "ValenceRating"-------
     print("CueOff Channel " + str(valence_rating))
-    if biopac_exists == 1:
-        biopac.setData(biopac, valence_rating)
     for thisComponent in ValenceRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1956,6 +1694,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             IntensityRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Intensity Rating")
             if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(biopac.setData, biopac, intensity_rating)
             win.timeOnFlip(IntensityRating, 'tStartRefresh')  # time at next scr refresh
             IntensityRating.setAutoDraw(True)
@@ -2043,8 +1782,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # -------Ending Routine "IntensityRating"-------
     print("CueOff Channel " + str(intensity_rating))
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     for thisComponent in IntensityRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -2141,6 +1878,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             ComfortRating.tStartRefresh = tThisFlipGlobal  # on global time
             win.callOnFlip(print, "Show Comfort Rating")
             if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(biopac.setData, biopac, comfort_rating)
             win.timeOnFlip(ComfortRating, 'tStartRefresh')  # time at next scr refresh
             ComfortRating.setAutoDraw(True)
@@ -2227,8 +1965,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # -------Ending Routine "ComfortRating"-------
     print("CueOff Channel " + str(comfort_rating))
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     for thisComponent in ComfortRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -2250,10 +1986,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
     # each _%s refers to the respective field in the parentheses
     ## This needs to be at the end of the run
-    sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
-    if not os.path.exists(sub_dir):
-        os.makedirs(sub_dir)
-    bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'bodymap', bodySites[runLoop.thisTrialN].replace(" ", "").lower(), str(runLoop.thisTrialN+1))
+    bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, bodySites[runLoop.thisTrialN].replace(" ", "").lower(), str(runLoop.thisTrialN+1))
     bodymap_bids_data = pd.DataFrame(bodymap_bids_data, columns = ['onset','duration','trial_type','body_site','temp'])
     bodymap_bids_data.to_csv(bids_run_filename, sep="\t")
 
@@ -2264,6 +1997,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     message.draw()
     win.callOnFlip(print, "Awaiting Experimenter to start next run...")
     if biopac_exists == 1:
+        win.callOnFlip(biopac.setData, biopac, 0)
         win.callOnFlip(biopac.setData, biopac, between_run_msg)
     win.flip()
     # Autoresponder
@@ -2325,6 +2059,7 @@ while continueRoutine:
         waitOnFlip = True
         win.callOnFlip(print, "Thanking the participant")
         if biopac_exists == 1:
+            win.callOnFlip(biopac.setData, biopac, 0)
             win.callOnFlip(biopac.setData, biopac, end)
         win.callOnFlip(ConfirmEnd.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(ConfirmEnd.clearEvents, eventType='keyboard')  # clear events on next screen flip
@@ -2360,8 +2095,6 @@ while continueRoutine:
 
 # -------Ending Routine "End"-------
 print("Biopac CueOff " + str(end))
-if biopac_exists == 1:
-    biopac.setData(biopac, 0)
 for thisComponent in EndComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
