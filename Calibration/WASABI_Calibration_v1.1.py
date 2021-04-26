@@ -151,7 +151,7 @@ bodysite_word2heatcode = {"Left Face": leftface_heat,
 # Test if we have a parallel port to toggle Biopac Channels
 # This is for the CANLAB Testing Room Setup that uses a DB25 parallel port to interface with the Biopac MP160 and STP100C
 try:
-    biopac = parallel.ParallelPort(address=0x0378) # address for parallel port on many machines
+    biopac = parallel.ParallelPort(address=0x2FF8) # address for Testing Room C Participant Computer
     biopac.setData(0)  # sets all pins low
     ## Relevant commands:
         # pinNumber = 2  # choose a pin to write to (2-9).
