@@ -84,7 +84,7 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 1
-autorespond = 0
+autorespond = 1
 # Device togglers
 biopac_exists = 0
 thermode_exists = 1
@@ -305,12 +305,12 @@ participant_settingsWarm = {
 # Load the subject's calibration file and ensure that it is valid
 if debug==1:
     expInfo = {
-        'subject number': '1', 
+        'subject number': '999', 
         'gender': 'm',
-        'bodymap first- or second-half (1 or 2)': '1',
-        'session': '1',
+        'bodymap first- or second-half (1 or 2)': '2',
+        'session': '99',
         'handedness': 'r', 
-        'scanner': 'MS'
+        'scanner': 'TEST'
     }
     participant_settingsHeat = {
         'Left Face': 46,
@@ -518,7 +518,10 @@ expInfo['body_site_order'] = str(bodySites)
 """
 6. Prepare files to write
 """
-psypy_filename = _thisDir + os.sep + u'data/%03d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+if not os.path.exists(sub_dir):
+    os.makedirs(sub_dir)
+psypy_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_%s' % (int(expInfo['subject number']), int(expInfo['session']), expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='1.1.0',
@@ -847,8 +850,12 @@ routineTimer.reset()
 """
 if int(expInfo['subject number']) % 2 == 0: subjectOrder = os.sep.join([stimuli_dir,"EvenOrders.xlsx"]) 
 else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
-runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder), seed=None, name='runLoop')
-   
+
+if expName == 'bodymap1':
+    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='0:4'), seed=None, name='runLoop')
+if expName == 'bodymap2':
+    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:9'), seed=None, name='runLoop')
+
 thisExp.addLoop(runLoop)  # add the loop to the experiment
 thisrunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
 
@@ -1979,9 +1986,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
     # each _%s refers to the respective field in the parentheses
     ## This needs to be at the end of the run
-    sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
-    if not os.path.exists(sub_dir):
-        os.makedirs(sub_dir)
     bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, bodySites[runLoop.thisTrialN].replace(" ", "").lower(), str(runLoop.thisTrialN+1))
     bodymap_bids_data = pd.DataFrame(bodymap_bids_data, columns = ['onset','duration','trial_type','body_site','temp'])
     bodymap_bids_data.to_csv(bids_run_filename, sep="\t")
