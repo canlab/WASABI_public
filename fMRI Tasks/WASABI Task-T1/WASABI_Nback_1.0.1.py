@@ -10,7 +10,8 @@ If you publish work using this script the most relevant publication is:
         https://doi.org/10.3758/s13428-018-01193-y
         
 This python script was extensively modified in order to work in the Dartmouth Brain Imaging Center environment reading in signals coming from a 
-Siemens 3T fMRI scanner. Physiological data is acquired with a Biopac MP150 Physiological data acquisition device via LabJack U3.
+Siemens 3T fMRI scanner. Physiological data
+ is acquired with a Biopac MP150 Physiological data acquisition device via LabJack U3.
 
 Some measures have been taken to minimize experimental latency. PTB/Psychopy style is used to initialize all objects prior to screen flipping as much as possible.
 
@@ -94,6 +95,7 @@ thisSimKey=simKeys(keyList=['space'],
 #     Another command that may work: biopac.setData(byte)
 
 # biopac channels EDIT
+task_ID=3
 rest_t1=47
 
 if biopac_exists == 1:

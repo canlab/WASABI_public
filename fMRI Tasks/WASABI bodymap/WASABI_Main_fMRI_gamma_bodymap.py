@@ -83,10 +83,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-autorespond = 1
+debug = 0
+autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -346,9 +346,7 @@ else:
                 expInfo['gender'] = p_info['gender']
                 expInfo['handedness'] = p_info['handedness']
                 # For session 1
-                bodySites = p_info['calibration_order'][0:4]
-                # For session 2
-                # bodySites = p_info['calibration_order'][4:9]
+                bodySites = p_info['calibration_order']
                 # Heat Settings
                 participant_settingsHeat['Left Face'] = p_info['leftface_ht']
                 participant_settingsHeat['Right Face'] = p_info['rightface_ht']
@@ -369,17 +367,21 @@ else:
                 participant_settingsWarm['Abdomen'] =  p_info['abdomen_st']+1
                 
                 # count number of existing sessions and set the session number
-                bodymap_num = 1
-                ses_num = 1 
+                bodymap_num = str(1)
+                ses_num = str(1) 
                 expInfo2 = {
                 'bodymap first- or second-half (1 or 2)': bodymap_num,
                 'session': ses_num,
                 'scanner': ''
                 }
                 dlg2 = gui.DlgFromDict(title="WASABI Body-Site Scan", dictionary=expInfo2, sortKeys=False) 
-                expInfo['bodymap first- or second-half (1 or 2)']
+                expInfo['bodymap first- or second-half (1 or 2)'] = expInfo2['bodymap first- or second-half (1 or 2)']
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
+                if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
+                    bodySites = bodySites.strip('][').replace("'","").split(', ')[0:4]
+                if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
+                    bodySites = bodySites.strip('][').replace("'","").split(', ')[4:9]
                 if dlg2.OK == False:
                     core.quit()  # user pressed cancel
             else:
@@ -412,7 +414,6 @@ if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
 if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
     expName = 'bodymap2'
 expInfo['expName'] = expName
-
 
 """ 
 3. Setup the Window
@@ -512,9 +513,13 @@ if bodySites_exists == False:
     # a. Initialize 4 runs worth of body-site arrays
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     bodySites = bodySites[0:4]
+else:
+    bodySites = bodySites
+
 random.shuffle(bodySites)
 
 expInfo['body_site_order'] = str(bodySites)
+
 """
 6. Prepare files to write
 """
