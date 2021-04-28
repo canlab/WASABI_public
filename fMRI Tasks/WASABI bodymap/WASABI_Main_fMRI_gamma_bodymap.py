@@ -346,7 +346,7 @@ else:
                 expInfo['gender'] = p_info['gender']
                 expInfo['handedness'] = p_info['handedness']
                 # For session 1
-                bodySites = p_info['calibration_order']
+                # bodySites = p_info['calibration_order']
                 # Heat Settings
                 participant_settingsHeat['Left Face'] = p_info['leftface_ht']
                 participant_settingsHeat['Right Face'] = p_info['rightface_ht']
@@ -378,10 +378,10 @@ else:
                 expInfo['bodymap first- or second-half (1 or 2)'] = expInfo2['bodymap first- or second-half (1 or 2)']
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
-                if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
-                    bodySites = bodySites.strip('][').replace("'","").split(', ')[0:4]
-                if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
-                    bodySites = bodySites.strip('][').replace("'","").split(', ')[4:9]
+                # if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
+                #     bodySites = bodySites.strip('][').replace("'","").split(', ')[0:4]
+                # if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
+                #     bodySites = bodySites.strip('][').replace("'","").split(', ')[4:9]
                 if dlg2.OK == False:
                     core.quit()  # user pressed cancel
             else:
