@@ -832,6 +832,8 @@ while continueRoutine:
         win.flip()
 
 # -------Ending Routine "Introduction"-------
+if biopac_exists == 1:
+    biopac.setData(biopac, 0)
 print("CueOff Channel: " + str(bodymapping_intro))
 for thisComponent in IntroductionComponents:
     if hasattr(thisComponent, "setAutoDraw"):
@@ -982,6 +984,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "BodySiteInstruction"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     print("CueOff Channel: " + str(bodymapping_instruction))
     for thisComponent in BodySiteInstructionComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -1097,6 +1101,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
         # -------Ending Routine "ImaginationInstruction"-------
+        if biopac_exists == 1:
+            biopac.setData(biopac, 0)
         print("Cueing Biopac Channel " + str(task_start))
         for thisComponent in ImaginationInstructionComponents:
             if hasattr(thisComponent, "setAutoDraw"):
@@ -1301,6 +1307,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     win.flip()
 
             # -------Ending Routine "StimTrial"-------
+            if biopac_exists == 1:
+                biopac.setData(biopac, 0)
             for thisComponent in StimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1412,6 +1420,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     win.flip()
             
             # -------Ending Routine "NonStimTrial"-------
+            if biopac_exists == 1:
+                biopac.setData(biopac, 0)
             TrialEndTime = timeit.default_timer()-startTime
             print("TrialEndTime: " + str(TrialEndTime))
             print("CueOff Biopac Channel " + str(BiopacChannel))
@@ -1603,6 +1613,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "ValenceRating"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     print("CueOff Channel " + str(valence_rating))
     for thisComponent in ValenceRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -1786,6 +1798,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "IntensityRating"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     print("CueOff Channel " + str(intensity_rating))
     for thisComponent in IntensityRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -1969,6 +1983,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "ComfortRating"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     print("CueOff Channel " + str(comfort_rating))
     for thisComponent in ComfortRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -2099,6 +2115,8 @@ while continueRoutine:
         win.flip()
 
 # -------Ending Routine "End"-------
+if biopac_exists == 1:
+    biopac.setData(biopac, 0)
 print("Biopac CueOff " + str(end))
 for thisComponent in EndComponents:
     if hasattr(thisComponent, "setAutoDraw"):

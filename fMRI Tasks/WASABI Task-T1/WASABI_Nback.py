@@ -162,9 +162,9 @@ psychopyVersion = '2020.2.10'
 expName = 'WASABI Nback'  # from the Builder filename that created this script
 if debug == 1:
     expInfo = {
-    'subject number': '1', 
+    'subject number': '99', 
     'gender': 'm',
-    'session': '1',
+    'session': '99',
     'handedness': 'r', 
     'scanner': 'MS'
     }
@@ -310,6 +310,7 @@ globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
 
 if biopac_exists:
+    biopac.setData(biopac, 0)
     biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
     biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
 
@@ -413,6 +414,7 @@ for thisCounterbalancer in counterbalancer:
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
                 if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
                     win.callOnFlip(biopac.setData, biopac, rest_t1)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
@@ -526,6 +528,7 @@ for thisCounterbalancer in counterbalancer:
                 NbackInstructions.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(NbackInstructions, 'tStartRefresh')  # time at next scr refresh
                 if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
                     win.callOnFlip(biopac.setData, biopac, nback_instructions)
                 NbackInstructions.setAutoDraw(True)
             
@@ -637,6 +640,7 @@ for thisCounterbalancer in counterbalancer:
                 fixation_2.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_2, 'tStartRefresh')  # time at next scr refresh
                 if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
                     win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_2.setAutoDraw(True)
             if fixation_2.status == STARTED:
@@ -742,6 +746,7 @@ for thisCounterbalancer in counterbalancer:
                     grid_lines_2.tStart = t  # local t and not account for scr refresh
                     grid_lines_2.tStartRefresh = tThisFlipGlobal  # on global time
                     if biopac_exists:
+                        win.callOnFlip(biopac.setData, biopac, 0)
                         win.callOnFlip(biopac.setData, biopac, nback_trial_start)
                     win.timeOnFlip(grid_lines_2, 'tStartRefresh')  # time at next scr refresh
                     grid_lines_2.setAutoDraw(True)
@@ -787,44 +792,7 @@ for thisCounterbalancer in counterbalancer:
                         fixation_3.frameNStop = frameN  # exact frame index
                         win.timeOnFlip(fixation_3, 'tStopRefresh')  # time at next scr refresh
                         fixation_3.setAutoDraw(False)
-                
-                # # *response_2* updates
-                # waitOnFlip = False
-                # if response_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                #     # keep track of start time/frame for later
-                #     response_2.frameNStart = frameN  # exact frame index
-                #     response_2.tStart = t  # local t and not account for scr refresh
-                #     response_2.tStartRefresh = tThisFlipGlobal  # on global time
-                #     win.timeOnFlip(response_2, 'tStartRefresh')  # time at next scr refresh
-                #     response_2.status = STARTED
-                #     # keyboard checking is just starting
-                #     waitOnFlip = True
-                #     win.callOnFlip(response_2.clock.reset)  # t=0 on next screen flip
-                #     win.callOnFlip(response_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
-                # if response_2.status == STARTED:
-                #     # is it time to stop? (based on global clock, using actual start)
-                #     if tThisFlipGlobal > response_2.tStartRefresh + 2-frameTolerance:
-                #         # keep track of stop time/frame for later
-                #         response_2.tStop = t  # not accounting for scr refresh
-                #         response_2.frameNStop = frameN  # exact frame index
-                #         win.timeOnFlip(response_2, 'tStopRefresh')  # time at next scr refresh
-                #         response_2.status = FINISHED
-                # if response_2.status == STARTED and not waitOnFlip:
-                #     theseKeys = response_2.getKeys(keyList=['space'], waitRelease=False)
-                #     _response_2_allKeys.extend(theseKeys)
-                #     if len(_response_2_allKeys):
-                #         response_2.keys = _response_2_allKeys[-1].name  # just the last key pressed
-                #         response_2.rt = _response_2_allKeys[-1].rt
-                #         # was this correct?
-                #         if (response_2.keys == str(corrAns)) or (response_2.keys == corrAns):
-                #             response_2.corr = 1
-                #             if biopac_exists:
-                #                 biopac.setData(biopac, nback_hit)
-                #         else:
-                #             response_2.corr = 0
-                #             if biopac_exists:
-                #                 biopac.setData(biopac, nback_miss)
-                
+                              
                 # *response_2* updates
                 waitOnFlip = False
                 if response_2.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -851,11 +819,13 @@ for thisCounterbalancer in counterbalancer:
                         if corrAns:
                             response_2.corr = 1
                             if biopac_exists:
+                                biopac.setData(biopac, 0)
                                 biopac.setData(biopac, nback_hit)
                                 biopac.setData(biopac, 0)
                         else:
                             response_2.corr = 0;  # failed to respond (incorrectly)
                             if biopac_exists:
+                                biopac.setData(biopac, 0)
                                 biopac.setData(biopac, nback_comiss) # mark comission error
                                 biopac.setData(biopac, 0) # mark comission error
 
@@ -933,6 +903,7 @@ for thisCounterbalancer in counterbalancer:
         message.draw()
         win.callOnFlip(print, "Awaiting Experimenter to start next run...\nPress [e] to continue")
         if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac,0)
             win.callOnFlip(biopac.setData, biopac,in_between_run_msg)
             win.callOnFlip(biopac.setData,biopac,0)
         win.flip()
@@ -946,6 +917,7 @@ win.flip()
 9. Save data into Excel and .CSV formats and Tying up Loose Ends
 """ 
 if biopac_exists:
+    biopac.setData(biopac,0)
     biopac.setData(biopac,end)
     biopac.setData(biopac,0)
 nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])

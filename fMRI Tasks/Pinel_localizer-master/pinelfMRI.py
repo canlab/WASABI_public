@@ -668,7 +668,7 @@ for key, task in task_order.items():
         while timer.getTime() < 0:
             pass
 
-            # if type is audio file
+    # if type is audio file
     elif "audio" in key:
         name = os.path.split(task)[-1]
         # audio press right task
@@ -808,7 +808,8 @@ for key, task in task_order.items():
         while timer.getTime() < 0:
             pass
 
-            # write run number, picture name and presentation time to file
+    biopac.setData(biopac,0)
+    # write run number, picture name and presentation time to file
     soa_num = "SOA%s" % str(ITI_counter + 1)
     data_file.write(str(key) + '\t' + str(preztime) + '\t' + str(duration) + '\t' + str(soa_num) + '\t' + str(
         ITIs[ITI_counter]) + '\n')

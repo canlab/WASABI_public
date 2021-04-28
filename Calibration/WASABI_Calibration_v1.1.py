@@ -207,7 +207,10 @@ def triggerThermode(trialtype, jittertime):
         biopac.setData(0)
     print("Jitter time " + str(jittertime) + ". Triggering thermode for " + trialtype)
     if thermode_exists == 1:
-        if (poll_for_change('RUNNING')): sendCommand('TRIGGER')
+        if (poll_for_change('RUNNING')): 
+            biopac.setData(0)
+            sendCommand('TRIGGER')
+            
 
 # For setting the heat-trial stimulation
 def round_down(num, divisor):
@@ -736,6 +739,8 @@ while continueRoutine:
         win.flip()
 
 # -------Ending Routine "Introduction"-------
+if biopac_exists == 1:
+    biopac.setData(biopac, 0)
 for thisComponent in IntroductionComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
@@ -901,6 +906,8 @@ for thisTrial in trials:
             win.flip()
     
     # -------Ending Routine "CueExperimenter"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     for thisComponent in CueExperimenterComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1018,6 +1025,8 @@ for thisTrial in trials:
             win.flip()
     
     # -------Ending Routine "CueParticipant"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     for thisComponent in CueParticipantComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1200,6 +1209,8 @@ for thisTrial in trials:
     thresholdTemp = 32 + 0.5*st_time # There is an overcalibration of about 0.5 (1 second unaccounted)
 
     # -------Ending Routine "CueStimulationThreshold"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     for thisComponent in CueStimulationThresholdComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1413,6 +1424,8 @@ for thisTrial in trials:
                 win.flip()
         
         # -------Ending Routine "CueHeatThreshold"-------
+        if biopac_exists == 1:
+            biopac.setData(biopac, 0)
         for thisComponent in CueHeatThresholdComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -1566,6 +1579,8 @@ for thisTrial in trials:
             win.flip()
         
     # -------Ending Routine "CueHeat"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     for thisComponent in CueHeatComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1688,6 +1703,8 @@ for thisTrial in trials:
             win.flip()
     
     # -------Ending Routine "ValenceRating"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     for thisComponent in ValenceRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1799,6 +1816,8 @@ for thisTrial in trials:
             win.flip()
     
     # -------Ending Routine "IntensityRating"-------
+    if biopac_exists == 1:
+        biopac.setData(biopac, 0)
     for thisComponent in IntensityRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
@@ -1942,6 +1961,8 @@ while continueRoutine:
         win.flip()
 
 # -------Ending Routine "End"-------
+if biopac_exists == 1:
+    biopac.setData(biopac, 0)
 for thisComponent in EndComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
