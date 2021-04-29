@@ -511,12 +511,12 @@ else:
     bodySites_exists = True
 if bodySites_exists == False:
     # a. Initialize 4 runs worth of body-site arrays
-    bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-    bodySites = bodySites[0:4]
+    bodySites = ["Left Leg", "Right Leg", "Chest", "Abdomen"] # For Sam, 4 bodySites
+    # bodySites = bodySites[0:4]
 else:
     bodySites = bodySites
 
-random.shuffle(bodySites)
+bodySites = random.shuffle(bodySites)
 
 expInfo['body_site_order'] = str(bodySites)
 
