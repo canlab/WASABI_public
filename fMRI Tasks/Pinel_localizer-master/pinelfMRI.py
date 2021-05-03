@@ -302,6 +302,7 @@ elif test == int(0):
 
 # SET EXPERIMENT GLOBALS
 base_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(base_dir)
 data_dir = os.path.join(base_dir, 'data', 'sub-%05d' % (int(subID)), 'ses-%02d' % (int(session)))
 stim_dir = os.path.join(base_dir, 'stim')
 
@@ -550,8 +551,6 @@ task_order = OrderedDict([
     ("audio98", "press_left"),
     ("audio99", subtraction[8]),
     ("audio100", subtraction[9])])
-
-
 
 # print task_order
 ITIs = [2.4, 3.3, 3.0, 2.7, 3.6, 3.0, 2.7, 3.0, 3.0, 3.0, 3.3, 2.4, 3.6, 2.7, 3.0, 3.3, 2.7, 3.0, 2.7, 3.3, 2.7, 3.6,
@@ -807,8 +806,8 @@ for key, task in task_order.items():
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
             pass
-
-    biopac.setData(biopac,0)
+    if biopac_exists == 1:
+        biopac.setData(biopac,0)
     # write run number, picture name and presentation time to file
     soa_num = "SOA%s" % str(ITI_counter + 1)
     data_file.write(str(key) + '\t' + str(preztime) + '\t' + str(duration) + '\t' + str(soa_num) + '\t' + str(
