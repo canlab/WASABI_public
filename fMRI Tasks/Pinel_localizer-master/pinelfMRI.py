@@ -13,11 +13,11 @@ import random, copy, time
 import pandas as pd
 import serial
 
-#prefs.general['audioLib'] = ['pyo']
+#prefs.general['audioLib'] = ['pyo']55555555555555555555555555555555555555555555555
 from psychopy import sound, visual, data, event, core, gui, logging, clock
 
 biopac_exists = 1
-"""
+"""555
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
 # Biopac parameters _________________________________________________

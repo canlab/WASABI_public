@@ -904,7 +904,7 @@ for thisCounterbalancer in counterbalancer:
         win.callOnFlip(print, "Awaiting Experimenter to start next run...\nPress [e] to continue")
         if biopac_exists:
             win.callOnFlip(biopac.setData, biopac,0)
-            win.callOnFlip(biopac.setData, biopac,in_between_run_msg)
+            win.callOnFlip(biopac.setData, biopac,second_run)
             win.callOnFlip(biopac.setData,biopac,0)
         win.flip()
         # Autoresponder
