@@ -345,8 +345,7 @@ else:
                 expInfo['subject number'] = p_info['participant_id']
                 expInfo['gender'] = p_info['gender']
                 expInfo['handedness'] = p_info['handedness']
-                # For session 1
-                # bodySites = p_info['calibration_order']
+                bodySites = p_info['calibration_order']
                 # Heat Settings
                 participant_settingsHeat['Left Face'] = p_info['leftface_ht']
                 participant_settingsHeat['Right Face'] = p_info['rightface_ht']
@@ -378,11 +377,11 @@ else:
                 expInfo['bodymap first- or second-half (1 or 2)'] = expInfo2['bodymap first- or second-half (1 or 2)']
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
-                # bodySites = bodySites.strip('][').replace("'","").split(', ')
-                # if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
-                #     bodySites = bodySites.strip('][').replace("'","").split(', ')[0:4]
-                # if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
-                #     bodySites = bodySites.strip('][').replace("'","").split(', ')[4:9]
+                bodySites = bodySites.strip('][').replace("'","").split(',')
+                if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
+                    bodySites = bodySites[0:4]
+                if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
+                    bodySites = bodySites[4:8]
                 if dlg2.OK == False:
                     core.quit()  # user pressed cancel
             else:
@@ -412,10 +411,8 @@ expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
 if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
     expName = 'bodymap1'
-    # bodySites = bodySites[0:4]
 if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
     expName = 'bodymap2'
-    # bodySites = bodySites[5:9]
 expInfo['expName'] = expName
 
 """ 
@@ -513,11 +510,8 @@ except NameError:
 else:
     bodySites_exists = True
 if bodySites_exists == False:
-    # a. Initialize 4 runs worth of body-site arrays
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     bodySites = bodySites[0:4]
-else:
-    bodySites = bodySites
 
 # bodySites = ["Left Leg", "Right Leg", "Chest", "Abdomen"] # For Sam, 4 bodySites
 random.shuffle(bodySites)
