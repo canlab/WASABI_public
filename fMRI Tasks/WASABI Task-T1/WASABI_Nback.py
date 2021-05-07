@@ -918,7 +918,7 @@ win.flip()
 """ 
 if biopac_exists:
     biopac.setData(biopac,0)
-    biopac.setData(biopac,end)
+    biopac.setData(biopac,end_task)
     biopac.setData(biopac,0)
 nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
 

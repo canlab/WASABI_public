@@ -13,11 +13,11 @@ import random, copy, time
 import pandas as pd
 import serial
 
-#prefs.general['audioLib'] = ['pyo']55555555555555555555555555555555555555555555555
+#prefs.general['audioLib'] = ['pyo']
 from psychopy import sound, visual, data, event, core, gui, logging, clock
 
 biopac_exists = 1
-"""555
+"""
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
 # Biopac parameters _________________________________________________
@@ -296,9 +296,9 @@ else:
 # create file w/subId in name
 # change this so that filename is from teh gui- and needs extension. so if not . in
 if test == int(1):
-    fName = 'Pinel_sub-%s_task-pinel_ses-%s_TEST.txt' % (subID,session)
+    fName = 'Pinel_sub-%s_task-pinel_ses-%s_TEST.tsv' % (subID,session)
 elif test == int(0):
-    fName = 'Pinel_sub-%s_task-pinel_ses-%s.txt' % (subID,session)
+    fName = 'Pinel_sub-%s_task-pinel_ses-%s.tsv' % (subID,session)
 
 # SET EXPERIMENT GLOBALS
 base_dir = os.path.dirname(os.path.abspath(__file__))
