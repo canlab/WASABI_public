@@ -519,6 +519,7 @@ if bodySites_exists == False:
 # bodySites = ["Chest", "Right Leg","Left Arm", "Right Face", "Right Arm", "Left Leg", "Left Face", "Abdomen"]
 # bodySites = bodySites[4:8]
 bodySites = ["Right Arm", "Abdomen"] # To finish Michael ses-04
+# bodySites = ['Left Leg', 'Right Leg', 'Right Arm', 'Right Face'] # To start Carnen ses-04
 random.shuffle(bodySites)
 
 expInfo['body_site_order'] = str(bodySites)
