@@ -78,7 +78,7 @@ __author__ = "Michael Sun"
 __version__ = "1.1.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
-555
+
 """ 
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
@@ -122,8 +122,8 @@ task_end=8
 run_start=9
 run_end=10
 run_middle=11
-trial_start=12
-trial_end=13
+# trial_start=12
+# trial_end=13
 bodymapping_intro=14
 bodymapping_instruction=15
 imagination_instruction=16
@@ -377,7 +377,7 @@ else:
                 expInfo['bodymap first- or second-half (1 or 2)'] = expInfo2['bodymap first- or second-half (1 or 2)']
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
-                bodySites = bodySites.strip('][').replace("'","").split(',')
+                bodySites = bodySites.strip('][').replace("'","").split(', ')
                 if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
                     bodySites = bodySites[0:4]
                 if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
@@ -410,9 +410,9 @@ else:
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
 if expInfo['bodymap first- or second-half (1 or 2)'] == '1':
-    expName = 'bodymap1'
+    expName = 'bodymapST1'
 if expInfo['bodymap first- or second-half (1 or 2)'] == '2':
-    expName = 'bodymap2'
+    expName = 'bodymapST2'
 expInfo['expName'] = expName
 
 """ 
@@ -511,6 +511,7 @@ else:
     bodySites_exists = True
 if bodySites_exists == False:
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+    random.shuffle(bodySites)
     bodySites = bodySites[0:4]
 
 # bodySites = ["Left Leg", "Right Leg", "Chest", "Abdomen"] # For Sam, 4 bodySites
@@ -518,7 +519,7 @@ if bodySites_exists == False:
 # For Carmen run 1
 # bodySites = ["Chest", "Right Leg","Left Arm", "Right Face", "Right Arm", "Left Leg", "Left Face", "Abdomen"]
 # bodySites = bodySites[4:8]
-bodySites = ["Right Arm", "Abdomen"] # To finish Michael ses-04
+# bodySites = ["Right Arm", "Abdomen"] # To finish Michael ses-04
 # bodySites = ['Left Leg', 'Right Leg', 'Right Arm', 'Right Face'] # To start Carnen ses-04
 random.shuffle(bodySites)
 
@@ -862,9 +863,9 @@ routineTimer.reset()
 if int(expInfo['subject number']) % 2 == 0: subjectOrder = os.sep.join([stimuli_dir,"EvenOrders.xlsx"]) 
 else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
 
-if expName == 'bodymap1':
+if expName == 'bodymapST1':
     runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='0:4'), seed=None, name='runLoop')
-if expName == 'bodymap2':
+if expName == 'bodymapST2':
     runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:9'), seed=None, name='runLoop')
 
 thisExp.addLoop(runLoop)  # add the loop to the experiment
@@ -1107,7 +1108,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         # -------Ending Routine "ImaginationInstruction"-------
         if biopac_exists == 1:
             biopac.setData(biopac, 0)
-        print("Cueing Biopac Channel " + str(task_start))
+#         print("Cueing Biopac Channel " + str(task_start))
         for thisComponent in ImaginationInstructionComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
