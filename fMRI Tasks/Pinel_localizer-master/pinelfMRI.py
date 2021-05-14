@@ -296,9 +296,9 @@ else:
 # create file w/subId in name
 # change this so that filename is from teh gui- and needs extension. so if not . in
 if test == int(1):
-    fName = 'Pinel_sub-%s_task-pinel_ses-%s_TEST.tsv' % (subID,session)
+    fName = 'sub-%05d_task-pinel_ses-%02d_TEST.tsv' % (int(subID),int(session))
 elif test == int(0):
-    fName = 'Pinel_sub-%s_task-pinel_ses-%s.tsv' % (subID,session)
+    fName = 'sub-%05d_task-pinel_ses-%02d.tsv' % (int(subID),int(session))
 
 # SET EXPERIMENT GLOBALS
 base_dir = os.path.dirname(os.path.abspath(__file__))
