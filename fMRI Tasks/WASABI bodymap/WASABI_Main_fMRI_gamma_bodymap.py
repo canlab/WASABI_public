@@ -83,7 +83,7 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
+debug = 0
 autorespond = 0
 # Device togglers
 biopac_exists = 1
