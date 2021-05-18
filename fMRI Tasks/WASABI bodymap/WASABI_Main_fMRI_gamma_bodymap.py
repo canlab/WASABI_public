@@ -866,7 +866,7 @@ else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
 if expName == 'bodymapST1':
     runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='0:4'), seed=None, name='runLoop')
 if expName == 'bodymapST2':
-    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:9'), seed=None, name='runLoop')
+    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:8'), seed=None, name='runLoop')
 
 thisExp.addLoop(runLoop)  # add the loop to the experiment
 thisrunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
