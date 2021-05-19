@@ -19,7 +19,7 @@ all data headers are in lower snake_case.
 missing values are coded None or -99 (i.e., body_site for rest trials).
 
 The paradigm will generate 8x of these files of name:
-sub-XXXX_task-bodymap_acq-bodysite1bodysite2_run-XX_events.tsv
+sub-XXXX_task-bodymapSTX_acq-bodysite_run-XX_events.tsv
 
 Trials per file are defined by the following headers:
 onset   duration    trial_type  body_site   temp
@@ -118,10 +118,10 @@ thisSimKey=simKeys(keyList=['space'],
 # biopac channels EDIT
 task_ID=1
 task_start=7
-task_end=8
+# task_end=8
 run_start=9
-run_end=10
-run_middle=11
+# run_end=10
+# run_middle=11
 # trial_start=12
 # trial_end=13
 bodymapping_intro=14
@@ -143,6 +143,16 @@ leftleg_warm=29
 rightleg_warm=30
 chest_warm=31
 abdomen_warm=32
+
+# leftface_imagine_cue=33
+# rightface_imagine_cue=34
+# leftarm_imagine_cue=35
+# rightarm_imagine_cue=36
+# leftleg_imagine_cue=37
+# rightleg_imagine_cue=38
+# chest_imagine_cue=39
+# abdomen_imagine_cue=40
+
 leftface_imagine=33
 rightface_imagine=34
 leftarm_imagine=35
@@ -151,10 +161,12 @@ leftleg_imagine=37
 rightleg_imagine=38
 chest_imagine=39
 abdomen_imagine=40
+
 rest=41
 valence_rating=42
 intensity_rating=43
 comfort_rating=44
+
 between_run_msg=45
 end=46
 
@@ -745,7 +757,6 @@ win.mouseVisible = False
 if biopac_exists:
     biopac.setData(biopac, 0)     
     biopac.setData(biopac, task_ID) 
-    biopac.setData(biopac, 0) 
 """
 8a. Body Mapping Introduction
 """
@@ -837,8 +848,6 @@ while continueRoutine:
         win.flip()
 
 # -------Ending Routine "Introduction"-------
-if biopac_exists == 1:
-    biopac.setData(biopac, 0)
 print("CueOff Channel: " + str(bodymapping_intro))
 for thisComponent in IntroductionComponents:
     if hasattr(thisComponent, "setAutoDraw"):
@@ -866,7 +875,7 @@ else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
 if expName == 'bodymapST1':
     runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='0:4'), seed=None, name='runLoop')
 if expName == 'bodymapST2':
-    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:8'), seed=None, name='runLoop')
+    runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='4:9'), seed=None, name='runLoop')
 
 thisExp.addLoop(runLoop)  # add the loop to the experiment
 thisrunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
@@ -989,8 +998,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "BodySiteInstruction"-------
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     print("CueOff Channel: " + str(bodymapping_instruction))
     for thisComponent in BodySiteInstructionComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -1106,8 +1113,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
         # -------Ending Routine "ImaginationInstruction"-------
-        if biopac_exists == 1:
-            biopac.setData(biopac, 0)
 #         print("Cueing Biopac Channel " + str(task_start))
         for thisComponent in ImaginationInstructionComponents:
             if hasattr(thisComponent, "setAutoDraw"):
@@ -1180,7 +1185,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     if biopac_exists == 1:
         biopac.setData(biopac, 0)
         biopac.setData(biopac, run_start)
-        biopac.setData(biopac, 0)
     routineTimer.reset()
 
     if thisTrial != None:
@@ -1312,8 +1316,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     win.flip()
 
             # -------Ending Routine "StimTrial"-------
-            if biopac_exists == 1:
-                biopac.setData(biopac, 0)
             for thisComponent in StimTrialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
@@ -1425,8 +1427,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     win.flip()
             
             # -------Ending Routine "NonStimTrial"-------
-            if biopac_exists == 1:
-                biopac.setData(biopac, 0)
             TrialEndTime = timeit.default_timer()-startTime
             print("TrialEndTime: " + str(TrialEndTime))
             print("CueOff Biopac Channel " + str(BiopacChannel))
@@ -1618,8 +1618,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "ValenceRating"-------
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     print("CueOff Channel " + str(valence_rating))
     for thisComponent in ValenceRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -1803,8 +1801,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "IntensityRating"-------
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     print("CueOff Channel " + str(intensity_rating))
     for thisComponent in IntensityRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
@@ -1988,8 +1984,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.flip()
 
     # -------Ending Routine "ComfortRating"-------
-    if biopac_exists == 1:
-        biopac.setData(biopac, 0)
     print("CueOff Channel " + str(comfort_rating))
     for thisComponent in ComfortRatingComponents:
         if hasattr(thisComponent, "setAutoDraw"):
