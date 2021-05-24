@@ -7,7 +7,7 @@ from collections import OrderedDict
 import sys
 import numpy as np
 import random
-import os 
+import os
 import glob
 import random, copy, time
 import pandas as pd

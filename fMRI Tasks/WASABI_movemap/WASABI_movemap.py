@@ -78,10 +78,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-autorespond = 1
+debug = 0
+autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 class simKeys:
     '''
@@ -293,7 +293,7 @@ bodysite_word2movecode = {"Left Face": leftface_move,
 nruns = 3
 
 bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-rest = ["Rest","Rest","Rest","Rest"]
+restArray = ["Rest","Rest","Rest","Rest"]
 
 def generate_run_order(siteList, restList):
     conditions = []
@@ -321,7 +321,7 @@ def generate_run_order(siteList, restList):
 
 runList = []
 for run in range(nruns):
-    runList.append(generate_run_order(bodySites, rest))
+    runList.append(generate_run_order(bodySites, restArray))
 
 expInfo['runList'] = str(runList)
 
@@ -695,6 +695,10 @@ for run in range(len(runList)):
             print("Starting Movement Trial")
             BodySiteCue.image = bodysite_word2img[thisTrial]
             BodySiteCue.pos = (0,0)
+            if thisTrial not in ("Left Face", "Right Face"):
+                BodySiteCue.size=(300, 300)
+            else:
+                BodySiteCue.size=(150, 300)
             MovementTrialText.text="Begin moving your " + thisTrial.lower()
             BiopacCueChannel = bodysite_word2cuecode[thisTrial]
             BiopacMoveChannel = bodysite_word2movecode[thisTrial]
