@@ -83,10 +83,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
-autorespond = 0
+debug = 1
+autorespond = 1
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 
 class simKeys:
@@ -1342,9 +1342,6 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                         win.callOnFlip(biopac.setData, biopac, BiopacCueChannel)
                     BodySiteCue.setAutoDraw(True)
                 if BodySiteCue.status == STARTED:
-                    if thermode_exists == 1 and tp_selected == 1 and tThisFlipGlobal > BodySiteCue.tStartRefresh + poststimTime-frameTolerance:
-                        sendCommand('select_tp', thermodeCommand)
-                        tp_selected = 0  
                     # is it time to stop? (based on global clock, using actual start)
                     if tThisFlipGlobal > BodySiteCue.tStartRefresh + imaginationCueTime-frameTolerance:
                         # keep track of stop time/frame for later
@@ -1383,6 +1380,9 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                         win.callOnFlip(biopac.setData, biopac, BiopacImagineChannel)
                     fix_cross.setAutoDraw(True)
                 if fix_cross.status == STARTED:
+                    if thermode_exists == 1 and tp_selected == 1 and tThisFlipGlobal > BodySiteCue.tStartRefresh + poststimTime-frameTolerance:
+                        sendCommand('select_tp', thermodeCommand)
+                        tp_selected = 0  
                     # is it time to stop? (based on global clock, using actual start)
                     if tThisFlipGlobal > fix_cross.tStartRefresh + imaginationTrialTime-frameTolerance:
                         # keep track of stop time/frame for later
