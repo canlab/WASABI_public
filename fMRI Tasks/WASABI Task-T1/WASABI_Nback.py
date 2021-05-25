@@ -11,7 +11,7 @@ If you publish work using this script the most relevant publication is:
         
 This python script was extensively modified in order to work in the Dartmouth Brain Imaging Center environment reading in signals coming from a 
 Siemens 3T fMRI scanner. Physiological data is acquired with a Biopac MP150 Physiological data acquisition device via LabJack U3.
-
+e
 Some measures have been taken to minimize experimental latency. PTB/Psychopy style is used to initialize all objects prior to screen flipping as much as possible.
     
 Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) files for each run per subject, (UTF-8 encoding). 
