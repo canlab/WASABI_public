@@ -579,7 +579,7 @@ wait_stim = visual.TextStim(win=window, name='waitText',
                             height=textHeight, alignHoriz=alignText)
 
 end_msg = visual.TextStim(win=window, name='end_msg',
-                          text='Thank you for participating!',
+                          text='Thank you for participating! Experimenter press [e] to continue.',
                           color=textColor,
                           font=textFont,
                           height=textHeight, alignHoriz=alignText)
@@ -826,8 +826,8 @@ end_msg.draw()
 if biopac_exists:
     window.callOnFlip(biopac.setData, biopac, 0)
     window.callOnFlip(biopac.setData, biopac, word2biopaccode['end'])
-    window.callOnFlip(biopac.setData, biopac, 0)
 window.flip()
+event.waitKeys(keyList = 'e')
 timer.add(2.0)
 while timer.getTime()<0:
    pass

@@ -78,10 +78,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
+debug = 1
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 
 class simKeys:
     '''
@@ -376,7 +376,7 @@ MovementInstructionClock = core.Clock()
 MovementInstructionRead = keyboard.Keyboard()
 # Create experimenter instructions
 MovementInstructionText = visual.TextStim(win, name='MovementInstructionText', 
-    text="During this scan, you will occasionally see picture cues of a body part. Without moving your head, move that body part in the way that you were instructed earlier: \n\nLeft and Right Cheek Raises\nLeft and Right Forearm Flexes\nLeft and Right Quadricep Flexes\nChest Puff Expansions\nAbdomen Squeezes",
+    text="During this scan, you will occasionally see picture cues of a body part. Without moving your head, move only that body part in the way that you were instructed earlier once per second: \n\nLeft and Right Cheek Raises\nLeft and Right Forearm Flexes\nLeft and Right Calf Flexes\nChest Puff Expansions\nAbdomen Squeezes\n\nKeep moving while the fixation cross is green and stop moving when it is red.\n\nExperimenter press [space] to continue.",
     font = 'Arial',
     pos=(0, 0), height=0.06, wrapWidth=1.5, ori=0,      # Edit wrapWidth for the 1920 full screen
     color='white', colorSpace='rgb', opacity=1, 
@@ -695,14 +695,14 @@ for run in range(len(runList)):
             print("Starting Movement Trial")
             BodySiteCue.image = bodysite_word2img[thisTrial]
             BodySiteCue.pos = (0,0)
-            if thisTrial not in ("Left Face", "Right Face"):
-                BodySiteCue.size=(300, 300)
-            else:
-                BodySiteCue.size=(150, 300)
+            # if thisTrial not in ("Left Face", "Right Face"):
+            #     BodySiteCue.size=(300, 300)
+            # else:
+            #     BodySiteCue.size=(150, 300)
             MovementTrialText.text="Begin moving your " + thisTrial.lower()
             BiopacCueChannel = bodysite_word2cuecode[thisTrial]
             BiopacMoveChannel = bodysite_word2movecode[thisTrial]
-            fix_cross.color = "white"
+            fix_cross.color = "green"
             conditionData = thisTrial
 
             # ------Prepare to start Routine "MovementTrial"-------

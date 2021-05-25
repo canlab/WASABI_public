@@ -74,7 +74,7 @@ autorespond = 0
 # Device togglers
 biopac_exists = 1
 
-T1_time = 258      # should be 258 seconds
+T1_time = 268      # should be 258 seconds to match the 4:18 on the clock, but there's also about 10 more seconds the scanner takes to warmup
 
 class simKeys:
     '''
@@ -312,7 +312,6 @@ routineTimer = core.CountdownTimer()  # to track time remaining of each (non-sli
 if biopac_exists:
     biopac.setData(biopac, 0)
     biopac.setData(biopac, task_ID) # Start demarcation of the T1 task in Biopac Acqknowledge
-    biopac.setData(biopac, 0) # Start demarcation of the T1 task in Biopac Acqknowledge
 
 win.mouseVisible = False
 
