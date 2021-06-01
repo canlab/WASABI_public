@@ -695,11 +695,22 @@ for run in range(len(runList)):
             print("Starting Movement Trial")
             BodySiteCue.image = bodysite_word2img[thisTrial]
             BodySiteCue.pos = (0,0)
-            # if thisTrial not in ("Left Face", "Right Face"):
-            #     BodySiteCue.size=(300, 300)
-            # else:
-            #     BodySiteCue.size=(150, 300)
-            MovementTrialText.text="Begin moving your " + thisTrial.lower()
+            if thisTrial == "Left Face":
+                MovementTrialText.text="Begin raising your left cheek."
+            if thisTrial == "Right Face":
+                MovementTrialText.text="Begin raising your right cheek."
+            if thisTrial == "Left Arm":
+                MovementTrialText.text="Begin flexing your left forearm." 
+            if thisTrial == "Right Arm":
+                MovementTrialText.text="Begin flexing your right forearm."
+            if thisTrial == "Left Leg":
+                MovementTrialText.text="Begin flexing your left calf."
+            if thisTrial == "Right Leg":
+                MovementTrialText.text="Begin flexing your right calf."
+            if thisTrial == "Chest":
+                MovementTrialText.text="Begin puffing then relaxing your chest."
+            if thisTrial == "Abdomen":
+                MovementTrialText.text="Begin squeezing then relaxing your abdomen."
             BiopacCueChannel = bodysite_word2cuecode[thisTrial]
             BiopacMoveChannel = bodysite_word2movecode[thisTrial]
             fix_cross.color = "green"
