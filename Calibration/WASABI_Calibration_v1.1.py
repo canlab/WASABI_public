@@ -80,7 +80,7 @@ Set to 1 during development, 0 during production
 """
 debug = 0
 autorespond = 0
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 waitSetting = 0
 
