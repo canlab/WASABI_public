@@ -711,7 +711,9 @@ for thisCounterbalancer in counterbalancer:
             response_2.click = []
             response_2.rt = []
             response_2.corr = []
+            x, y = [None, None]
             # _response_2_allClicks = []
+            gotValidClick = False  # until a click is received
             
 
             # keep track of which components have finished
@@ -804,16 +806,22 @@ for thisCounterbalancer in counterbalancer:
                     waitOnFlip = True
                     win.callOnFlip(response_2.mouseClock.reset) # t=0 on next screen flip
                     win.callOnFlip(response_2.clickReset) # t=0 on next screen flip
+                    response_2.mouseClock.reset()
+                    prevButtonState = response_2.getPressed()  # if button is down already this ISN'T a new click
+
                 if response_2.status == STARTED:  # only update if started and not finished!
                     if tThisFlipGlobal > response_2.tStartRefresh + 2-frameTolerance:
                         # keep track of stop time/frame for later
                         response_2.tStop = t  # not accounting for scr refresh
+                        response_2.frameNStop = frameN  # exact frame index
                         win.timeOnFlip(response_2, 'tStopRefresh')  # time at next scr refresh
                         response_2.status = FINISHED
                 if response_2.status == STARTED and not waitOnFlip:
                     response_2.click, response_2.rt = response_2.getPressed(getTime = True)
                     response_2.click = response_2.click[0]
                     response_2.rt = response_2.rt[0]
+                    if response_2.click != prevButtonState:  # button state changed?
+                        prevButtonState = response_2.click
                     if response_2.click == 1:
                         if corrAns:
                             response_2.corr = 1
@@ -855,6 +863,12 @@ for thisCounterbalancer in counterbalancer:
             for thisComponent in N_back_2_trialsComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
+            x, y = response_2.getPos()
+            buttons = response_2.getPressed()
+            trials_2.addData('response_2.x', x)
+            trials_2.addData('response_2.y', y)
+            trials_2.addData('response_2.leftButton', response_2.click)
+            trials_2.addData('response_2.rt', response_2.rt)
             trials_2.addData('grid_lines_2.started', grid_lines_2.tStartRefresh)
             trials_2.addData('grid_lines_2.stopped', grid_lines_2.tStopRefresh)
             trials_2.addData('target_square_2.started', target_square_2.tStartRefresh)
