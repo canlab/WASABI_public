@@ -566,7 +566,6 @@ for thisTaskT1Loop in TaskT1Loop:
         # _response_2_allClicks = []
         gotValidClick = False  # until a click is received
         
-
         # keep track of which components have finished
         N_back_2_trialsComponents = [grid_lines_2, target_square_2, fixation_3, response_2]
         for thisComponent in N_back_2_trialsComponents:
@@ -590,6 +589,46 @@ for thisTaskT1Loop in TaskT1Loop:
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
+
+            # *response_2* updates
+            waitOnFlip = False
+            if response_2.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                response_2.frameNStart = frameN  # exact frame index
+                response_2.tStart = t  # local t and not account for scr refresh
+                response_2.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(response_2, 'tStartRefresh')  # time at next scr refresh
+                response_2.status = STARTED
+                waitOnFlip = True
+                win.callOnFlip(response_2.mouseClock.reset) # t=0 on next screen flip
+                win.callOnFlip(response_2.clickReset) # t=0 on next screen flip
+                prevButtonState = response_2.getPressed()[0]  # if button is down already this ISN'T a new click
+            if response_2.status == STARTED:  # only update if started and not finished!
+                if tThisFlipGlobal > response_2.tStartRefresh + 2-frameTolerance:
+                    # keep track of stop time/frame for later
+                    response_2.tStop = t  # not accounting for scr refresh
+                    response_2.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(response_2, 'tStopRefresh')  # time at next scr refresh
+                    response_2.status = FINISHED
+            if response_2.status == STARTED and not waitOnFlip:
+                response_2.click, response_2.rt = response_2.getPressed(getTime = True)
+                response_2.click = response_2.click[0]
+                response_2.rt = response_2.rt[0]
+                if response_2.click != prevButtonState:  # button state changed?
+                    prevButtonState = response_2.click
+                if response_2.click == 1 and gotValidClick == False:
+                    print(str(response_2.click), str(response_2.rt))
+                    if corrAns != None:
+                        response_2.corr = 1
+                        if biopac_exists:
+                            biopac.setData(biopac, 0)
+                            biopac.setData(biopac, nback_hit)
+                    else:
+                        response_2.corr = 0;  # failed to respond (incorrectly)
+                        if biopac_exists:
+                            biopac.setData(biopac, 0)
+                            biopac.setData(biopac, nback_comiss) # mark comission error
+                    gotValidClick = True
             
             # *grid_lines_2* updates
             if grid_lines_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
@@ -644,48 +683,6 @@ for thisTaskT1Loop in TaskT1Loop:
                     fixation_3.frameNStop = frameN  # exact frame index
                     win.timeOnFlip(fixation_3, 'tStopRefresh')  # time at next scr refresh
                     fixation_3.setAutoDraw(False)
-                            
-            # *response_2* updates
-            waitOnFlip = False
-            if response_2.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                response_2.frameNStart = frameN  # exact frame index
-                response_2.tStart = t  # local t and not account for scr refresh
-                response_2.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(response_2, 'tStartRefresh')  # time at next scr refresh
-                response_2.status = STARTED
-                waitOnFlip = True
-                win.callOnFlip(response_2.mouseClock.reset) # t=0 on next screen flip
-                win.callOnFlip(response_2.clickReset) # t=0 on next screen flip
-                response_2.mouseClock.reset()
-                prevButtonState = response_2.getPressed()  # if button is down already this ISN'T a new click
-
-            if response_2.status == STARTED:  # only update if started and not finished!
-                if tThisFlipGlobal > response_2.tStartRefresh + 2-frameTolerance:
-                    # keep track of stop time/frame for later
-                    response_2.tStop = t  # not accounting for scr refresh
-                    response_2.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(response_2, 'tStopRefresh')  # time at next scr refresh
-                    response_2.status = FINISHED
-            if response_2.status == STARTED and not waitOnFlip:
-                response_2.click, response_2.rt = response_2.getPressed(getTime = True)
-                response_2.click = response_2.click[0]
-                response_2.rt = response_2.rt[0]
-                if response_2.click != prevButtonState:  # button state changed?
-                    prevButtonState = response_2.click
-                if response_2.click == 1:
-                    if corrAns:
-                        response_2.corr = 1
-                        if biopac_exists:
-                            biopac.setData(biopac, 0)
-                            biopac.setData(biopac, nback_hit)
-                            biopac.setData(biopac, 0)
-                    else:
-                        response_2.corr = 0;  # failed to respond (incorrectly)
-                        if biopac_exists:
-                            biopac.setData(biopac, 0)
-                            biopac.setData(biopac, nback_comiss) # mark comission error
-                            biopac.setData(biopac, 0) # mark comission error
 
             # # Autoresponder
             # if t >= thisSimKey.rt and autorespond == 1:
@@ -714,12 +711,22 @@ for thisTaskT1Loop in TaskT1Loop:
         for thisComponent in N_back_2_trialsComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
-        x, y = response_2.getPos()
-        buttons = response_2.getPressed()
+
+        # Check non-response
+        if response_2.click == 0 and gotValidClick == False:
+            response_2.rt = None
+            if str(corrAns).lower() == 'none':
+                response_2.corr = 1;  # correct non-response
+            else:
+                response_2.corr = 0;  # failed to respond (incorrectly)
+
+        # x, y = response_2.getPos()
+        # response_2.click, response_2.rt = response_2.getPressed(getTime = True)
+        # response_2.click = response_2.click[0]
+        # response_2.rt = response_2.rt[0]
         trials_2.addData('response_2.x', x)
         trials_2.addData('response_2.y', y)
         trials_2.addData('response_2.leftButton', response_2.click)
-        trials_2.addData('response_2.rt', response_2.rt)
         trials_2.addData('grid_lines_2.started', grid_lines_2.tStartRefresh)
         trials_2.addData('grid_lines_2.stopped', grid_lines_2.tStopRefresh)
         trials_2.addData('target_square_2.started', target_square_2.tStartRefresh)
@@ -734,26 +741,16 @@ for thisTaskT1Loop in TaskT1Loop:
         #         response_2.corr = 1;  # correct non-response
         #     else:
         #         response_2.corr = 0;  # failed to respond (incorrectly)
-
-        # check responses
-        if response_2.click == 0:  # No response was made
-            response_2.click = None
-            response_2.rt = None
-            # was no response the correct answer?!
-            if str(corrAns).lower() == 'none':
-                response_2.corr = 1;  # correct non-response
-            else:
-                response_2.corr = 0;  # failed to respond (incorrectly)
+        if response_2.click == 1:  # we had a response
+            trials_2.addData('response_2.rt', response_2.rt)
 
         # store data for trials_2 (TrialHandler)
         trials_2.addData('response_2.click',response_2.click)
         trials_2.addData('response_2.corr', response_2.corr)
-        if response_2.click != None:  # we had a response
-            trials_2.addData('response_2.rt', response_2.rt)
         trials_2.addData('response_2.started', response_2.tStartRefresh)
         trials_2.addData('response_2.stopped', response_2.tStopRefresh)
         nback_bids_trial = []
-        nback_bids_trial.extend(('test', grid_lines_2.tStartRefresh, 2, response_2.rt, response_2.corr))
+        nback_bids_trial.extend(('test', grid_lines_2.tStartRefresh, t, response_2.rt, response_2.corr))
         nback_bids.append(nback_bids_trial)
 
         thisExp.nextEntry()
@@ -789,7 +786,7 @@ nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duratio
 sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-order%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', 'test')
+bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback-test')
 nback_bids_data.to_csv(bids_filename, sep="\t")
 
 # these shouldn't be strictly necessary (should auto-save)
