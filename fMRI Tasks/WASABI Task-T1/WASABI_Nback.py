@@ -69,10 +69,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
+debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 T1_time = 268      # should be 258 seconds to match the 4:18 on the clock, but there's also about 10 more seconds the scanner takes to warmup
 
@@ -214,6 +214,12 @@ win.mouseVisible = False # Make the mouse invisible for the remainder of the exp
 """
 4. Prepare files to write
 """
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+if not os.path.exists(sub_dir):
+    os.makedirs(sub_dir)
+psypy_filename = sub_dir + u'data/%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
+
+
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
@@ -926,13 +932,9 @@ if biopac_exists:
     biopac.setData(biopac,0)
 nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
 
-sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
-if not os.path.exists(sub_dir):
-    os.makedirs(sub_dir)
 bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-order%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
 nback_bids_data.to_csv(bids_filename, sep="\t")
 
-psypy_filename = sub_dir + u'data/%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
 
 
 # these shouldn't be strictly necessary (should auto-save)
