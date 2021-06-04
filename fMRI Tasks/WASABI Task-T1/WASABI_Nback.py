@@ -217,8 +217,7 @@ win.mouseVisible = False # Make the mouse invisible for the remainder of the exp
 sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-psypy_filename = sub_dir + u'data/%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date'])
-
+psypy_filename = os.path.join(sub_dir, '%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date']))
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
