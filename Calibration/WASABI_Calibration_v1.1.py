@@ -702,10 +702,10 @@ while continueRoutine:
         # keyboard checking is just starting
         waitOnFlip = True
         ## Thermode Commands: Prepare the START_CALIBRATION PROGRAM
-        if thermode_exists == 1:
-            # At this point, ensure that the Medoc Machine is in External Control mode, waiting for a test program.
-            win.callOnFlip(poll_for_change, 'IDLE')
-            win.callOnFlip(sendCommand, 'select_tp', config.START_CALIBRATION)
+        # if thermode_exists == 1:
+        #     # At this point, ensure that the Medoc Machine is in External Control mode, waiting for a test program.
+        #     win.callOnFlip(poll_for_change, 'IDLE')
+        #     win.callOnFlip(sendCommand, 'select_tp', config.START_CALIBRATION)
         win.callOnFlip(WelcomeConfirm.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(WelcomeConfirm.clearEvents, eventType='keyboard')  # clear events on next screen flip
     if WelcomeConfirm.status == STARTED and not waitOnFlip:
@@ -929,6 +929,11 @@ for thisTrial in trials:
     # ------Prepare to start Routine "CueParticipant"-------
     continueRoutine = True
      # update component parameters for each repeat
+    
+    if thermode_exists == 1:
+        if (poll_for_change('IDLE')): sendCommand('select_tp', config.START_CALIBRATION)  # This needs to be cued up ahead of time to avoid an extra 5 second latency
+        core.wait(5)
+    
     ParticipantConfirmStart.keys = []
     ParticipantConfirmStart.rt = []
     _ParticipantConfirmStart_allKeys = []
@@ -1607,8 +1612,6 @@ for thisTrial in trials:
     continueRoutine = True
     BodySiteCue6.opacity = 0.3
     BodySiteCue7.opacity = 0.3
-    if thermode_exists == 1:
-        if (poll_for_change('IDLE')): sendCommand('select_tp', config.START_CALIBRATION)  # This needs to be cued up ahead of time to avoid an extra 5 second latency
     
     # update component parameters for each repeat
     ValenceRatingScale.reset()
