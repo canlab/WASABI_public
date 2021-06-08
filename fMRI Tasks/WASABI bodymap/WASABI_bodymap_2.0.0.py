@@ -488,9 +488,7 @@ if bodySites_exists == False:
     random.shuffle(bodySites)
     bodySites = bodySites[0:4]
 
-# Just for Carmen
-bodySites = ['Abdomen', 'Left Arm', 'Left Face']
-# random.shuffle(bodySites)
+random.shuffle(bodySites)
 
 expInfo['body_site_order'] = str(bodySites)
 
