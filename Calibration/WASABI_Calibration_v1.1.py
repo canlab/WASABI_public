@@ -208,7 +208,7 @@ def triggerThermode(trialtype, jittertime):
     print("Jitter time " + str(jittertime) + ". Triggering thermode for " + trialtype)
     if thermode_exists == 1:
         if (poll_for_change('RUNNING')): 
-            biopac.setData(0)
+            if biopac_exists == 1: biopac.setData(0)
             sendCommand('TRIGGER')
             
 
@@ -932,7 +932,7 @@ for thisTrial in trials:
     
     if thermode_exists == 1:
         if (poll_for_change('IDLE')): sendCommand('select_tp', config.START_CALIBRATION)  # This needs to be cued up ahead of time to avoid an extra 5 second latency
-        core.wait(5)
+        # core.wait(5)
     
     ParticipantConfirmStart.keys = []
     ParticipantConfirmStart.rt = []
@@ -1256,6 +1256,7 @@ for thisTrial in trials:
 
     if ThresholdSet.keys != None:  # we had a response
         trials.addData('ThresholdSet.rt', ThresholdSet.rt)
+        routineTimer.reset()
         """
         8f. Second press of the space bar establishes the Heat Threshold
         """ 
@@ -1457,11 +1458,16 @@ for thisTrial in trials:
         # bids_df.loc[trials.thisN, 'calibration_duration'] = stop_time
         bids_trialData.append(stop_time)
 
+    routineTimer.reset()
+
     # ------Prepare to start Routine "CueHeat"-------
     continueRoutine = True
     if thermode_exists ==  1:
         sendCommand('select_tp', time_to_program[stop_time])
-    routineTimer.add(15.000000)  
+    jitter2 = randint(0,4)
+    CueHeatTime = 15                    # Start Rating at peak heat
+    # CueHeatTime = 15 + jitter2        # Start Rating at the end of rampdown
+    routineTimer.add(CueHeatTime)  
     # update component parameters for each repeat
     # keep track of which components have finished
     CueHeatComponents = [WhiteBack6, BodySiteCue5, OKcue2, CalibrationText]
@@ -1499,7 +1505,6 @@ for thisTrial in trials:
             #     jitter2 = 0
             #     win.callOnFlip(triggerThermode, "heat")
             # else: 
-            jitter2 = randint(0,4)
             win.callOnFlip(triggerThermode, "heat", jitter2)
             # Cue biopac on
             win.callOnFlip(print, "Cue biopac channel " + str(bodysite_word2heatcode[thisTrial["bodySite"]]))
@@ -1508,7 +1513,7 @@ for thisTrial in trials:
                 win.callOnFlip(biopac.setData, bodysite_word2heatcode[thisTrial["bodySite"]])
         if WhiteBack6.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > WhiteBack6.tStartRefresh + 15-frameTolerance:
+            if tThisFlipGlobal > WhiteBack6.tStartRefresh + CueHeatTime-frameTolerance:
                 # keep track of stop time/frame for later
                 WhiteBack6.tStop = t  # not accounting for scr refresh
                 WhiteBack6.frameNStop = frameN  # exact frame index
@@ -1525,7 +1530,7 @@ for thisTrial in trials:
             BodySiteCue5.setAutoDraw(True)
         if BodySiteCue5.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > BodySiteCue5.tStartRefresh + 15-frameTolerance:
+            if tThisFlipGlobal > BodySiteCue5.tStartRefresh + CueHeatTime-frameTolerance:
                 # keep track of stop time/frame for later
                 BodySiteCue5.tStop = t  # not accounting for scr refresh
                 BodySiteCue5.frameNStop = frameN  # exact frame index
@@ -1542,7 +1547,7 @@ for thisTrial in trials:
             OKcue2.setAutoDraw(True)
         if OKcue2.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > OKcue2.tStartRefresh + 15-frameTolerance:
+            if tThisFlipGlobal > OKcue2.tStartRefresh + CueHeatTime-frameTolerance:
                 # keep track of stop time/frame for later
                 OKcue2.tStop = t  # not accounting for scr refresh
                 OKcue2.frameNStop = frameN  # exact frame index
@@ -1559,7 +1564,7 @@ for thisTrial in trials:
             CalibrationText.setAutoDraw(True)
         if CalibrationText.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > CalibrationText.tStartRefresh + 15-frameTolerance:
+            if tThisFlipGlobal > CalibrationText.tStartRefresh + CueHeatTime-frameTolerance:
                 # keep track of stop time/frame for later
                 CalibrationText.tStop = t  # not accounting for scr refresh
                 CalibrationText.frameNStop = frameN  # exact frame index
@@ -1603,7 +1608,9 @@ for thisTrial in trials:
     # bids_df.loc[trials.thisN, 'heat_jitter'] = jitter
     # bids_df.loc[trials.thisN, 'heat_duration'] = 10
     # bids_df.loc[trials.thisN, 'hot_temp'] = 10
-    bids_trialData.extend((WhiteBack6.tStartRefresh+jitter2,jitter2,10, heatTemp))    
+    bids_trialData.extend((WhiteBack6.tStartRefresh+jitter2,jitter2,t, heatTemp))
+
+    routineTimer.reset()    
     
     """
     8g. Self-Report Ratings
