@@ -29,7 +29,7 @@ Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
 pip uninstall pyglet
 pip install pyglet==1.4.1
-
+5555
 0a. Import Libraries
 """
 
@@ -37,6 +37,7 @@ from __future__ import absolute_import, division
 
 from psychopy import locale_setup
 from psychopy import prefs
+prefs.hardware['audioLib'] = ['PTB']
 from psychopy import sound, gui, visual, core, data, event, logging, clock
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
@@ -72,7 +73,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 class simKeys:
     '''
@@ -503,7 +504,8 @@ for thisRunLoop in runLoop:
         #     )
         movie = movies[trialLoop.thisTrialN]
         movie_duration = movie.duration
-        movie_duration = 60     # debugging
+        if debug==1:
+            movie_duration = 60     # debugging
         routineTimer.reset()
         routineTimer.add(movie_duration)
 
@@ -630,6 +632,9 @@ if autorespond != 1:
 # ------Prepare to start Routine "RestingState"-------
 continueRoutine = True
 routineTimer.reset()
+if debug == 1:
+    restingstate_time=60 
+
 routineTimer.add(restingstate_time)
 # update component parameters for each repeat
 # keep track of which components have finished
