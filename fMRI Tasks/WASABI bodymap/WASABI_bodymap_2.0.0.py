@@ -220,7 +220,8 @@ Clocks, paths, etc.
 """
 # Clocks
 globalClock = core.Clock()              # to track the time since experiment started
-routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine 
+routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine
+fmriClock = core.Clock() 
 
 # Paths
 # Ensure that relative paths start from the same directory as this script
@@ -525,6 +526,14 @@ nonstimtrialTime = 13 # trial time in seconds (ISI)
 
 imaginationCueTime = 2
 imaginationTrialTime = nonstimtrialTime - imaginationCueTime
+
+if debug == 1:
+    stimtrialTime = 1 # This becomes very unreliable with the use of poll_for_change().
+    poststimTime = 1 # Ensure that nonstimtrialTime - poststimTime is at least 5 or 6 seconds.
+    nonstimtrialTime = 1 # trial time in seconds (ISI)
+
+    imaginationCueTime = 1
+    imaginationTrialTime = nonstimtrialTime - imaginationCueTime
 
 #############
 # Body Mapping Components
@@ -1129,6 +1138,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         tp_selected = 1
         if thermode_exists == 1 & tp_selected ==1:
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
+    win.callOnFlip(fmriClock, reset)
     win.flip()
     tp_selected = 0
 
@@ -1136,6 +1146,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         # Trigger
         event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
         event.waitKeys(keyList='5')   # fMRI trigger
+        fmriClock.reset()
         TR = 0.46
         core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
@@ -1219,6 +1230,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             # -------Run Routine "StimTrial"-------
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
+                onset = fmriClock.getTime()
                 t = StimTrialClock.getTime()
                 tThisFlip = win.getFutureFlipTime(clock=StimTrialClock)
                 tThisFlipGlobal = win.getFutureFlipTime(clock=None)
@@ -1283,7 +1295,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             duration = timeit.default_timer()-startTime # Consider comparing with TTLs output.
             bodymap_trial = []
-            bodymap_trial.extend((fix_cross.tStartRefresh, duration, trial_type, bodySiteData, temperature))
+            bodymap_trial.extend((onset, duration, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             routineTimer.reset()
 
@@ -1323,6 +1335,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             # -------Run Routine "NonStimTrial"-------
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
+                onset = fmriClock.getTime()
                 t = NonStimTrialClock.getTime()
                 tThisFlip = win.getFutureFlipTime(clock=NonStimTrialClock)
                 tThisFlipGlobal = win.getFutureFlipTime(clock=None)
@@ -1424,10 +1437,10 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             cue_duration = fix_cross.tStartRefresh-BodySiteCue.tStartRefresh
             trial_duration = TrialEndTime - cue_duration
             bodymap_trial = []
-            bodymap_trial.extend((BodySiteCue.tStartRefresh, cue_duration, "3-cue", bodySiteData, temperature))
+            bodymap_trial.extend((onset, cue_duration, "3-cue", bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             bodymap_trial = []
-            bodymap_trial.extend((fix_cross.tStartRefresh, trial_duration, "3-trial", bodySiteData, temperature))
+            bodymap_trial.extend((onset+cue_duration, trial_duration, "3-trial", bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             routineTimer.reset()
             thisExp.nextEntry()
