@@ -67,7 +67,7 @@ from builtins import range
 import pandas as pd
 import collections
 try:
-    from collections import OrderedDict
+    from collections import OrderedDict21343
 except ImportError:
     OrderedDict=dict
 
@@ -1138,7 +1138,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         tp_selected = 1
         if thermode_exists == 1 & tp_selected ==1:
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
-    win.callOnFlip(fmriClock, reset)
+    win.callOnFlip(fmriClock.reset)
     win.flip()
     tp_selected = 0
 
