@@ -73,7 +73,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 
 class simKeys:
     '''
@@ -138,12 +138,8 @@ if biopac_exists == 1:
 
 """
 1. Experimental Parameters
-Clocks, paths, etc.
+Paths, etc.
 """
-# Clocks
-globalClock = core.Clock()  # to track the time since experiment started
-routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
-
 # Paths
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -151,6 +147,7 @@ os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
 video_dir = main_dir + os.sep + "stimuli" + os.sep + "videos"
+
 """
 2. Start Experimental Dialog Boxes
 """
@@ -423,8 +420,6 @@ if BeginTask.keys != None:  # we had a response
 thisExp.addData('BeginTask.started', BeginTask.tStartRefresh)
 thisExp.addData('BeginTask.stopped', BeginTask.tStopRefresh)
 thisExp.nextEntry()
-# Start a new BIDS data collection array
-hyperalignment_bids_data = []
 # the Routine "Introduction" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
@@ -482,11 +477,13 @@ for thisRunLoop in runLoop:
         start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
         start.draw()  # Automatically draw every frame
         win.flip()
+        fmriStart = globalClock.getTime()
 
         if autorespond != 1:
             # Trigger
             event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
             event.waitKeys(keyList='5')   # fMRI trigger
+            fmriStart = globalClock.getTime()
             TR = 0.46
             core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
@@ -503,9 +500,11 @@ for thisRunLoop in runLoop:
         #     depth=-1.0
         #     )
         movie = movies[trialLoop.thisTrialN]
+        # Start a new BIDS data collection array for each run
+        hyperalignment_bids_data = []
         movie_duration = movie.duration
         if debug==1:
-            movie_duration = 60     # debugging
+            movie_duration = 10     # debugging
         routineTimer.reset()
         routineTimer.add(movie_duration)
 
@@ -525,6 +524,7 @@ for thisRunLoop in runLoop:
         frameN = -1
         
         # -------Run Routine "Movie"-------
+        onset = globalClock.getTime() - fmriStart 
         while continueRoutine and routineTimer.getTime() > 0:
             # get current time
             t = MovieClock.getTime()
@@ -584,13 +584,20 @@ for thisRunLoop in runLoop:
         trialLoop.addData('movie.stopped', movie.tStopRefresh)
         movie.stop()
         hyperalignment_trial = []
-        hyperalignment_trial.extend((movie.tStartRefresh, t, movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile']))
+        hyperalignment_trial.extend((onset, t, movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile']))
         hyperalignment_bids_data.append(hyperalignment_trial)
 
         # the Routine "Movie" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()
-            
+
+        """
+        9. Save Run File
+        """
+        bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, str(trialLoop.thisTrialN+1))
+        hyperalignment_bids_data = pd.DataFrame(hyperalignment_bids_data, columns = ['onset','duration','condition'])
+        hyperalignment_bids_data.to_csv(bids_run_filename, sep="\t")
+
         """
         8d. End of a Movie, Wait for Experimenter instructions to begin next run
         """   
@@ -618,14 +625,16 @@ for thisRunLoop in runLoop:
 start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
 start.draw()  # Automatically draw every frame
 win.flip()
-
+fmriStart = globalClock.getTime()
 if autorespond != 1:
     # Trigger
     event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
     event.waitKeys(keyList='5')   # fMRI trigger
+    fmriStart = globalClock.getTime()
     TR = 0.46
     core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
+hyperalignment_bids_data = []
 """
 8f. Resting State
 """
@@ -633,7 +642,7 @@ if autorespond != 1:
 continueRoutine = True
 routineTimer.reset()
 if debug == 1:
-    restingstate_time=60 
+    restingstate_time=10 
 
 routineTimer.add(restingstate_time)
 # update component parameters for each repeat
@@ -653,6 +662,7 @@ RestingStateClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
 # -------Run Routine "RestingState"-------
+onset = globalClock.getTime() - fmriStart 
 while continueRoutine and routineTimer.getTime() > 0:
     # get current time
     t = RestingStateClock.getTime()
@@ -707,7 +717,7 @@ for thisComponent in RestingStateComponents:
 thisExp.addData('fix_cross.started', fix_cross.tStartRefresh)
 thisExp.addData('fix_cross.stopped', fix_cross.tStopRefresh)
 hyperalignment_trial = []
-hyperalignment_trial.extend((fix_cross.tStartRefresh, t, "RestingState"))
+hyperalignment_trial.extend((onset, t, "RestingState"))
 hyperalignment_bids_data.append(hyperalignment_trial)
 
 thisExp.nextEntry()
@@ -720,13 +730,9 @@ win.flip()
 """
 9. Save data into BIDS .TSV, Excel and .CSV formats and Tying up Loose Ends
 """ 
-# nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
-# bids_filename = _thisDir + os.sep + u'data\\sub-%03d_ses-%02d_task-%s_acq-order-%d_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'nback', order_no)
-# nback_bids_data.to_csv(bids_filename, sep="\t")
-
-bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName)
+bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, '3')
 hyperalignment_bids_data = pd.DataFrame(hyperalignment_bids_data, columns = ['onset','duration','condition'])
-hyperalignment_bids_data.to_csv(bids_filename, sep="\t")
+hyperalignment_bids_data.to_csv(bids_run_filename, sep="\t")
 
 # these shouldn't be strictly necessary (should auto-save)
 thisExp.saveAsWideText(psypy_filename+'.csv', delim='auto')

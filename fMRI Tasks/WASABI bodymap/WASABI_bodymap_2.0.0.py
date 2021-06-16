@@ -83,11 +83,11 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-autorespond = 1
+debug = 0
+autorespond = 0
 # Device togglers
-biopac_exists = 0
-thermode_exists = 0
+biopac_exists = 1
+thermode_exists = 1
 
 class simKeys:
     '''
@@ -214,21 +214,6 @@ if thermode_exists == 1:
     # Make sure medocControl.py is in the same directory 
     from medocControl import *
 
-"""
-1. Experimental Parameters
-Clocks, paths, etc.
-"""
-# Clocks
-globalClock = core.Clock()              # to track the time since experiment started
-routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine
-# fmriClock = core.Clock() 
-
-# Paths
-# Ensure that relative paths start from the same directory as this script
-_thisDir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(_thisDir)
-main_dir = _thisDir
-stimuli_dir = main_dir + os.sep + "stimuli"
 """
 2. Start Experimental Dialog Boxes
 """
@@ -409,6 +394,23 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
+
+"""
+1. Experimental Parameters
+Clocks, paths, etc.
+"""
+# Clocks
+globalClock = core.Clock()              # to track the time since experiment started
+routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine
+# fmriClock = core.Clock() 
+
+# Paths
+# Ensure that relative paths start from the same directory as this script
+_thisDir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(_thisDir)
+main_dir = _thisDir
+stimuli_dir = main_dir + os.sep + "stimuli"
+
 """
 4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
@@ -530,7 +532,7 @@ imaginationTrialTime = nonstimtrialTime - imaginationCueTime
 if debug == 1:
     stimtrialTime = 1 # This becomes very unreliable with the use of poll_for_change().
     poststimTime = 1 # Ensure that nonstimtrialTime - poststimTime is at least 5 or 6 seconds.
-    nonstimtrialTime = 1 # trial time in seconds (ISI)
+    nonstimtrialTime = 2 # trial time in seconds (ISI)
 
     imaginationCueTime = 1
     imaginationTrialTime = nonstimtrialTime - imaginationCueTime
@@ -1228,6 +1230,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             StimTrialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
             frameN = -1
             # -------Run Routine "StimTrial"-------
+            onset = globalClock.getTime() - fmriStart   
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = StimTrialClock.getTime()
@@ -1235,7 +1238,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 tThisFlipGlobal = win.getFutureFlipTime(clock=None)
                 frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
                 # update/draw components on each frame
-                
+
                 # *fix_cross* updates
                 if fix_cross.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
                     # keep track of start time/frame for later
@@ -1294,7 +1297,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             # duration = timeit.default_timer()-startTime # Consider comparing with TTLs output.
             bodymap_trial = []
-            bodymap_trial.extend((fix_cross.tStartRefresh - fmriStart, t, trial_type, bodySiteData, temperature))
+            # bodymap_trial.extend((fix_cross.tStartRefresh - fmriStart, t, trial_type, bodySiteData, temperature))
+            bodymap_trial.extend((onset, t, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             routineTimer.reset()
 
@@ -1332,6 +1336,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             frameN = -1
             
             # -------Run Routine "NonStimTrial"-------
+            onset = globalClock.getTime() - fmriStart
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = NonStimTrialClock.getTime()
@@ -1433,12 +1438,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             trials.addData('fix_cross.started', fix_cross.tStartRefresh)
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             cue_duration = fix_cross.tStartRefresh-BodySiteCue.tStartRefresh
-            trial_duration = TrialEndTime - cue_duration
+            trial_duration = t - cue_duration
             bodymap_trial = []
-            bodymap_trial.extend((BodySiteCue.tStartRefresh - fmriStart, cue_duration, "3-cue", bodySiteData, temperature))
+            # bodymap_trial.extend((BodySiteCue.tStartRefresh - fmriStart, cue_duration, "3-cue", bodySiteData, temperature))
+            bodymap_trial.extend((onset, cue_duration, "3-cue", bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             bodymap_trial = []
-            bodymap_trial.extend((fix_cross.tStartRefresh - fmriStart, trial_duration, "3-trial", bodySiteData, temperature))
+            bodymap_trial.extend((onset + cue_duration, trial_duration, "3-trial", bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             routineTimer.reset()
             thisExp.nextEntry()
