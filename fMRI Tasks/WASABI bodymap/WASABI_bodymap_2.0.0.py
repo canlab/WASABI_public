@@ -215,8 +215,26 @@ if thermode_exists == 1:
     from medocControl import *
 
 """
+1. Experimental Parameters
+Clocks, paths, etc.
+"""
+# Clocks
+globalClock = core.Clock()              # to track the time since experiment started
+routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine
+# fmriClock = core.Clock() 
+
+# Paths
+# Ensure that relative paths start from the same directory as this script
+_thisDir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(_thisDir)
+main_dir = _thisDir
+stimuli_dir = main_dir + os.sep + "stimuli"
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'Calibration')
+
+"""
 2. Start Experimental Dialog Boxes
 """
+
 # Upload participant file: Browse for file
 psychopyVersion = '2020.2.5'
 expInfo = {
@@ -282,7 +300,7 @@ if debug==1:
         'Abdomen': 40
     }
 else:
-    dlg1 = gui.fileOpenDlg(tryFilePath="", tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
+    dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
     if dlg1!=None:
         if "_task-Calibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
@@ -340,7 +358,7 @@ else:
                 dlg1=None
         else:
             errorDlg2 = gui.Dlg(title="Error - invalid file")
-            errorDlg2.addText("Selected file is not a valid calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
+            errorDlg2.addText("Selected file is not a valid1324 calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
             errorDlg2.show()
             dlg1=None
     if dlg1==None:
@@ -393,23 +411,6 @@ if expInfo['frameRate'] != None:
     frameDur = 1.0 / round(expInfo['frameRate'])
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
-
-
-"""
-1. Experimental Parameters
-Clocks, paths, etc.
-"""
-# Clocks
-globalClock = core.Clock()              # to track the time since experiment started
-routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine
-# fmriClock = core.Clock() 
-
-# Paths
-# Ensure that relative paths start from the same directory as this script
-_thisDir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(_thisDir)
-main_dir = _thisDir
-stimuli_dir = main_dir + os.sep + "stimuli"
 
 """
 4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs

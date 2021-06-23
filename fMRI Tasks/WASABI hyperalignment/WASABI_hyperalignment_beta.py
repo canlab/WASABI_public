@@ -24,12 +24,12 @@ sub-XX_task-Nback_run-X_events.tsv
 42x trials per file with the following
 headers:
 onset   duration    trial_type  body_site
-5555
+
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
 pip uninstall pyglet
 pip install pyglet==1.4.1
-5555
+
 0a. Import Libraries
 """
 

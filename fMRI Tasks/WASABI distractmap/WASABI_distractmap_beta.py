@@ -151,13 +151,15 @@ routineTimer = core.CountdownTimer()  # to track time remaining of each (non-sli
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
+
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__), os.path.pardir, 'Calibration')
 """
 2. Start Experimental Dialog Boxes
 """
 # Upload participant file: Browse for file
 # Store info about the experiment session
 psychopyVersion = '2020.2.10'
-expName = 'WASABI Nback'  # from the Builder filename that created this script
+expName = 'WASABI distractmap'  # from the Builder filename that created this script
 if debug == 1:
     expInfo = {
     'subject number': '99', 
@@ -175,12 +177,119 @@ else:
     'scanner': '' 
     }
 
-dlg = gui.DlgFromDict(title="WASABI Task-T1 Test", dictionary=expInfo, sortKeys=False) 
-if dlg.OK == False:
-    core.quit()  # user pressed cancel
+## Limit the entries of this to hot temperatures (32-49 degrees in half-degree-steps)
+participant_settingsHeat = {
+    'Left Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for left face
+    'Right Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],   # Calibrated Temp for right face
+    'Left Arm': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for left arm
+    'Right Arm': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for right arm
+    'Left Leg': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for left leg
+    'Right Leg': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for right leg
+    'Chest': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],        # Calibrated Temp for chest
+    'Abdomen': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49]       # Calibrated Temp for abdomen
+    }
+## Limit the entries of this to hot temperatures (32-49 degrees in half-degree-steps)
+participant_settingsWarm = {
+    'Left Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for left face
+    'Right Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for right face
+    'Left Arm': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],      # Calibrated Temp for left arm
+    'Right Arm': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for right arm
+    'Left Leg': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],      # Calibrated Temp for left leg
+    'Right Leg': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for right leg
+    'Chest': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],         # Calibrated Temp for chest
+    'Abdomen': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49]       # Calibrated Temp for abdomen
+    }
+
+# Load the subject's calibration file and ensure that it is valid
+if debug==1:
+    expInfo = {
+        'subject number': '999', 
+        'gender': 'm',
+        'bodymap first- or second-half (1 or 2)': '2',
+        'session': '99',
+        'handedness': 'r', 
+        'scanner': 'TEST'
+    }
+    participant_settingsHeat = {
+        'Left Face': 46,
+        'Right Face': 46,
+        'Left Arm': 46,
+        'Right Arm': 46,
+        'Left Leg': 46,
+        'Right Leg': 46,
+        'Chest': 46,
+        'Abdomen': 46
+    }
+    participant_settingsWarm = {
+        'Left Face': 40,
+        'Right Face': 40,
+        'Left Arm': 40,
+        'Right Arm': 40,
+        'Left Leg': 40,
+        'Right Leg': 40,
+        'Chest': 40,
+        'Abdomen': 40
+    }
+else:
+    dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
+    if dlg1!=None:
+        if "_task-Calibration_participants.tsv" in dlg1[0]:
+            # Read in participant info csv and convert to a python dictionary
+            a = pd.read_csv(dlg1[0], delimiter='\t', index_col=0, header=0, squeeze=True)
+            if a.shape == (1,39):
+                participant_settingsHeat = {}
+                participant_settingsWarm = {}
+                p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
+                expInfo['subject number'] = p_info['participant_id']
+                expInfo['gender'] = p_info['gender']
+                expInfo['handedness'] = p_info['handedness']
+                bodySites = p_info['calibration_order']
+                # Heat Settings
+                participant_settingsHeat['Left Face'] = p_info['leftface_ht']
+                participant_settingsHeat['Right Face'] = p_info['rightface_ht']
+                participant_settingsHeat['Left Arm'] = p_info['leftarm_ht']
+                participant_settingsHeat['Right Arm'] = p_info['rightarm_ht']
+                participant_settingsHeat['Left Leg'] = p_info['leftleg_ht']
+                participant_settingsHeat['Right Leg'] = p_info['rightleg_ht']
+                participant_settingsHeat['Chest'] = p_info['chest_ht']
+                participant_settingsHeat['Abdomen'] = p_info['abdomen_ht']
+                ses_num = str(1) 
+                expInfo2 = {
+                'session': ses_num,
+                'scanner': ''
+                }
+                dlg2 = gui.DlgFromDict(title="WASABI Distraction Map Scan", dictionary=expInfo2, sortKeys=False) 
+                expInfo['session'] = expInfo2['session']
+                expInfo['scanner'] = expInfo2['scanner']
+                if dlg2.OK == False:
+                    core.quit()  # user pressed cancel
+            else:
+                errorDlg1 = gui.Dlg(title="Error - invalid file")
+                errorDlg1.addText("Selected file is not a valid calibration file. Data is incorrectly formatted. (Wrong dimensions)")
+                errorDlg1.show()
+                dlg1=None
+        else:
+            errorDlg2 = gui.Dlg(title="Error - invalid file")
+            errorDlg2.addText("Selected file is not a valid calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
+            errorDlg2.show()
+            dlg1=None
+    if dlg1==None:
+        dlg2 = gui.DlgFromDict(title="WASABI Body-Site Scan", dictionary=expInfo, sortKeys=False)
+        if dlg2.OK == False:
+            core.quit()  # user pressed cancel
+        pphDlg = gui.DlgFromDict(participant_settingsHeat, 
+                                title='Participant Heat Parameters')
+        if pphDlg.OK == False:
+            core.quit()
+        ppwDlg = gui.DlgFromDict(participant_settingsWarm, 
+                                title='Participant Warmth Parameters')
+        if ppwDlg.OK == False:
+            core.quit()
+
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
+
 """ 
 3. Setup the Window
 fullscr = False for testing, True for running participants
@@ -209,12 +318,14 @@ else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
 win.mouseVisible = False # Make the mouse invisible for the remainder of the experiment
+
 """
 4. Prepare files to write
 """
 sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
+
 psypy_filename = os.path.join(sub_dir, '%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date']))
 
 # An ExperimentHandler isn't essential but helps with data saving
