@@ -356,6 +356,12 @@ moveTrialTime = 16.5
 trialTime = cueTime + moveTrialTime # 18 seconds
 restTime = trialTime # 18 seconds
 
+if debug == 1:
+    cueTime = 1
+    moveTrialTime = 1
+    trialTime = 2
+    restTime = 2
+
 #############
 # Movement Mapping Components
 #############
@@ -670,11 +676,13 @@ for run in range(len(runList)):
     start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
     start.draw()  # Automatically draw every frame
     win.flip()
+    fmriStart = globalClock.getTime()
 
     if autorespond != 1:
         # Trigger
         event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
         event.waitKeys(keyList='5')   # fMRI trigger
+        fmriStart = globalClock.getTime()
         TR = 0.46
         core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
@@ -736,6 +744,7 @@ for run in range(len(runList)):
             MovementTrialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
             frameN = -1
             # -------Run Routine "MovementTrial"-------
+            onset = globalClock.getTime() - fmriStart
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = MovementTrialClock.getTime()
@@ -826,11 +835,13 @@ for run in range(len(runList)):
             thisExp.addData('BodySiteCue.stopped', BodySiteCue.tStopRefresh)
             thisExp.addData('fix_cross.started', fix_cross.tStartRefresh)
             thisExp.addData('fix_cross.stopped', fix_cross.tStopRefresh)
+            cue_duration = fix_cross.tStartRefresh-BodySiteCue.tStartRefresh
+            trial_duration = t - cue_duration
             movemap_trial = []
-            movemap_trial.extend((BodySiteCue.tStartRefresh, t - BodySiteCue.tStartRefresh, "cue", conditionData))
+            movemap_trial.extend((onset, cue_duration, "cue", conditionData))
             movemap_bids_data.append(movemap_trial)
             movemap_trial = []
-            movemap_trial.extend((fix_cross.tStartRefresh, t - fix_cross.tStartRefresh, "movement", conditionData))
+            movemap_trial.extend((onset+cue_duration, trial_duration, "movement", conditionData))
             movemap_bids_data.append(movemap_trial)
             routineTimer.reset()
         else:
@@ -858,6 +869,7 @@ for run in range(len(runList)):
             MovementTrialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
             frameN = -1
             # -------Run Routine "RestTrial"-------
+            onset = globalClock.getTime() - fmriStart
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = MovementTrialClock.getTime()
@@ -909,7 +921,7 @@ for run in range(len(runList)):
             thisExp.addData('fix_cross.started', fix_cross.tStartRefresh)
             thisExp.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             movemap_trial = []
-            movemap_trial.extend((fix_cross.tStartRefresh, t - fix_cross.tStartRefresh, "rest", conditionData))
+            movemap_trial.extend((onset, t, "rest", conditionData))
             movemap_bids_data.append(movemap_trial)
             routineTimer.reset()
 

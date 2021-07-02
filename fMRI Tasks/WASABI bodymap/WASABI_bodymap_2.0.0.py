@@ -67,7 +67,7 @@ from builtins import range
 import pandas as pd
 import collections
 try:
-    from collections import OrderedDict
+    from collections import OrderedDict21343
 except ImportError:
     OrderedDict=dict
 
@@ -220,7 +220,8 @@ Clocks, paths, etc.
 """
 # Clocks
 globalClock = core.Clock()              # to track the time since experiment started
-routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine 
+routineTimer = core.CountdownTimer()    # to track time remaining of each (non-slip) routine
+# fmriClock = core.Clock() 
 
 # Paths
 # Ensure that relative paths start from the same directory as this script
@@ -228,9 +229,12 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'Calibration')
+
 """
 2. Start Experimental Dialog Boxes
 """
+
 # Upload participant file: Browse for file
 psychopyVersion = '2020.2.5'
 expInfo = {
@@ -296,7 +300,7 @@ if debug==1:
         'Abdomen': 40
     }
 else:
-    dlg1 = gui.fileOpenDlg(tryFilePath="", tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
+    dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
     if dlg1!=None:
         if "_task-Calibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
@@ -354,7 +358,7 @@ else:
                 dlg1=None
         else:
             errorDlg2 = gui.Dlg(title="Error - invalid file")
-            errorDlg2.addText("Selected file is not a valid calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
+            errorDlg2.addText("Selected file is not a valid1324 calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
             errorDlg2.show()
             dlg1=None
     if dlg1==None:
@@ -525,6 +529,14 @@ nonstimtrialTime = 13 # trial time in seconds (ISI)
 
 imaginationCueTime = 2
 imaginationTrialTime = nonstimtrialTime - imaginationCueTime
+
+if debug == 1:
+    stimtrialTime = 1 # This becomes very unreliable with the use of poll_for_change().
+    poststimTime = 1 # Ensure that nonstimtrialTime - poststimTime is at least 5 or 6 seconds.
+    nonstimtrialTime = 2 # trial time in seconds (ISI)
+
+    imaginationCueTime = 1
+    imaginationTrialTime = nonstimtrialTime - imaginationCueTime
 
 #############
 # Body Mapping Components
@@ -1131,11 +1143,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             win.callOnFlip(sendCommand, 'select_tp', thermodeCommand)
     win.flip()
     tp_selected = 0
-
+    fmriStart = globalClock.getTime()
+    
     if autorespond != 1:
         # Trigger
         event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
         event.waitKeys(keyList='5')   # fMRI trigger
+        fmriStart = globalClock.getTime()
         TR = 0.46
         core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
@@ -1217,6 +1231,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             StimTrialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
             frameN = -1
             # -------Run Routine "StimTrial"-------
+            onset = globalClock.getTime() - fmriStart   
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = StimTrialClock.getTime()
@@ -1224,7 +1239,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 tThisFlipGlobal = win.getFutureFlipTime(clock=None)
                 frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
                 # update/draw components on each frame
-                
+
                 # *fix_cross* updates
                 if fix_cross.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
                     # keep track of start time/frame for later
@@ -1281,9 +1296,10 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                     thisComponent.setAutoDraw(False)
             trials.addData('fix_cross.started', fix_cross.tStartRefresh)
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
-            duration = timeit.default_timer()-startTime # Consider comparing with TTLs output.
+            # duration = timeit.default_timer()-startTime # Consider comparing with TTLs output.
             bodymap_trial = []
-            bodymap_trial.extend((fix_cross.tStartRefresh, duration, trial_type, bodySiteData, temperature))
+            # bodymap_trial.extend((fix_cross.tStartRefresh - fmriStart, t, trial_type, bodySiteData, temperature))
+            bodymap_trial.extend((onset, t, trial_type, bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             routineTimer.reset()
 
@@ -1321,6 +1337,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             frameN = -1
             
             # -------Run Routine "NonStimTrial"-------
+            onset = globalClock.getTime() - fmriStart
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = NonStimTrialClock.getTime()
@@ -1422,12 +1439,13 @@ for thisrunLoop in runLoop:                     # Loop through each run.
             trials.addData('fix_cross.started', fix_cross.tStartRefresh)
             trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
             cue_duration = fix_cross.tStartRefresh-BodySiteCue.tStartRefresh
-            trial_duration = TrialEndTime - cue_duration
+            trial_duration = t - cue_duration
             bodymap_trial = []
-            bodymap_trial.extend((BodySiteCue.tStartRefresh, cue_duration, "3-cue", bodySiteData, temperature))
+            # bodymap_trial.extend((BodySiteCue.tStartRefresh - fmriStart, cue_duration, "3-cue", bodySiteData, temperature))
+            bodymap_trial.extend((onset, cue_duration, "3-cue", bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             bodymap_trial = []
-            bodymap_trial.extend((fix_cross.tStartRefresh, trial_duration, "3-trial", bodySiteData, temperature))
+            bodymap_trial.extend((onset + cue_duration, trial_duration, "3-trial", bodySiteData, temperature))
             bodymap_bids_data.append(bodymap_trial)
             routineTimer.reset()
             thisExp.nextEntry()

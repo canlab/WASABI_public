@@ -1,0 +1,44 @@
+9.7684 	WARNING 	Requested an unavailable screen number - using first available.
+11.6801 	EXP 	Created Begin = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='Begin', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+11.8585 	EXP 	Created movie = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename=str(...), flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='movie', noAudio=False, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=method-wrapper(...), units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+25.3149 	EXP 	Created movie = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename=str(...), flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='movie', noAudio=False, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=method-wrapper(...), units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+30.7843 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.3, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+30.7845 	EXP 	window1: mouseVisible = False
+30.8640 	EXP 	movie: autoLog = True
+30.8640 	EXP 	movie: movie = 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\kungfury.mp4'
+30.8640 	EXP 	movie: size = array([1920., 1080.])
+30.8640 	EXP 	movie: ori = 0
+30.8640 	EXP 	movie: autoLog = True
+30.8640 	EXP 	movie: movie = 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv'
+30.8640 	EXP 	movie: size = array([1024.,  800.])
+30.8640 	EXP 	movie: ori = 0
+30.8640 	EXP 	Begin: autoDraw = True
+33.2404 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+33.2410 	EXP 	New trial (rep=0, index=0): OrderedDict([('runSeq', [OrderedDict([('moviefile', 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\kungfury.mp4')]), OrderedDict([('moviefile', 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv')])])])
+33.2413 	EXP 	Created sequence: sequential, trialTypes=2, nReps=1, seed=None
+33.2416 	EXP 	New trial (rep=0, index=0): OrderedDict([('moviefile', 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\kungfury.mp4')])
+33.2795 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+33.2813 	DATA 	Keypress: space
+33.2856 	EXP 	Begin: autoDraw = False
+34.5251 	DATA 	Keypress: s
+35.9971 	DATA 	Keypress: 5
+38.5580 	DATA 	Keypress: 5
+38.5584 	DATA 	Keypress: 5
+38.5587 	DATA 	Keypress: 5
+38.5590 	DATA 	Keypress: 5
+38.5593 	DATA 	Keypress: 5
+38.5597 	DATA 	Keypress: 5
+38.5600 	DATA 	Keypress: 5
+38.5603 	DATA 	Keypress: 5
+38.5606 	DATA 	Keypress: 5
+38.5609 	DATA 	Keypress: 5
+38.5612 	DATA 	Keypress: 5
+38.5615 	DATA 	Keypress: 5
+38.5618 	DATA 	Keypress: 5
+38.5891 	DATA 	Keypress: 5
+38.7490 	DATA 	Keypress: 5
+38.7577 	EXP 	Sound  started
+38.7689 	EXP 	movie: autoDraw = True
+38.9793 	DATA 	Keypress: 5
+50.7466 	DATA 	Keypress: escape
+51.5428 	EXP 	window1: mouseVisible = True
