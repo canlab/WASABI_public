@@ -67,7 +67,7 @@ from builtins import range
 import pandas as pd
 import collections
 try:
-    from collections import OrderedDict21343
+    from collections import OrderedDict
 except ImportError:
     OrderedDict=dict
 
