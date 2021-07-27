@@ -69,10 +69,10 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
+debug = 1
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 
 class simKeys:
     '''
@@ -152,7 +152,12 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 
-calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__), os.path.pardir, 'Calibration')
+instructions_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instruction_stim')
+
+# Brings up the Calibration/Data folder to load the appropriate calibration data right away.
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'Calibration', 'data')
+
+
 """
 2. Start Experimental Dialog Boxes
 """
@@ -362,14 +367,14 @@ defaultKeyboard = keyboard.Keyboard()
 NbackInstructionsClock = core.Clock()
 NbackInstructions = visual.TextStim(win=win, name='Nbackinstructions',
     text='Welcome to the n-back task \nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue.',
-    font='Arial',
-    pos=(0, 0), units='height', height=0.05, 
+    font='Arial', wrapWidth=1.75,
+    pos=(0, 0.0), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
 NbackInstructionImg = visual.ImageStim(
     win=win,
     name='NbackInstructionImg', 
     image= 'instruction_stim/1.png', mask=None,
-    ori=0, pos=(0, 0), size=(0.3, 0.3),
+    ori=0, pos=(0, 0.1), size=(0.3, 0.3),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
@@ -383,41 +388,72 @@ NbackInstructionWideImg = visual.ImageStim(
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 
-ClickPrompt = visual.TextStim(win=win, name='Nbackinstructions',
-    text='Welcome to the n-back task \nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue.',
+ClickPrompt = visual.TextStim(win=win, name='ClickPrompt',
+    text='',
     font='Arial',
-    pos=(0, 0), units='height', height=0.05, 
+    pos=(0, -.4), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
 
 NbackStart = keyboard.Keyboard()
 
 # Initialize components for Routine "ButtonTest"
-ButtonTestText = "Button/key 1 \nindicates \"YES\", a match.\n\n\n\nButton/key 2\n indicates \"NO\", a mismatch."
+ButtonTestClock = core.Clock()
+box1Text = visual.TextStim(win=win, name='box1Text',
+    text="Button/key 1 \nindicates \"Yes\", a match.",
+    font='Arial',
+    pos=(0, 0.1), units='height', height=0.05, 
+    color='white', colorSpace='rgb', opacity=1)
+box2Text = visual.TextStim(win=win, name='box2Text',
+    text="Button/key 2 \nindicates \"No\", a mismatch.",
+    font='Arial',
+    pos=(0, -0.1), units='height', height=0.05, 
+    color='white', colorSpace='rgb', opacity=1)
+box1Check = visual.TextStim(win=win, name='box1Check',
+    text="X",
+    font='Arial',
+    pos=(-.2, .15), units='height', height=0.05, 
+    color='red', colorSpace='rgb', opacity=1)
+box2Check = visual.TextStim(win=win, name='box2Check',
+    text="X",
+    font='Arial',
+    pos=(-.2, -0.05), units='height', height=0.05, 
+    color='red', colorSpace='rgb', opacity=1)
 box1 = visual.Rect(
     win=win, name='box1',
     width=(0.05, 0.05)[0], height=(0.05, 0.05)[1],
-    ori=0, pos=(0, 0.1),
-    lineWidth=1,     colorSpace='rgb',  lineColor=[1,1,1], fillColor=[1,1,1],
+    ori=0, 
+    pos=(-0.2, 0.15),
+    lineWidth=1, lineColorSpace='rgb',
+    fillColorSpace='rgb', lineColor=[1,1,1], fillColor=[1,1,1],
     opacity=1, depth=0.0, interpolate=True)
 box2 = visual.Rect(
     win=win, name='box2',
     width=(0.05, 0.05)[0], height=(0.05, 0.05)[1],
-    ori=0, pos=(0, 0),
-    lineWidth=1,     colorSpace='rgb',  lineColor=[1,1,1], fillColor=[1,1,1],
-    opacity=1, depth=-1.0, interpolate=True)
+    ori=0, 
+    pos=(-0.2, -0.05),
+    lineWidth=1, lineColorSpace='rgb',
+    fillColorSpace='rgb', lineColor=[1,1,1], fillColor=[1,1,1],
+    opacity=1, depth=0.0, interpolate=True)
 mouse = event.Mouse(win=win)
 x, y = [None, None]
 mouse.mouseClock = core.Clock()
+
+continueText = visual.TextStim(win=win, name='continueText',
+    text='Experimenter press [Space] to continue.',
+    font='Arial',
+    pos=(0, -.35), units='height', height=0.05, 
+    color='white', colorSpace='rgb', opacity=1)
+# continueKey = keyboard.Keyboard()
+
+incorrect_text = "Incorrect!"
+noresponse_text = "No Response!"
+correct_text = "Correct!"
 
 FeedBack = visual.TextStim(win=win, name='Feedback',
     text=incorrect_text,
     font='Arial',
     pos=(0, 0), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
-
-incorrect_text = "Incorrect!"
-noresponse_text = "No Response!"
-correct_text = "Correct!"
 
 TryAgainText = "Let's try that again...\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
 PleaseWaitText = "Please wait for the experimenter ..."
@@ -507,10 +543,10 @@ win.mouseVisible = False
 """
 6. Welcome Instructions
 """
-NbackInstructionText1 = "Welcome to the n-back task \nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue."
-NbackInstructionText2 = "During the task you will be presented a white square in one of nine positions on a grid. \n\n\n\nDepending on the instruction, your task is to indicate whether the \ncurrent position is the same as either:\nthe position on the last trial\nor the position two trials ago\n\n\nExperimenter press [Space] to continue."
-NbackInstructionText3 = "Between each trial, a fixation cross will appear in the middle of the grid. \n\n\n\nYou do not need to respond during this time. \nSimply wait for the next trial.\n\n\nExperimenter press [Space] to continue."
-NbackInstructionText4 = "1-back\n\n\nDuring 1-back you will have to indicate whether the current position matches the position that was presented in the last trial, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
+NbackInstructionText1 = "Welcome to the n-back task \n\n\nPlease read the following instructions \nvery carefully.\n\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
+NbackInstructionText2 = "During the task you will be presented a white square in one of nine positions on a grid. \n\n\n\n\n\n\nDepending on the instruction, your task is to indicate whether the \ncurrent position is the same as either:\nthe position on the last trial\nor the position two trials ago\n\n\nExperimenter press [Space] to continue."
+NbackInstructionText3 = "Between each trial, a fixation cross will appear in the middle of the grid. \n\n\n\n\n\n\n\n\nYou do not need to respond during this time. \nSimply wait for the next trial.\n\n\n\nExperimenter press [Space] to continue."
+NbackInstructionText4 = "\n1-back\n\n\n\n\n\n\n\nDuring 1-back you will have to indicate whether the current position matches the position that was presented in the last trial, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
 
 NbackInstructions.setText(NbackInstructionText1)
 NbackInstructions.draw()
@@ -518,17 +554,20 @@ win.flip()
 event.waitKeys(keyList = 'space')
 NbackInstructions.setText(NbackInstructionText2)
 NbackInstructions.draw()
-NbackInstructionImg.setImage('1.png')
+NbackInstructionImg.setImage(os.path.join(instructions_dir, '1.png'))
+NbackInstructionImg.draw()
 win.flip()
 event.waitKeys(keyList = 'space')
 NbackInstructions.setText(NbackInstructionText3)
 NbackInstructions.draw()
-NbackInstructionImg.setImage('2.png')
+NbackInstructionImg.setImage(os.path.join(instructions_dir, '2.png'))
+NbackInstructionImg.draw()
 win.flip()
 event.waitKeys(keyList = 'space')
 NbackInstructionImg.setAutoDraw(False)
 NbackInstructions.setText(NbackInstructionText4)
 NbackInstructions.draw()
+NbackInstructionImg.draw()
 win.flip()
 event.waitKeys(keyList = 'space')
 
@@ -553,9 +592,8 @@ mouse.rightButton = []
 mouse.time = []
 mouse.clicked_name = []
 gotValidClick = False  # until a click is received
-slider.reset()
 # keep track of which components have finished
-trialComponents = [box1, box2, mouse]
+trialComponents = [box1Text, box2Text, box1, box2, box1Check, box2Check, mouse, continueText]
 for thisComponent in trialComponents:
     thisComponent.tStart = None
     thisComponent.tStop = None
@@ -566,28 +604,39 @@ for thisComponent in trialComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-trialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+# trialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "trial"-------
+# -------Run Routine "ButtonTest"-------
 while continueRoutine:
+    # get current time
+    t = ButtonTestClock.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=ButtonTestClock)
+    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+
     # *box1* updates
     if box1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        box1Text.setAutoDraw(True)
         box1.setAutoDraw(True)
     
     # *box2* updates
     if box2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        box2Text.setAutoDraw(True)
         box2.setAutoDraw(True)
     
-    if mouse.getPressed()[0] == 0:
+    if mouse.getPressed()[0] == 0 & mouse.getPressed()[2] == 0:
         mouseDown = False
         
-    if mouse.getPressed()[0]==1 and box.name not in clicked and not mouseDown:
-        box.color = "black"
+    if mouse.getPressed()[0]==1 and box1.name not in clicked and not mouseDown:
+        # box1.color = "black"        # replace this with a check mark?
+        box1Check.setAutoDraw(True)
         clicked.append(box1.name)
         mouseDown = True  
-    elif mouse.getPressed()[0]==2 and box.name in clicked and not mouseDown:
-        box.color = "white"
+    if mouse.getPressed()[2]==1 and box2.name not in clicked and not mouseDown:
+        # box2.color = "black"        # replace this with a check mark?
+        box2Check.setAutoDraw(True)
         clicked.append(box2.name)
         mouseDown = True
 
@@ -615,12 +664,20 @@ while continueRoutine:
                 mouse.rightButton.append(buttons[2])
                 mouse.time.append(mouse.mouseClock.getTime())
     
+    if box1.name in clicked and box2.name in clicked:
+        continueText.setAutoDraw(True)
+        win.flip()
+        continueRoutine = False
+
+
     # check for quit (typically the Esc key)
     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
         core.quit()
     
     # check if all components have finished
     if not continueRoutine:  # a component has requested a forced-end of Routine
+        win.flip()
+        event.waitKeys(keyList = 'space')
         break
     continueRoutine = False  # will revert to True if at least one component still running
     for thisComponent in trialComponents:
@@ -632,7 +689,7 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "trial"-------
+# -------Ending Routine "ButtonTest"-------
 for thisComponent in trialComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
@@ -642,45 +699,51 @@ routineTimer.reset()
 6. Start Practice
 """
 
-NbackInstructionText5 = "In the above 1-back example you should make a \"yes\" response (left click) on trial 3, since the position is the same as the position on trial 2, while the other trials require a \"no\" (right click) response."
+NbackInstructionText5 = "In the above 1-back example you should make a \"yes\" response (left click) on trial 3, since the position is the same as the position on trial 2, while the other trials require a \"no\" (right click) response.\n\n\n\n\n\n\n\n\n\n"
 ClickToContinueText = "Click to continue"
 # Picture Loop 3-16.png
 NbackInstructionText6 = "First, we will practice some trials so that you can get used to the procedure.\n\n\nAfter each response you'll see whether your response was correct, incorrect, or whether you forgot to respond.\n\n\n\n\n\nGood Luck!"
 ClickToStartText = "Click to start practice"
 NbackInstructionText7 = "1-back\n\n\nDuring 1-back you will have to indicate whether the current position matches the position that was presented in the last trial, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
 
-
 continueRoutine = True
 InstructionImageArray = ['3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png', '11.png', '12.png', '13.png', '14.png', '15.png', '16.png']
 iteration = 0
 NbackInstructions.setText(NbackInstructionText5)
-NbackInstructions.draw()
+NbackInstructions.setAutoDraw(True)
 ClickPrompt.setText(ClickToContinueText)
 mouse = event.Mouse()
 prevButtonState = mouse.getPressed()  # if button is down already this ISN'T a new click
-while continueRoutine == True:
-    for i in range(InstructionImageArray.len()):
-        NbackInstructionWideImg.setImage(InstructionImageArray[i])
+buttons = prevButtonState
+while (continueRoutine == True and iteration != 1 and mouse.getPressed()[0] != 1) :
+    for i in range(len(InstructionImageArray)):
+        # if iteration == 1:
+        #     buttons = mouse.getPressed()
+        NbackInstructionWideImg.setImage(os.path.join(instructions_dir, InstructionImageArray[i]))
         core.wait(1)
-        NbackInstructionWideImg.draw()
+        NbackInstructionWideImg.setAutoDraw(True)
         win.flip()
-        if i == InstructionImageArray.len():
+        if i >= len(InstructionImageArray)-1:
             iteration = 1
-        if iteration == 1:
-            ClickPrompt.draw()
-            buttons = mouse.getPressed()
-            if buttons != prevButtonState:  # button state changed?
-                prevButtonState = buttons
-                if sum(buttons) > 0:
-                    continueRoutine = False
+            ClickPrompt.setAutoDraw(True)
+        # if iteration == 1:
+        #     # buttons = mouse.getPressed()
+        #     win.flip()
+        #     # if buttons != prevButtonState:  # button state changed?
+        #     if mouse.getPressed() 
+        #         NbackInstructionWideImg.setAutoDraw(False)
+        #         ClickPrompt.setAutoDraw(False)
+        #         win.flip()
+        #         continueRoutine = False
+        #         break
 NbackInstructions.setText(NbackInstructionText6)
-NbackInstructions.draw()
+NbackInstructions.setAutoDraw(True)
 win.flip()
 core.wait(2)
 mouse = event.Mouse()
 while(mouse.getPressed()[0] != 1):
     ClickPrompt.setText(ClickToStartText)
-    ClickPrompt.draw()
+    ClickPrompt.setAutoDraw(True)
     win.flip()
 
 # NbackInstructions.setText(NbackInstructionText5)
