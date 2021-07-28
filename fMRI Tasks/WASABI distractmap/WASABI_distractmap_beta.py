@@ -702,11 +702,10 @@ routineTimer.reset()
 NbackInstructionText5 = "In the above 1-back example you should make a \"yes\" response (left click) on trial 3, since the position is the same as the position on trial 2, while the other trials require a \"no\" (right click) response.\n\n\n\n\n\n\n\n\n\n"
 ClickToContinueText = "Click to continue"
 # Picture Loop 3-16.png
-NbackInstructionText6 = "First, we will practice some trials so that you can get used to the procedure.\n\n\nAfter each response you'll see whether your response was correct, incorrect, or whether you forgot to respond.\n\n\n\n\n\nGood Luck!"
+NbackInstructionText6 = "First, we will practice some trials so that you can get used to the procedure.\nAfter each response you'll see whether your response was correct, incorrect, or whether you forgot to respond.\n\n\n\n\n\n\n\n\nGood Luck!"
 ClickToStartText = "Click to start practice"
 NbackInstructionText7 = "1-back\n\n\nDuring 1-back you will have to indicate whether the current position matches the position that was presented in the last trial, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
 
-continueRoutine = True
 InstructionImageArray = ['3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png', '11.png', '12.png', '13.png', '14.png', '15.png', '16.png']
 iteration = 0
 NbackInstructions.setText(NbackInstructionText5)
@@ -715,27 +714,26 @@ ClickPrompt.setText(ClickToContinueText)
 mouse = event.Mouse()
 prevButtonState = mouse.getPressed()  # if button is down already this ISN'T a new click
 buttons = prevButtonState
-while (continueRoutine == True and iteration != 1 and mouse.getPressed()[0] != 1) :
-    for i in range(len(InstructionImageArray)):
-        # if iteration == 1:
-        #     buttons = mouse.getPressed()
+
+continueRoutine = True
+i = 0
+stimTimer = core.CountdownTimer(1)    
+while (continueRoutine == True):
+    if iteration == 1 and mouse.getPressed()[0] == 1:
+        continueRoutine = False
+        break
+    if i >= len(InstructionImageArray)-1:
+        iteration = 1
+        i = 0
+        ClickPrompt.setAutoDraw(True)
+    if stimTimer.getTime() < 0:
+        stimTimer = core.CountdownTimer(1)
         NbackInstructionWideImg.setImage(os.path.join(instructions_dir, InstructionImageArray[i]))
-        core.wait(1)
-        NbackInstructionWideImg.setAutoDraw(True)
-        win.flip()
-        if i >= len(InstructionImageArray)-1:
-            iteration = 1
-            ClickPrompt.setAutoDraw(True)
-        # if iteration == 1:
-        #     # buttons = mouse.getPressed()
-        #     win.flip()
-        #     # if buttons != prevButtonState:  # button state changed?
-        #     if mouse.getPressed() 
-        #         NbackInstructionWideImg.setAutoDraw(False)
-        #         ClickPrompt.setAutoDraw(False)
-        #         win.flip()
-        #         continueRoutine = False
-        #         break
+        i=i+1
+    NbackInstructionWideImg.setAutoDraw(True)
+    win.flip()
+
+NbackInstructionWideImg.setImage(os.path.join(instructions_dir, InstructionImageArray[len(InstructionImageArray)-1])) # Stay on the last image
 NbackInstructions.setText(NbackInstructionText6)
 NbackInstructions.setAutoDraw(True)
 win.flip()
