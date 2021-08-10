@@ -71,11 +71,11 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
+debug = 0
 autorespond = 0
 # Device togglers
 biopac_exists = 0
-thermode_exists = 0
+thermode_exists = 1
 
 class simKeys:
     '''
@@ -174,6 +174,24 @@ if biopac_exists == 1:
     biopac.configIO(FIOAnalog=0, EIOAnalog=0)
     for FIONUM in range(8):
         biopac.setFIOState(fioNum = FIONUM, state=0)
+
+# Medoc TSA2 parameters ______________________________________________
+# Initialize the Medoc TSA2 thermal stimulation delivery device
+    # Medoc Troubleshooting:
+    # To find the computer IP address, check with MMS Arbel's External Control (or Windows ipconfig alternatively)
+    # Communication port is always 20121
+    # Relevant Medoc commands:
+    #     Prepare a program: sendCommand('select_tp', config.START_CALIBRATION)
+    #     Poll the Machine to know if it's ready for another command: poll_for_change("[RUNNING/IDLE]", poll_interval=0.5, poll_max = -1 (unlimited), verbose=False, server_lag=1)
+    #           Select "RUNNING" if you are using a "Manual Trigger" and a SELECT_TP has already been sent. Select "IDLE" if you are using an "Auto" Trigger design
+    #     Trigger a prepared program: sendCommand('trigger')
+    #     Pause a program: sendCommand('pause')
+    #     Stop a program: sendCommand('stop')
+if thermode_exists == 1:
+    # Import medocControl library, python library custom written for Medoc with pyMedoc pollforchange functionality. 
+    # Make sure medocControl.py is in the same directory 
+    from medocControl import *
+
 """
 1. Experimental Parameters
 Clocks, paths, etc.
@@ -404,6 +422,7 @@ except NameError:
     bodySites_exists = False
 else:
     bodySites_exists = True
+    bodySites = bodySites.strip('][').replace("'","").split(', ')
 if bodySites_exists == False:
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     random.shuffle(bodySites)
@@ -656,7 +675,7 @@ BodySiteImg = visual.ImageStim(
     texRes=512, interpolate=True, depth=0.0)
 
 # Initialize components for each Rating
-ratingTime = 10 # Rating Time limit in seconds
+ratingTime = 5 # Rating Time limit in seconds
 TIME_INTERVAL = 0.005   # Speed at which slider ratings udpate
 ratingScaleWidth=1.5
 ratingScaleHeight=.4
@@ -1829,7 +1848,13 @@ while turns <= 3 and score <= 70:
             routineTimer.reset()
             thisExp.nextEntry()
 
-            score = correct*100/trials.nTotal
+            if debug == 1:
+                score = 100
+            if debug == 0:
+                score = 100
+            else:
+                score = correct*100/trials.nTotal
+
                 
             # completed 1 repeats of 'trials_2' 
 
@@ -2171,14 +2196,16 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # Start Thermal Program
     # Trigger Biopac
-    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    thermodeCommand = 171
     if thermode_exists == 1:
         sendCommand('select_tp', thermodeCommand)
 
     for r in range(4): 
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        jitter = randint(5,12) # Make this into discrete values
+        # jitter = randint(5,12) # Make this into discrete values
+        jitter = 18
         routineTimer.add(jitter)
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -2215,7 +2242,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + 1.0-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -2673,10 +2700,12 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     2-Back Prompt
     """
     ## "The following trials will be 2-back, please indicate whether or not the square in the current position matches the position that was presented two trials before. Experimenter press [Space] to continue." 
-    NbackInstructions.setText("The following trials will be 2-back, please indicate whether or not the square in the current position matches the position that was presented two trials before.\n\n\n\n\n\n\nExperimenter press [Space] to continue.")
+    NbackInstructions.setText("The following trials will be 2-back, please indicate whether or not the square in the current position matches the position that was presented two trials before.")
     NbackInstructions.draw()
     win.flip()
-    event.waitKeys(keyList = 'space')
+    # event.waitKeys(keyList = 'space')
+    core.wait(10)
+    routineTimer.reset()
 
     """
     Start Scanner
@@ -2705,7 +2734,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # Start Thermal Program
     # Trigger Biopac
-    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    thermodeCommand = 171
     if thermode_exists == 1:
         sendCommand('select_tp', thermodeCommand)
 
@@ -2713,6 +2743,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         jitter = randint(5,12)
+        jitter = 18
         routineTimer.add(jitter)
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -2749,7 +2780,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + 1.0-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -3740,10 +3771,12 @@ for thisrunLoop in runLoop:                     # Loop through each run.
     7i. 1-Back Prompt
     """
     ## "The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial. Experimenter press [Space] to continue." 
-    NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial. \n\n\n\n\n\n\nExperimenter press [Space] to continue.")
+    NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial.")
     NbackInstructions.draw()
     win.flip()
-    event.waitKeys(keyList = 'space')
+    # event.waitKeys(keyList = 'space')
+    core.wait(10)
+    routineTimer.reset()
 
     """
     Start Scanner
@@ -3767,7 +3800,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
 
     # Start Thermal Program
     # Trigger Biopac
-    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    thermodeCommand = 171
     if thermode_exists == 1:
         sendCommand('select_tp', thermodeCommand)
  
@@ -3775,6 +3809,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         jitter = randint(5,12)
+        jitter = 18
         routineTimer.add(jitter)
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -3811,7 +3846,7 @@ for thisrunLoop in runLoop:                     # Loop through each run.
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + 1.0-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
