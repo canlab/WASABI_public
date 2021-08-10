@@ -1,0 +1,50 @@
+Add Ratings X
+Add bids recording X
+Don't restart scans between ratings.X
+remove mice during intensity ratings X
+
+
+
+1. We may need to generate several unique orders that will be drawn at random
+Edit the xlsx formats for real 1-back and 2-back tasks.
+
+In between scans, make it a 10 second limit before doing continuing.
+
+The 2-back task is flickering
+-- there should not be a no response feedback for the second trial
+
+
+Before Body site
+"The tutorial is now over, we will now begin our scans, after which you will be instructed of the task assigned to you."
+
+remove the 2nd block of 2-back, repeat 4 - 8 -4 trials.
+
+2. 15-30 seconds transition messages (replace with experimenter pressing space)
+
+
+
+
+
+
+Pain Trial - Rating Recovery Time (7, 12, 18 seconds)
+Rating = 5 second limit
+Rating - Pain Trial Time (7, 12, 18 seconds)
+
+
+
+
+10 second stim that occurs after the first 2-second trial.
+
+
+Gotta do something about the order randomization for each trial
+
+
+
+
+
+
+
+
+
+
+

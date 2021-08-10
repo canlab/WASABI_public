@@ -230,7 +230,8 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
-calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'Calibration')
+# Brings up the Calibration/Data folder to load the appropriate calibration data right away.
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'Calibration', 'data')
 
 """
 2. Start Experimental Dialog Boxes
