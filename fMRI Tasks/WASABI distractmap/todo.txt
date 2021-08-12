@@ -11,9 +11,6 @@ Repeat first 1-back task 4x, second 2-back task 8 times, and third 1-back task 4
 In between tasks, make it a 10 second limit before doing continuing. X
 Ensure that heat stimulations are sent -- Currently they are all being set at 49 degrees.
 
-
-
-
 1. Gotta do something about the order randomization for each trial: We may need to generate several unique orders that will be drawn at random
 Edit the xlsx formats for real 1-back and 2-back tasks. 
 
@@ -21,6 +18,10 @@ Edit the xlsx formats for real 1-back and 2-back tasks.
 2. 15-30 seconds transition messages (replace with experimenter pressing space)
 Pain Trial to Rating Recovery Time (7, 12, 18 seconds) -- I don't think I need this.
 Rating to Pain Trial Time (7, 12, 18 seconds)
+
+
+Record jitters
+
 
 10 second pain stim that occurs after the first 2-second trial.
 
