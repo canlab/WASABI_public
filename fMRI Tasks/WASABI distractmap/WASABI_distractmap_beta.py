@@ -570,16 +570,6 @@ Feedback = visual.TextStim(win=win, name='Feedback',
     pos=(0, -0.35), units='height', height=0.05, 
     color='white', colorSpace='rgb', opacity=1)
 
-TryAgainText = "Let's try that again...\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
-PleaseWaitText = "Please wait for the experimenter ..."
-PassedText = "Great! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
-
-NbackInstructionText8 = "2-back\n\n\nDuring 2-back you will have to indicate whether the current position matches the position that was presented two trials ago, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
-NbackInstructionText9 = "In this 2-back example you should make a \"yes\" response (left click) on trial 3, since the position is the same as the position on trial 1, while the other trials require a \"no\" (right click) response. "
-NbackInstructionText10 = "Now, we will practice some trials so that you can get used to the procedure.\nAfter each response you'll see whether your response was correct, incorrect, or whether you forgot to respond.\n\n\n\n\n\n\nGood Luck!"
-
-# NbackInstructionText11 = "Now we will start some real trials.\n\n\nDuring the task it is very important that you respond as fast and as accurately as possible.\n\n\nYou should try to respond during the square being presented shortly after. This might be difficult, so it is important that you concentrate!\n\n\n\nDo not forget to respond during every trial."
-
 # Initialize components for Routine "Fixation"
 FixationClock = core.Clock()
 fixation_2 = visual.TextStim(win=win, name='fixation_2',
@@ -920,14 +910,10 @@ score = 0
 while turns <= 3 and score <= 70:
     NbackInstructionText5 = "In the below 1-back example you should not respond to the first trial (as there is no trial before it), make a \"no\" response (right click) on trial 2, since the positions on trials 1 and 2 do not match, and make a \"yes\" response on trial 3, since the position is the same as the position on trial 2.\n\n\n\n\n\n\n\n\n\n"
     ClickToContinueText = "Click to continue"
-    # Picture Loop 3-16.png
     NbackInstructionText6 = "First, we will practice some trials so that you can get used to the procedure.\nAfter each response you'll see whether your response was correct, incorrect, or whether you forgot to respond.\n\n\n\n\n\n\n\n\nGood Luck!"
     ClickToStartText = "Click to start practice"
-    # NbackInstructionText7 = "1-back\n\n\nDuring 1-back you will have to indicate whether the current position matches the position that was presented in the last trial, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
 
     InstructionImageArray = ['7.png', '8.png', '9.png', '10.png', '11.png', '12.png', '13.png', '14.png']
-    # Pixel width=1777, 
-    # InstructionImageSizeArray = [[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1]]
     iteration = 0
     NbackInstructions.setText(NbackInstructionText5)
     NbackInstructions.setAutoDraw(True)
@@ -954,7 +940,6 @@ while turns <= 3 and score <= 70:
         if stimTimer.getTime() < 0:
             stimTimer = core.CountdownTimer(1)
             NbackInstructionWideImg.setImage(os.path.join(instructions_dir, InstructionImageArray[i]))
-            # NbackInstructionWideImg.rescale(width=InstructionImageSizeArray[i][0], height=InstructionImageSizeArray[i][1])
             i=i+1
         NbackInstructionWideImg.setAutoDraw(True)
         win.flip()
@@ -963,7 +948,6 @@ while turns <= 3 and score <= 70:
     NbackInstructions.setText(NbackInstructionText6)
     NbackInstructions.setAutoDraw(True)
     win.flip()
-    # core.wait(2)
     timer = core.CountdownTimer(2)
     while timer.getTime() < 0:
         continue          
@@ -983,39 +967,14 @@ while turns <= 3 and score <= 70:
     """ 
     7. 1-Back Practice
     """
-    # NbackInstructions.setText(NbackInstructionText7)
-
     TryAgainText = "Let's try that again...\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
     PleaseWaitText = "Please wait for the experimenter ..."
     PassedText = "Okay! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
     PerfectText = "Perfect! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
 
-    # # set up handler to look after randomisation of conditions etc
-    # TaskT1Loop = data.TrialHandler(nReps=1, method='random', 
-    #     extraInfo=expInfo, originPath=-1,
-    #     trialList=[None],
-    #     seed=None, name='TaskT1Loop')
-
-    # thisExp.addLoop(TaskT1Loop)  # add the loop to the experiment
-    # thisTaskT1Loop = TaskT1Loop.trialList[0]  # so we can initialise stimuli with some values
-    # # abbreviate parameter names if possible (e.g. rgb = thisTaskT1Loop.rgb)
-    # if thisTaskT1Loop != None:
-    #     for paramName in thisTaskT1Loop:
-    #         exec('{} = thisTaskT1Loop[paramName]'.format(paramName))
-
-    # for thisTaskT1Loop in TaskT1Loop:
-    #     currentLoop = TaskT1Loop
-    #     # abbreviate parameter names if possible (e.g. rgb = thisTaskT1Loop.rgb)
-    #     if thisTaskT1Loop != None:
-    #         for paramName in thisTaskT1Loop:
-    #             exec('{} = thisTaskT1Loop[paramName]'.format(paramName))
-        
     # Do Practice-T1
     correct = 0
     score = 0
-
-    # while passed == False, keep redoing the instructions 3 times.
-
     routineTimer.reset()
 
     """ 
@@ -2226,6 +2185,8 @@ for runs in range(8):
     """
     Start Scanner
     """
+    fmriStart = globalClock.getTime()
+
     start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
     start.draw()  # Automatically draw every frame
     win.flip()
@@ -2250,10 +2211,9 @@ for runs in range(8):
         routineTimer.reset()
 
     hot = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]
-    BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    #BiopacChannel = thermode1
-    bodySiteData = bodySites[runs]
     temperature = participant_settingsHeat[bodySites[runs]]
+    BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
+    bodySiteData = bodySites[runs]
     thermodeCommand = hot  
 
     routineTimer.reset()
@@ -2270,7 +2230,7 @@ for runs in range(8):
         """
         Set Thermal Program
         """
-        thermodeCommand = 171
+        # thermodeCommand = 171
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
 
@@ -2281,7 +2241,8 @@ for runs in range(8):
         continueRoutine = True
         # jitter = randint(5,12) # Make this into discrete values
         # jitter = 18
-        jitter = random.choice([7,12,18])
+        # jitter = random.choice([7,12,18])
+        jitter = random.choice([5,7.5,10])
         routineTimer.add(jitter)
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -2300,6 +2261,7 @@ for runs in range(8):
         frameN = -1
 
         # -------Run Routine "Fixation"-------
+        onset = globalClock.getTime() - fmriStart
         while continueRoutine and routineTimer.getTime() > 0:
             # get current time
             t = FixationClock.getTime()
@@ -2355,10 +2317,6 @@ for runs in range(8):
         Start 1-back Trials
         4x Trials
         """
-        # Trigger Thermal Program
-        if thermode_exists == 1:
-            sendCommand('trigger')
-
         # set up handler to look after randomisation of conditions etc
         if not OnebackFiles:
             OnebackFiles = ["N-back-1_1.xlsx", "N-back-1_2.xlsx", "N-back-1_3.xlsx", "N-back-1_4.xlsx", "N-back-1_5.xlsx", "N-back-1_6.xlsx", "N-back-1_7.xlsx", "N-back-1_8.xlsx"] 
@@ -2382,6 +2340,10 @@ for runs in range(8):
                     exec('{} = thisTrial[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
+            # Trigger Thermal Program
+            if thisTrialN == 4 and thermode_exists == 1:
+                sendCommand('trigger')
+            
             continueRoutine = True
             routineTimer.add(2.000000)
             # update component parameters for each repeat
@@ -2869,9 +2831,8 @@ for runs in range(8):
 
     hot = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]
     BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    #BiopacChannel = thermode1
-    bodySiteData = bodySites[runs]
     temperature = participant_settingsHeat[bodySites[runs]]
+    bodySiteData = bodySites[runs]
     thermodeCommand = hot  
 
     """
@@ -2883,7 +2844,7 @@ for runs in range(8):
     # Trigger Biopac
     # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
     for r in range(8): # 8 repetitions 
-        thermodeCommand = 171
+        # thermodeCommand = 171
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
 
@@ -2969,8 +2930,8 @@ for runs in range(8):
         4x Trials
         """
         # Trigger Thermal Program
-        if thermode_exists == 1:
-            sendCommand('trigger')
+        # if thermode_exists == 1:
+        #     sendCommand('trigger')
 
         # set up handler to look after randomisation of conditions etc
         if not TwobackFiles:
@@ -2997,6 +2958,10 @@ for runs in range(8):
                     exec('{} = thisTrial_2[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_2_trials"-------
+            # Trigger Thermal Program
+            if thisTrialN == 4 and thermode_exists == 1:
+                sendCommand('trigger')
+
             continueRoutine = True
             routineTimer.add(2.000000)
             # update component parameters for each repeat
@@ -3474,7 +3439,7 @@ for runs in range(8):
     7ii. Start Second 1-back Loop
     """
     for r in range(4): # 8 repetitions 
-        thermodeCommand = 171
+        # thermodeCommand = 171
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
 
@@ -3485,7 +3450,8 @@ for runs in range(8):
         continueRoutine = True
         # jitter = randint(5,12)
         # jitter = 18
-        jitter = random.choice([7,12,18])
+        # jitter = random.choice([7,12,18])
+        jitter = random.choice([5,7.5,10])
         routineTimer.add(jitter)
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -3559,8 +3525,8 @@ for runs in range(8):
         4x Trials
         """
         # Trigger Thermal Program
-        if thermode_exists == 1:
-            sendCommand('trigger')
+        # if thermode_exists == 1:
+        #     sendCommand('trigger')
 
 
         # set up handler to look after randomisation of conditions etc
@@ -3586,6 +3552,10 @@ for runs in range(8):
                     exec('{} = thisTrial[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
+            # Trigger Thermal Program
+            if thisTrialN == 4 and thermode_exists == 1:
+                sendCommand('trigger')
+
             continueRoutine = True
             routineTimer.add(2.000000)
             # update component parameters for each repeat
@@ -3798,7 +3768,8 @@ for runs in range(8):
         continueRoutine = True
         # jitter = randint(5,12) # Make this into discrete values
         # jitter = 18
-        jitter = random.choice([7,12,18])
+        # jitter = random.choice([7,12,18])
+        jitter = random.choice([5,7.5,10])
         routineTimer.add(jitter)
         # update component parameters for each repeat
         # keep track of which components have finished
