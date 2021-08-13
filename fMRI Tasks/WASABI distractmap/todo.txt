@@ -32,6 +32,10 @@ Tor wants 20 second transition between trials we'll go with (5, 7.5, and 10 seco
 7. All n-back trials should be 10 trials long.
 
 
+After each trial you will be asked to rate the pain. you will then be instructed to begin another set of trials. Treat these as new trials, wait 1 trial for the 1 back, wait 2 trials for the 2-back before responding. Square positions 
+
+Don't have the rating go away when clicked****
+
 
 
 

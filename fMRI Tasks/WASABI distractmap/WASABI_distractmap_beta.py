@@ -2227,6 +2227,7 @@ for runs in range(8):
     # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
 
     for r in range(4): 
+        jitter2 = None
         """
         Set Thermal Program
         """
@@ -2242,8 +2243,15 @@ for runs in range(8):
         # jitter = randint(5,12) # Make this into discrete values
         # jitter = 18
         # jitter = random.choice([7,12,18])
-        jitter = random.choice([5,7.5,10])
-        routineTimer.add(jitter)
+        if not jitter2:
+            jitter1 = random.choice([5,7.5,10])
+        elif jitter2 == 5:
+            jitter1 = 10
+        elif jitter2 == 7.5:
+            jitter1 = 7.5
+        elif jitter2 == 10:
+            jitter1 = 5
+        routineTimer.add(jitter1)
         # update component parameters for each repeat
         # keep track of which components have finished
         FixationComponents = [fixation_1]
@@ -2280,7 +2288,7 @@ for runs in range(8):
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter1-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -2341,7 +2349,7 @@ for runs in range(8):
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
             # Trigger Thermal Program
-            if thisTrialN == 4 and thermode_exists == 1:
+            if trials.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
             
             continueRoutine = True
@@ -2556,8 +2564,8 @@ for runs in range(8):
         continueRoutine = True
         # jitter = randint(5,12) # Make this into discrete values
         # jitter = 18
-        jitter = random.choice([7,12,18])
-        routineTimer.add(jitter)
+        jitter2 = random.choice([5,7.5,10])
+        routineTimer.add(jitter2)
         # update component parameters for each repeat
         # keep track of which components have finished
         FixationComponents = [fixation_1]
@@ -2593,7 +2601,7 @@ for runs in range(8):
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter2-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -2843,17 +2851,28 @@ for runs in range(8):
     # Start Thermal Program
     # Trigger Biopac
     # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
-    for r in range(8): # 8 repetitions 
+    for r in range(8): # 8 repetitions
+        jitter2=None # Reset jitter2 
         # thermodeCommand = 171
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
 
+        """
+        7ii. Pre 2-Back Fixation
+        """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         # jitter = randint(5,12)
         # jitter = 18
-        jitter = random.choice([7,12,18])
-        routineTimer.add(jitter)
+        if not jitter2:
+            jitter1 = random.choice([5,7.5,10])
+        elif jitter2 == 5:
+            jitter1 = 10
+        elif jitter2 == 7.5:
+            jitter1 = 7.5
+        elif jitter2 == 10:
+            jitter1 = 5
+        routineTimer.add(jitter1)
         # update component parameters for each repeat
         # keep track of which components have finished
         FixationComponents = [fixation_1]
@@ -2870,9 +2889,6 @@ for runs in range(8):
         FixationClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
 
-        """
-        7ii. Pre 2-Back Fixation
-        """
         # -------Run Routine "Fixation"-------
         while continueRoutine and routineTimer.getTime() > 0:
             # get current time
@@ -2892,7 +2908,7 @@ for runs in range(8):
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter1-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -2959,7 +2975,7 @@ for runs in range(8):
             
             # ------Prepare to start Routine "N_back_2_trials"-------
             # Trigger Thermal Program
-            if thisTrialN == 4 and thermode_exists == 1:
+            if trials_2.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
 
             continueRoutine = True
@@ -3169,10 +3185,30 @@ for runs in range(8):
             thisExp.nextEntry()
             
         # completed 1 repeats of 'trials_2'
-
         """
         7ii. Post 2-Back Fixation
         """
+        # ------Prepare to start Routine "Fixation"-------
+        continueRoutine = True
+        jitter2 = random.choice([5,7.5,10])
+        routineTimer.add(jitter2)
+       
+        # update component parameters for each repeat
+        # keep track of which components have finished
+        FixationComponents = [fixation_1]
+        for thisComponent in FixationComponents:
+            thisComponent.tStart = None
+            thisComponent.tStop = None
+            thisComponent.tStartRefresh = None
+            thisComponent.tStopRefresh = None
+            if hasattr(thisComponent, 'status'):
+                thisComponent.status = NOT_STARTED
+        # reset timers
+        t = 0
+        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+        FixationClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+        frameN = -1
+
         # -------Run Routine "Fixation"-------
         while continueRoutine and routineTimer.getTime() > 0:
             # get current time
@@ -3192,7 +3228,7 @@ for runs in range(8):
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter2-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -3439,6 +3475,7 @@ for runs in range(8):
     7ii. Start Second 1-back Loop
     """
     for r in range(4): # 8 repetitions 
+        jitter2=None # Reset jitter2
         # thermodeCommand = 171
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
@@ -3451,8 +3488,17 @@ for runs in range(8):
         # jitter = randint(5,12)
         # jitter = 18
         # jitter = random.choice([7,12,18])
-        jitter = random.choice([5,7.5,10])
-        routineTimer.add(jitter)
+        
+        if not jitter2:
+            jitter1 = random.choice([5,7.5,10])
+        elif jitter2 == 5:
+            jitter1 = 10
+        elif jitter2 == 7.5:
+            jitter1 = 7.5
+        elif jitter2 == 10:
+            jitter1 = 5
+        
+        routineTimer.add(jitter1)
         # update component parameters for each repeat
         # keep track of which components have finished
         FixationComponents = [fixation_1]
@@ -3488,7 +3534,7 @@ for runs in range(8):
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter1-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
@@ -3553,7 +3599,7 @@ for runs in range(8):
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
             # Trigger Thermal Program
-            if thisTrialN == 4 and thermode_exists == 1:
+            if trials.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
 
             continueRoutine = True
@@ -3768,9 +3814,8 @@ for runs in range(8):
         continueRoutine = True
         # jitter = randint(5,12) # Make this into discrete values
         # jitter = 18
-        # jitter = random.choice([7,12,18])
-        jitter = random.choice([5,7.5,10])
-        routineTimer.add(jitter)
+        jitter2 = random.choice([5,7.5,10])
+        routineTimer.add(jitter2)
         # update component parameters for each repeat
         # keep track of which components have finished
         FixationComponents = [fixation_1]
@@ -3806,7 +3851,7 @@ for runs in range(8):
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter-frameTolerance:
+                if tThisFlipGlobal > fixation_1.tStartRefresh + jitter2-frameTolerance:
                     # keep track of stop time/frame for later
                     fixation_1.tStop = t  # not accounting for scr refresh
                     fixation_1.frameNStop = frameN  # exact frame index
