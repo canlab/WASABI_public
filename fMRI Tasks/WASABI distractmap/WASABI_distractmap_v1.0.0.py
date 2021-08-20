@@ -18,12 +18,19 @@ Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) fil
 Following this format:
 all data headers are in lower snake_case.
 
-The paradigm will generate 8x of these files of name:
-sub-XXXX_task-distractmap_run-XX_acq-bodySite_events.tsv
+The paradigm will generate these files of name:
+1x sub-XXXX_ses-XX_task-Practice1back_events.tsv
+1x sub-XXXX_ses-XX_task-Practice2back_events.tsv
+8x sub-XXXX_ses-XX_task-distractmap_acq-[bodySite]_run-XX_events.tsv
+8x sub-XXXX_ses-XX_task-distractmap-ratings_acq-[bodySite]_run-XX_events.tsv
 
-42x trials per file with the following
+x16 trials per file with the following
 headers:
-onset   duration    ...
+'onset','duration','rt','response','correct','attempt','condition'
+
+'onset', 'duration', 'rt', 'response', 'correct', 'bodySite', 'temperature', 'condition', 'pretrial-jitter', 'posttrial-jitter'
+
+'onset', 'duration', 'bodySite', 'intensity', 'temperature', 'condition', 'posttrial-jitter'
 
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
@@ -71,18 +78,18 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-cheat = 1
+debug = 0
+cheat = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
     '''
     an object to simulate key presses
     
-    keyList: a list of keys to watch
+    keyList: a list of keys/ to watch
     name: randomly selected from keyList
     rtRange: [min RT, max RT] where min and max RT are sepecified in ms
         
@@ -178,6 +185,8 @@ if biopac_exists == 1:
     biopac.configIO(FIOAnalog=0, EIOAnalog=0)
     for FIONUM in range(8):
         biopac.setFIOState(fioNum = FIONUM, state=0)
+    
+    biopac.setData(biopac, 0)
 
 # Medoc TSA2 parameters ______________________________________________
 # Initialize the Medoc TSA2 thermal stimulation delivery device
@@ -431,6 +440,9 @@ else:
 if bodySites_exists == False:
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     random.shuffle(bodySites)
+
+if debug == 1:
+    bodySites = ["Abdomen"]
 
 random.shuffle(bodySites)
 
@@ -956,8 +968,9 @@ while turns <= 3 and score <= 70:
     NbackInstructions.setText(NbackInstructionText6)
     NbackInstructions.setAutoDraw(True)
     win.flip()
-    timer = core.CountdownTimer(2)
-    while timer.getTime() < 0:
+    timer = core.CountdownTimer()
+    timer.add(2)
+    while timer.getTime() > 0:
         continue          
 
     mouse = event.Mouse(win=win, visible=False)
@@ -1129,6 +1142,9 @@ while turns <= 3 and score <= 70:
                 grid_lines.tStart = t  # local t and not account for scr refresh
                 grid_lines.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(grid_lines, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists == 1:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_trial_start)
                 grid_lines.setAutoDraw(True)
             if grid_lines.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -1328,7 +1344,7 @@ while turns <= 3 and score <= 70:
     8iii. Practice 1-back Score Report
     """
     # Score Feedback Text
-    ScoreText = "Your score was" + score
+    ScoreText = "Your score was " + str(score)
 
     if debug == 1:
         TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
@@ -1531,9 +1547,9 @@ while turns <= 3 and score <= 70:
     NbackInstructions.setText(NbackInstructionText10)
     NbackInstructions.setAutoDraw(True)
     win.flip()
-    # core.wait(2)
-    timer = core.CountdownTimer(2)
-    while timer.getTime() < 0:
+    timer = core.CountdownTimer()
+    timer.add(2)
+    while timer.getTime() > 0:
         continue          
     mouse = event.Mouse(win=win, visible=False)
     while(mouse.getPressed()[0] != 1):
@@ -1907,7 +1923,7 @@ while turns <= 3 and score <= 70:
         10iii. Practice 2-back Score Report
         """
         # Score Feedback Text
-        ScoreText = "Your score was" + score
+        ScoreText = "Your score was " + str(score)
 
         if debug == 1:
             TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
@@ -2062,7 +2078,7 @@ routineTimer.reset()
 """
 12. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
 """
-for runs in range(8):
+for runs in range(len(bodySites)):
     # ------Prepare to start Routine "BodySiteInstruction"-------
     routineTimer.reset()
 
@@ -2193,11 +2209,12 @@ for runs in range(8):
     """
     13. Start Scanner
     """
-    fmriStart = globalClock.getTime()
+
 
     start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
     start.draw()  # Automatically draw every frame
     win.flip()
+    fmriStart = globalClock.getTime()   # Start the clock
     if autorespond != 1:   
         TR = 0.46
        
@@ -2208,7 +2225,9 @@ for runs in range(8):
                 event.clearEvents()
                 while continueRoutine == True:
                     if '5' in event.getKeys(keyList = '5'): # fMRI trigger
-                        timer = core.CountdownTimer(TR*6)   # Wait 6 TRs, Dummy Scans
+                        fmriStart = globalClock.getTime()   # Start the clock
+                        timer = core.CountdownTimer()   # Wait 6 TRs, Dummy Scans
+                        timer.add(TR*6)
                         while timer.getTime() > 0:
                             continue
                         continueRoutine = False
@@ -2231,13 +2250,14 @@ for runs in range(8):
         biopac.setData(biopac, nback_instructions)
     win.flip()
 
-    timer = core.CountdownTimer(10)
-    while timer.getTime() < 0:
+    timer = core.CountdownTimer()
+    timer.add(10)
+    while timer.getTime() > 0:
         continue
     routineTimer.reset()
-
+    jitter2 = None # Reset jitter2 
     for r in range(4): # 4 repetitions
-        jitter2 = None # Reset jitter2 
+        
         """
         14i. Select Medoc Thermal Program
         """
@@ -2356,8 +2376,6 @@ for runs in range(8):
                     exec('{} = thisTrial[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
-            onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
-
             # Trigger Thermal Program
             if trials.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')                          # Trigger the thermode
@@ -2386,6 +2404,7 @@ for runs in range(8):
             frameN = -1
             
             # -------Run Routine "N_back_1_Trial"-------
+            onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = N_back_1_TrialClock.getTime()
@@ -2401,6 +2420,9 @@ for runs in range(8):
                     grid_lines.tStart = t  # local t and not account for scr refresh
                     grid_lines.tStartRefresh = tThisFlipGlobal  # on global time
                     win.timeOnFlip(grid_lines, 'tStartRefresh')  # time at next scr refresh
+                    if biopac_exists == 1:
+                        win.callOnFlip(biopac.setData, biopac, 0)
+                        win.callOnFlip(biopac.setData, biopac, nback_trial_start)
                     grid_lines.setAutoDraw(True)
                 if grid_lines.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
@@ -2638,7 +2660,7 @@ for runs in range(8):
         thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
 
-        distractmap_bids_trial.extend(jitter2)
+        distractmap_bids_trial.append(jitter2)
         distractmap_bids.append(distractmap_bids_trial)
 
         routineTimer.reset()
@@ -2646,7 +2668,6 @@ for runs in range(8):
         """
         14v. Phase-1 1-back Pain Rating Trial
         """
-        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
         routineTimer.add(ratingTime)
@@ -2678,6 +2699,7 @@ for runs in range(8):
         obtainedRating = 0
 
         # -------Run Routine "IntensityRating"-------
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         while continueRoutine:
             if obtainedRating == 0:
                 timeNow = globalClock.getTime()
@@ -2847,13 +2869,14 @@ for runs in range(8):
         biopac.setData(biopac, nback_instructions)
     win.flip()
 
-    timer = core.CountdownTimer(10)
-    while timer.getTime() < 0:
+    timer = core.CountdownTimer()
+    timer.add(10)
+    while timer.getTime() > 0:
         continue
     routineTimer.reset()
+    jitter2=None # Reset jitter2 
 
     for r in range(8): # 8 repetitions
-        jitter2=None # Reset jitter2 
         """
         15i. Select Medoc Thermal Program
         """
@@ -2972,7 +2995,6 @@ for runs in range(8):
                     exec('{} = thisTrial_2[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_2_trials"-------
-            onset = globalClock.getTime() - fmriStart
             # Trigger Thermal Program
             if trials_2.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
@@ -3004,6 +3026,7 @@ for runs in range(8):
             frameN = -1
             
             # -------Run Routine "N_back_2_trials"-------
+            onset = globalClock.getTime() - fmriStart
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = N_back_2_TrialClock.getTime()
@@ -3261,7 +3284,7 @@ for runs in range(8):
         thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
 
-        distractmap_bids_trial.extend(jitter2)
+        distractmap_bids_trial.append(jitter2)
         distractmap_bids.append(distractmap_bids_trial)
 
         routineTimer.reset()
@@ -3269,7 +3292,6 @@ for runs in range(8):
         """
         15v. Phase-2 2-back Pain Rating Trial
         """
-        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         ############ ASK PAIN INTENSITY #######################################
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
@@ -3302,6 +3324,7 @@ for runs in range(8):
         obtainedRating = 0
 
         # -------Run Routine "IntensityRating"-------
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         while continueRoutine:
             if obtainedRating == 0:
                 timeNow = globalClock.getTime()
@@ -3467,13 +3490,15 @@ for runs in range(8):
     NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial.")
     NbackInstructions.draw()
     win.flip()
-    timer = core.CountdownTimer(10)
-    while timer.getTime() < 0:
+    timer = core.CountdownTimer()
+    timer.add(10)
+    while timer.getTime() > 0:
         continue
     routineTimer.reset()
- 
+    jitter2=None # Reset jitter2
+
     for r in range(4): # 4 repetitions 
-        jitter2=None # Reset jitter2
+        
         """
         16i. Select Medoc Thermal Program
         """
@@ -3592,7 +3617,6 @@ for runs in range(8):
                     exec('{} = thisTrial[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
-            onset = globalClock.getTime() - fmriStart
             # Trigger Thermal Program
             if trials.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
@@ -3621,6 +3645,7 @@ for runs in range(8):
             frameN = -1
             
             # -------Run Routine "N_back_1_Trial"-------
+            onset = globalClock.getTime() - fmriStart
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = N_back_1_TrialClock.getTime()
@@ -3636,6 +3661,9 @@ for runs in range(8):
                     grid_lines.tStart = t  # local t and not account for scr refresh
                     grid_lines.tStartRefresh = tThisFlipGlobal  # on global time
                     win.timeOnFlip(grid_lines, 'tStartRefresh')  # time at next scr refresh
+                    if biopac_exists == 1:
+                        win.callOnFlip(biopac.setData, biopac, 0)
+                        win.callOnFlip(biopac.setData, biopac, nback_trial_start)
                     grid_lines.setAutoDraw(True)
                 if grid_lines.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
@@ -3873,15 +3901,14 @@ for runs in range(8):
         thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
 
-        distractmap_bids_trial.extend(jitter2)
+        distractmap_bids_trial.append(jitter2)
         distractmap_bids.append(distractmap_bids_trial)
 
         routineTimer.reset()        
         
         """
-        16v. Phase-2 2-back Pain Rating Trial
+        16v. Phase-3 1-back Pain Rating Trial
         """   
-        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         ############ ASK PAIN INTENSITY #######################################
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
@@ -3914,6 +3941,7 @@ for runs in range(8):
         obtainedRating = 0
 
         # -------Run Routine "IntensityRating"-------
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         while continueRoutine:
             if obtainedRating == 0:
                 timeNow = globalClock.getTime()
