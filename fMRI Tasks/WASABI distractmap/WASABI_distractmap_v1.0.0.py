@@ -19,11 +19,11 @@ Following this format:
 all data headers are in lower snake_case.
 
 The paradigm will generate 8x of these files of name:
-sub-XXXX_task-Nback_run-X_events.tsv
+sub-XXXX_task-distractmap_run-XX_acq-bodySite_events.tsv
 
 42x trials per file with the following
 headers:
-onset   duration    trial_type  body_site
+onset   duration    ...
 
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
@@ -72,6 +72,7 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 1
+cheat = 1
 autorespond = 0
 # Device togglers
 biopac_exists = 0
@@ -120,21 +121,10 @@ visual.ImageStim.rescale = rescale
 #     Another command that may work: biopac.setData(byte)
 
 # biopac channels EDIT
-task_ID=3
-intro=46
-rest_t1=47
-nback_instructions=48
-nback_fixation=49
-nback_trial_start=50
-second_run=51
-nback_hit=52
-nback_comiss=53
-nback_feedback=54
-end_task = 55
+task_ID=7
+intro=193
 
-bodymapping_intro=14
 bodymapping_instruction=15
-imagination_instruction=16
 leftface_heat=17
 rightface_heat=18
 leftarm_heat=19
@@ -144,9 +134,23 @@ rightleg_heat=22
 chest_heat=23
 abdomen_heat=24
 
-between_run_msg=45
+nback_instructions=186
+nback_fixation=187
+nback_trial_start=188
+next_run=189
+nback_hit=190
+nback_comiss=191
+
+nback_feedback_pos=194
+nback_feedback_miss=195
+nback_feedback_neg=196
 
 intensity_rating=43
+
+between_run_msg=45
+
+end_task = 197
+
 
 if biopac_exists == 1:
     # Initialize LabJack U3 Device, which is connected to the Biopac MP150 psychophysiological amplifier data acquisition device
@@ -464,6 +468,9 @@ Practice_2back = []
 distractmap_bids_trial = []
 distractmap_bids = []
 
+rating_bids_trial = []
+rating_bids = []
+
 """
 5. Initialize Trial-level Components
 """
@@ -671,9 +678,7 @@ ratingScaleWidth=1.5
 ratingScaleHeight=.4
 sliderMin = -.75
 sliderMax = .75
-valenceText = "How pleasant was that overall?"
 intensityText = "How intense was that overall?"
-comfortText = "How comfortable do you feel right now?"
 black_triangle_verts = [(sliderMin, .2),    # left point
                         (sliderMax, .2),    # right point
                         (0, -.2)]           # bottom-point
@@ -722,7 +727,7 @@ win.mouseVisible = False
 """
 6. Welcome Instructions
 """
-NbackInstructionText1 = "Welcome to the n-back task \n\n\nPlease read the following instructions \nvery carefully.\n\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
+NbackInstructionText1 = "Welcome to the n-back task \n\n\nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue."
 NbackInstructionText2 = "During the task you will be presented a white square in one of nine positions on a grid. \n\n\n\n\n\n\nDepending on the instruction, your task is to indicate whether the \ncurrent position is the same as either:\nthe position on the last trial\nor the position two trials ago\n\n\nExperimenter press [Space] to continue."
 NbackInstructionText3 = "Between each trial, a fixation cross will appear in the middle of the grid. \n\n\n\n\n\n\n\n\nYou do not need to respond during this time. \nSimply wait for the next trial.\n\n\n\nExperimenter press [Space] to continue."
 NbackInstructionText4 = "\n1-back\n\n\n\n\n\n\n\nDuring 1-back you will have to indicate whether the current position matches the position that was presented in the last trial, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to show an example."
@@ -774,7 +779,7 @@ while continueRoutine == True:
 routineTimer.reset()
 
 """
-6. Button Test
+7. Button Test
 """
 # ------Prepare to start Routine "trial"-------
 continueRoutine = True
@@ -903,7 +908,7 @@ for thisComponent in trialComponents:
 routineTimer.reset()
 
 """
-6. Start Practice
+8. Start Practice 1-back
 """
 turns = 0
 score = 0
@@ -924,6 +929,9 @@ while turns <= 3 and score <= 70:
 
     NbackInstructionWideImg.setImage(os.path.join(instructions_dir, InstructionImageArray[0]))
     NbackInstructionWideImg.draw()
+    if biopac_exists:
+        biopac.setData(biopac, 0)
+        biopac.setData(biopac, nback_instructions)
     win.flip()
 
     continueRoutine = True
@@ -962,27 +970,23 @@ while turns <= 3 and score <= 70:
     ClickPrompt.setAutoDraw(False)
     NbackInstructions.setAutoDraw(False)
     NbackInstructionWideImg.setAutoDraw(False)
+    if biopac_exists:
+        biopac.setData(biopac, 0)
     win.flip()
-
-    """ 
-    7. 1-Back Practice
-    """
-    TryAgainText = "Let's try that again...\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
-    PleaseWaitText = "Please wait for the experimenter ..."
-    PassedText = "Okay! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
-    PerfectText = "Perfect! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
-
-    # Do Practice-T1
-    correct = 0
-    score = 0
     routineTimer.reset()
 
+    ########################
+    # Practice 1-back Begins
+    ########################
+    correct = 0
+    score = 0
+
     """ 
-    7ii. Pre-1-Back Task Fixation Cross
+    8i. Pre-1-Back Task Fixation Cross
     """
     # ------Prepare to start Routine "Fixation"-------
     continueRoutine = True
-    routineTimer.add(1.000000)
+    routineTimer.add(1.000000)      # 1 second pre-task fixation
     # update component parameters for each repeat
     # keep track of which components have finished
     FixationComponents = [fixation_1]
@@ -1015,6 +1019,9 @@ while turns <= 3 and score <= 70:
             fixation_1.tStart = t  # local t and not account for scr refresh
             fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+            if biopac_exists:
+                win.callOnFlip(biopac.setData, biopac, 0)
+                win.callOnFlip(biopac.setData, biopac, nback_fixation)
             fixation_1.setAutoDraw(True)
         if fixation_1.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
@@ -1043,15 +1050,23 @@ while turns <= 3 and score <= 70:
             win.flip()
 
     # -------Ending Routine "Fixation"-------
+    if biopac_exists:
+        win.callOnFlip(biopac.setData, biopac, 0)
     for thisComponent in FixationComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
     thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
     thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
     routineTimer.reset()
-    ####
-    # 1-back Start
-    ####
+
+    """ 
+    8ii. Practice 1-back Start
+    """
+    # Feedback Text
+    incorrect_text = "Incorrect!"
+    noresponse_text = "No Response!"
+    correct_text = "Correct!"
+
     # set up handler to look after randomisation of conditions etc
     Nback1 = os.sep.join([nback_dir, "Practice_N-back-1.xlsx"])
     trials = data.TrialHandler(nReps=1, method='sequential', 
@@ -1074,16 +1089,13 @@ while turns <= 3 and score <= 70:
         
         # ------Prepare to start Routine "N_back_1_Trial"-------
         continueRoutine = True
-        routineTimer.add(2.000000)
+        routineTimer.add(2.000000)          # Each trial is 2 seconds
+        feedbacktype = "none"
         # update component parameters for each repeat
         target_square.setPos(location)
         response.rt = []
 
         gotValidClick = False  # until a click is received
-
-        incorrect_text = "Incorrect!"
-        noresponse_text = "No Response!"
-        correct_text = "Correct!"
 
         # keep track of which components have finished
         N_back_1_TrialComponents = [grid_lines, target_square, fixation_2, response, Feedback]
@@ -1197,12 +1209,14 @@ while turns <= 3 and score <= 70:
                             response.corr = 1
                             correct = correct + 1
                             Feedback.setText(correct_text)
+                            feedbacktype = "pos"
                             if biopac_exists:
                                 biopac.setData(biopac, 0)
                                 biopac.setData(biopac, nback_hit)
                         else:
                             response.corr = 0
                             Feedback.setText(incorrect_text)
+                            feedbacktype = "neg"
                             if biopac_exists:
                                 biopac.setData(biopac, 0)
                                 biopac.setData(biopac, nback_comiss) # mark comission error
@@ -1218,6 +1232,7 @@ while turns <= 3 and score <= 70:
                     mouse_response = None
                     if str(corrAns).lower() != 'none':
                         Feedback.setText(noresponse_text)
+                        feedbacktype = "miss"
                     else:
                         Feedback.setText("")
                 
@@ -1249,6 +1264,16 @@ while turns <= 3 and score <= 70:
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 if 1 < N_back_1_TrialClock.getTime() < 1.75:
                     Feedback.draw()
+                    if biopac_exists:
+                        if feedbacktype == "pos":
+                            biopac.setData(biopac, nback_feedback_pos)
+                        if feedbacktype == "neg":
+                            biopac.setData(biopac, nback_feedback_neg)
+                        if feedbacktype == "miss":
+                            biopac.setData(biopac, nback_feedback_miss)
+                else:
+                    if biopac_exists:
+                        biopac.setData(biopac, 0)
                 win.flip()
         
         # -------Ending Routine "N_back_1_Trial"-------
@@ -1274,7 +1299,6 @@ while turns <= 3 and score <= 70:
         trials.addData('fixation_2.started', fixation_2.tStartRefresh)
         trials.addData('fixation_2.stopped', fixation_2.tStopRefresh)
         # store data for trials (TrialHandler)
-        # trials.addData('response.keys',response.keys)
         trials.addData('response.corr', response.corr)
         trials.addData('response.x', x)
         trials.addData('response.y', y)
@@ -1295,17 +1319,28 @@ while turns <= 3 and score <= 70:
 
         thisExp.nextEntry()
 
-        if debug == 1:
+        if cheat == 1:
             score = 100
         else:
             score = correct*100/trials.nTotal
 
-        # completed 1 repeats of 'trials'
+    """ 
+    8iii. Practice 1-back Score Report
+    """
+    # Score Feedback Text
+    ScoreText = "Your score was" + score
 
+    if debug == 1:
+        TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+        PleaseWaitText = ScoreText + "\n\n\nPlease wait for the experimenter ..."
+        PassedText = "Okay! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+        PerfectText = "Perfect! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+    else:
+        TryAgainText = "Let's try that again...\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
+        PleaseWaitText = "Please wait for the experimenter ..."
+        PassedText = "Okay! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
+        PerfectText = "Perfect! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
 
-    ####
-    # Score Report
-    ####
 
     # ------Prepare to start Routine "ScoreReport"-------
     continueRoutine = True
@@ -1330,12 +1365,16 @@ while turns <= 3 and score <= 70:
 
     if (score <= 70):
         ScoreReportText.setText(TryAgainText)
+        nback_feedback = nback_feedback_neg
     if turns >= 3 and score <= 70:
         ScoreReportText.setText(PleaseWaitText)
+        nback_feedback = nback_feedback_neg
     if (score > 70):
         ScoreReportText.setText(PassedText)
+        nback_feedback = nback_feedback_pos
     if (score == 100):
         ScoreReportText.setText( PerfectText)
+        nback_feedback = nback_feedback_pos
 
     # -------Run Routine "ScoreReport"-------
     while continueRoutine:
@@ -1410,18 +1449,11 @@ while turns <= 3 and score <= 70:
     thisExp.addData('ScoreReportText.started', ScoreReportText.tStartRefresh)
     thisExp.addData('ScoreReportText.stopped', ScoreReportText.tStopRefresh)
     # check responses
-    if NbackStart.keys in ['', [], None]:  # No response was made
-        NbackStart.keys = None
     thisExp.addData('ScoreReportResponse.keys', ScoreReportResponse.keys)
-    if NbackStart.keys != None:  # we had a response
-        thisExp.addData('ScoreReportResponse.rt', ScoreReportResponse.rt)
     thisExp.addData('ScoreReportResponse.started', ScoreReportResponse.tStartRefresh)
     thisExp.addData('ScoreReportResponse.stopped', ScoreReportResponse.tStopRefresh)
-
     Practice_1back.append(["score: ", score])
-
     thisExp.nextEntry()
-    # the Routine "NbackInstructions" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
     turns = turns + 1
@@ -1434,22 +1466,20 @@ Practice_1back_bids_name = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s
 Practice_1back = pd.DataFrame(Practice_1back, columns = ['onset','duration','rt','response','correct','attempt','condition'])
 Practice_1back.to_csv(Practice_1back_bids_name, sep="\t")
 
-""" 
-7. 2-Back Practice
 """
-""" 
-7. 2-Back Practice Instruction
+10. Start Practice 2-back
 """
 turns = 0
 score = 0
 while turns <= 3 and score <= 70:
-    # while passed == False, keep redoing the instructions 3 times.
-
     # ------Prepare to start Routine "Instructions_2"-------
     NbackInstructionText8 = "2-back\n\n\nDuring 2-back you will have to indicate whether the current position matches the position matches the position that was presented two trials ago, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
 
     NbackInstructions.setText(NbackInstructionText8)
     NbackInstructions.draw()
+    if biopac_exists:
+        biopac.setData(biopac, 0)
+        biopac.setData(biopac, nback_instructions)
     win.flip()
     continueRoutine = True
     event.clearEvents()
@@ -1457,8 +1487,6 @@ while turns <= 3 and score <= 70:
         if 'space' in event.getKeys(keyList = 'space'):
             continueRoutine = False
     routineTimer.reset()
-
-    # event.waitKeys(keyList = 'space')
 
     NbackInstructionText9 = "In this 2-back example you should not respond to the first trial or the second trial (as there are insufficient previous trials), and make a \"yes\" response (left click) on trial 3, since the position is the same as the position on trial 1.\n\n\n\n\n\n\n\n\n\n"
     # Picture Loop 17-30.png
@@ -1517,27 +1545,24 @@ while turns <= 3 and score <= 70:
     ClickPrompt.setAutoDraw(False)
     NbackInstructions.setAutoDraw(False)
     NbackInstructionWideImg.setAutoDraw(False)
+    if biopac_exists:
+        biopac.setData(biopac, 0)
     win.flip()
+    routineTimer.reset()
 
+    ########################
+    # Practice 2-back Begins
+    ########################
     Feedback.setText("")
-
-    ###########################################################
-
-    # Do Practice-T1
     correct = 0
     score = 0
 
-    # while passed == False, keep redoing the instructions 3 times.
-
-    routineTimer.reset()
-
     """ 
-    7ii. Pre-2-Back Task Fixation Cross
+    10i. Pre-2-Back Task Fixation Cross
     """
-
     # ------Prepare to start Routine "Fixation"-------
     continueRoutine = True
-    routineTimer.add(1.000000)
+    routineTimer.add(1.000000)      # 1 second pre-task fixation
     # update component parameters for each repeat
     # keep track of which components have finished
     FixationComponents = [fixation_1]
@@ -1570,6 +1595,9 @@ while turns <= 3 and score <= 70:
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -1598,6 +1626,8 @@ while turns <= 3 and score <= 70:
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -1605,6 +1635,9 @@ while turns <= 3 and score <= 70:
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
         routineTimer.reset()
 
+        """ 
+        10ii. Practice 2-back Start
+        """
         # set up handler to look after randomisation of conditions etc
         Nback2 = os.sep.join([nback_dir, "Practice_N-back-2.xlsx"])
         trials_2 = data.TrialHandler(nReps=1, method='sequential', 
@@ -1617,9 +1650,7 @@ while turns <= 3 and score <= 70:
         if thisTrial_2 != None:
             for paramName in thisTrial_2:
                 exec('{} = thisTrial_2[paramName]'.format(paramName))    
-        """ 
-        7iii. Working Memory 2-Back Main Loop
-        """
+
         for thisTrial_2 in trials_2:
             currentLoop = trials_2
             # abbreviate parameter names if possible (e.g. rgb = thisTrial_2.rgb)
@@ -1629,7 +1660,8 @@ while turns <= 3 and score <= 70:
             
             # ------Prepare to start Routine "N_back_2_trials"-------
             continueRoutine = True
-            routineTimer.add(2.000000)
+            routineTimer.add(2.000000)          # Each trial is 2 seconds
+            feedbacktype = "none"
             # update component parameters for each repeat
             target_square_2.setPos(location)
             response_2 = event.Mouse(win=win, visible=False) # Re-initialize
@@ -1697,12 +1729,14 @@ while turns <= 3 and score <= 70:
                                 response_2.corr = 1
                                 correct = correct + 1
                                 Feedback.setText(correct_text)
+                                feedbacktype = "pos"
                                 if biopac_exists:
                                     biopac.setData(biopac, 0)
                                     biopac.setData(biopac, nback_hit)
                             else:
                                 response_2.corr = 0
                                 Feedback.setText(incorrect_text)
+                                feedbacktype = "neg"
                                 if biopac_exists:
                                     biopac.setData(biopac, 0)
                                     biopac.setData(biopac, nback_comiss) # mark comission error
@@ -1718,6 +1752,7 @@ while turns <= 3 and score <= 70:
                         mouse_response = None
                         if str(corrAns).lower() != 'none':
                             Feedback.setText(noresponse_text)
+                            feedbacktype = "miss"
                         else:
                             Feedback.setText("")
                 # *grid_lines_2* updates
@@ -1806,6 +1841,16 @@ while turns <= 3 and score <= 70:
                 if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                     if 1 < N_back_2_TrialClock.getTime() < 1.75:
                         Feedback.draw()
+                        if biopac_exists:
+                            if feedbacktype == "pos":
+                                biopac.setData(biopac, nback_feedback_pos)
+                            if feedbacktype == "neg":
+                                biopac.setData(biopac, nback_feedback_neg)
+                            if feedbacktype == "miss":
+                                biopac.setData(biopac, nback_feedback_miss)
+                    else:
+                        if biopac_exists:
+                            biopac.setData(biopac, 0)
                     win.flip()
             
             
@@ -1853,21 +1898,28 @@ while turns <= 3 and score <= 70:
             routineTimer.reset()
             thisExp.nextEntry()
 
-            if debug == 1:
+            if cheat == 1:
                 score = 100
             else:
                 score = correct*100/trials.nTotal
 
-                
-            # completed 1 repeats of 'trials_2' 
+        """ 
+        10iii. Practice 2-back Score Report
+        """
+        # Score Feedback Text
+        ScoreText = "Your score was" + score
 
-                ####
-                # Make sure to add a feedback component for each trial after 3rd, or prior to that if comission error was produced.
-                ####
+        if debug == 1:
+            TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+            PleaseWaitText = ScoreText + "\n\n\nPlease wait for the experimenter ..."
+            PassedText = "Okay! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+            PerfectText = "Perfect! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+        else:
+            TryAgainText = "Let's try that again...\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
+            PleaseWaitText = "Please wait for the experimenter ..."
+            PassedText = "Okay! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
+            PerfectText = "Perfect! Let's move on.\n\n\n\n\n\n\n\nExperimenter press [Space] to continue."
 
-        ####
-        # Score Report Have to name this Score Report_2 or something...
-        ####
         # ------Prepare to start Routine "ScoreReport_2"-------
         continueRoutine = True
         # update component parameters for each repeat
@@ -1891,12 +1943,16 @@ while turns <= 3 and score <= 70:
 
         if (score <= 70):
             ScoreReportText.setText(TryAgainText)
+            nback_feedback = nback_feedback_neg
         if turns >= 3 and score <= 70:
             ScoreReportText.setText(PleaseWaitText)
+            nback_feedback = nback_feedback_neg
         if (score > 70):
             ScoreReportText.setText(PassedText)
+            nback_feedback = nback_feedback_pos
         if (score == 100):
-            ScoreReportText.setText(PerfectText)
+            ScoreReportText.setText( PerfectText)
+            nback_feedback = nback_feedback_pos
 
         # -------Run Routine "ScoreReport"-------
         while continueRoutine:
@@ -1971,33 +2027,26 @@ while turns <= 3 and score <= 70:
         thisExp.addData('ScoreReportText.started', ScoreReportText.tStartRefresh)
         thisExp.addData('ScoreReportText.stopped', ScoreReportText.tStopRefresh)
         # check responses
-        if NbackStart.keys in ['', [], None]:  # No response was made
-            NbackStart.keys = None
         thisExp.addData('ScoreReportResponse.keys', ScoreReportResponse.keys)
-        if NbackStart.keys != None:  # we had a response
-            thisExp.addData('ScoreReportResponse.rt', ScoreReportResponse.rt)
         thisExp.addData('ScoreReportResponse.started', ScoreReportResponse.tStartRefresh)
         thisExp.addData('ScoreReportResponse.stopped', ScoreReportResponse.tStopRefresh)
-
         Practice_2back.append(["score: ", score])
-
         thisExp.nextEntry()
-        # the Routine "NbackInstructions" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
 
         turns = turns + 1
 
 """
-9. Save Practice-2back File
+11. Save Practice-2back File
 """
 # each _%s refers to the respective field in the parentheses
 Practice_2back_bids_name = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, "Practice2back")
 Practice_2back = pd.DataFrame(Practice_2back, columns = ['onset','duration','rt','response','correct','attempt','condition'])
 Practice_2back.to_csv(Practice_2back_bids_name, sep="\t")
 
-#######
+###################
 # Real Trials Start
-#######
+###################
 
 NbackInstructionText11 = "The tutorial is now over, we will now begin our scans, after which you will be instructed of the task assigned to you.\n\n\nWe will add some difficulty by periodically sending painful thermal stimulations to a designated body-site. \nDuring the task it is very important that you respond as fast and as accurately as possible.\n\n\nYou should try to respond shortly after the square is presented. This might be difficult, so it is important that you concentrate!\n\nExperimenter press [Space] to continue."
 NbackInstructions.setText(NbackInstructionText11)
@@ -2010,32 +2059,10 @@ while continueRoutine == True:
         continueRoutine = False
 routineTimer.reset()
 
-# Start a loop:
 """
-Body-Site Instructions
+12. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
 """
-# Please attach a thermode to the designated body-site:
-"""
-8c. Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
-"""
-## We may need to generate several unique orders that will be drawn at random
-# if int(expInfo['subject number']) % 2 == 0: subjectOrder = os.sep.join([stimuli_dir,"EvenOrders.xlsx"]) 
-# else: subjectOrder = subjectOrder = os.sep.join([stimuli_dir,"OddOrders.xlsx"])
-
-# runLoop = data.TrialHandler(nReps=1, method='random', extraInfo=expInfo, originPath=-1, trialList=data.importConditions(subjectOrder, selection='0:4'), seed=None, name='runLoop')
-
-# thisExp.addLoop(runLoop)  # add the loop to the experiment
-# thisrunLoop = runLoop.trialList[0]  # so we can initialise stimuli with some values
-
-# for thisrunLoop in runLoop:                     # Loop through each run.
 for runs in range(8):
-    # currentLoop = runLoop
-
-    # abbreviate parameter names if possible (e.g. rgb = thisrunLoop.rgb)
-    # if thisrunLoop != None:
-    #     for paramName in thisrunLoop:
-    #         exec('{} = thisrunLoop[paramName]'.format(paramName))
-
     # ------Prepare to start Routine "BodySiteInstruction"-------
     routineTimer.reset()
 
@@ -2044,7 +2071,7 @@ for runs in range(8):
     BodySiteInstructionRead.keys = []
     BodySiteInstructionRead.rt = []
     _BodySiteInstructionRead_allKeys = []
-    ## Update instructions and cues based on current run's body-sites:
+    # Update instructions and cues based on current run's body-sites:
     BodySiteInstructionText.text="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower()
     # keep track of which components have finished
     BodySiteInstructionComponents = [BodySiteInstructionText, BodySiteImg, BodySiteInstructionRead]
@@ -2062,7 +2089,6 @@ for runs in range(8):
     BodySiteInstructionClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
     frameN = -1
 
-    
     # -------Run Routine "BodySiteInstruction"-------
     while continueRoutine:
         # get current time
@@ -2164,85 +2190,64 @@ for runs in range(8):
     # the Routine "BodySiteInstruction" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
-    """ 
-    7. 1-Back Real
     """
-    """ 
-    7i. 1-Back Prompt
-    """
-    ## "The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial. Experimenter press [Space] to continue." 
-    NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial. \n\n\n\n\n\n\nExperimenter press [Space] to continue.")
-    NbackInstructions.draw()
-    win.flip()
-    continueRoutine = True
-    event.clearEvents()
-    while continueRoutine == True:
-        if 'space' in event.getKeys(keyList = 'space'):
-            continueRoutine = False
-    routineTimer.reset()
-    # event.waitKeys(keyList = 'space')
-
-    """
-    Start Scanner
+    13. Start Scanner
     """
     fmriStart = globalClock.getTime()
 
     start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
     start.draw()  # Automatically draw every frame
     win.flip()
-    if autorespond != 1:
-        # Trigger
-        # event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
-        # event.waitKeys(keyList='5')   # fMRI trigger
+    if autorespond != 1:   
         TR = 0.46
-        # core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
        
         continueRoutine = True
         event.clearEvents()
         while continueRoutine == True:
-            if 's' in event.getKeys(keyList = 's'):
+            if 's' in event.getKeys(keyList = 's'):         # experimenter start key - safe key before fMRI trigger
                 event.clearEvents()
                 while continueRoutine == True:
-                    if '5' in event.getKeys(keyList = '5'):
-                        timer = core.CountdownTimer(TR*6)
+                    if '5' in event.getKeys(keyList = '5'): # fMRI trigger
+                        timer = core.CountdownTimer(TR*6)   # Wait 6 TRs, Dummy Scans
                         while timer.getTime() > 0:
                             continue
                         continueRoutine = False
-        routineTimer.reset()
-
-    hot = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]
+    
+    """ 
+    14. Begin First 1-Back Trials
+    """
+    bodySiteData = bodySites[runs]
     temperature = participant_settingsHeat[bodySites[runs]]
     BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    bodySiteData = bodySites[runs]
-    thermodeCommand = hot  
+    
+    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]  
 
     routineTimer.reset()
-    """ 
-    7ii. Start Loop
-    """
-    # Jittered Fixation 5-12 seconds
 
-    # Start Thermal Program
-    # Trigger Biopac
-    # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
+    NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial.")
+    NbackInstructions.draw()
+    if biopac_exists:
+        biopac.setData(biopac, 0)
+        biopac.setData(biopac, nback_instructions)
+    win.flip()
 
-    for r in range(4): 
-        jitter2 = None
+    timer = core.CountdownTimer(10)
+    while timer.getTime() < 0:
+        continue
+    routineTimer.reset()
+
+    for r in range(4): # 4 repetitions
+        jitter2 = None # Reset jitter2 
         """
-        Set Thermal Program
+        14i. Select Medoc Thermal Program
         """
-        # thermodeCommand = 171
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
-
         """ 
-        7ii. Pre-1-Back Task Fixation Cross
+        14ii. Pre-1-Back Task Fixation Cross
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        # jitter = randint(5,12) # Make this into discrete values
-        # jitter = 18
-        # jitter = random.choice([7,12,18])
         if not jitter2:
             jitter1 = random.choice([5,7.5,10])
         elif jitter2 == 5:
@@ -2269,7 +2274,6 @@ for runs in range(8):
         frameN = -1
 
         # -------Run Routine "Fixation"-------
-        onset = globalClock.getTime() - fmriStart
         while continueRoutine and routineTimer.getTime() > 0:
             # get current time
             t = FixationClock.getTime()
@@ -2285,6 +2289,9 @@ for runs in range(8):
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -2313,6 +2320,8 @@ for runs in range(8):
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -2322,8 +2331,7 @@ for runs in range(8):
         routineTimer.reset()
 
         """
-        Start 1-back Trials
-        4x Trials
+        14iii. First Phase: 4 trials of 1-Back Task Start
         """
         # set up handler to look after randomisation of conditions etc
         if not OnebackFiles:
@@ -2348,9 +2356,11 @@ for runs in range(8):
                     exec('{} = thisTrial[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
+            onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
+
             # Trigger Thermal Program
             if trials.thisTrialN == 4 and thermode_exists == 1:
-                sendCommand('trigger')
+                sendCommand('trigger')                          # Trigger the thermode
             
             continueRoutine = True
             routineTimer.add(2.000000)
@@ -2529,16 +2539,12 @@ for runs in range(8):
             trials.addData('fixation_2.started', fixation_2.tStartRefresh)
             trials.addData('fixation_2.stopped', fixation_2.tStopRefresh)
             # store data for trials (TrialHandler)
-            # trials.addData('response.keys',response.keys)
             trials.addData('response.corr', response.corr)
             
             trials.addData('response.x', x)
             trials.addData('response.y', y)
             trials.addData('response.leftButton', response.click)
 
-            # if response.keys != None:  # we had a response
-            #     trials.addData('response.rt', response.rt)
-            
             if gotValidClick==True and (response.click_left == 1 or response.click_right == 1):  # we had a response
                 trials.addData('response.rt_left', response.rt_left)
                 trials.addData('response.rt_right', response.rt_right)
@@ -2549,21 +2555,16 @@ for runs in range(8):
             trials.addData('response.stopped', response.tStopRefresh)
 
             distractmap_bids_trial = []
-            distractmap_bids_trial.extend((grid_lines.tStartRefresh, t, response.rt, mouse_response, response.corr, bodySites[runs], temperature, "1back"))
-            distractmap_bids.append(distractmap_bids_trial)
+            distractmap_bids_trial.extend((onset, t, response.rt, mouse_response, response.corr, bodySites[runs], temperature, "1back", jitter1))
 
             routineTimer.reset()
             thisExp.nextEntry()
-            
-            # completed 4 repeats of 'trials'
-        
+                    
         """ 
-        7ii. Post First 1-Back Fixation Cross
+        14iv. Post First 1-Back Fixation Cross
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        # jitter = randint(5,12) # Make this into discrete values
-        # jitter = 18
         jitter2 = random.choice([5,7.5,10])
         routineTimer.add(jitter2)
         # update component parameters for each repeat
@@ -2598,6 +2599,9 @@ for runs in range(8):
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -2626,18 +2630,23 @@ for runs in range(8):
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
 
+        distractmap_bids_trial.extend(jitter2)
+        distractmap_bids.append(distractmap_bids_trial)
+
         routineTimer.reset()
 
         """
-        1st Pain Rating Period
+        14v. Phase-1 1-back Pain Rating Trial
         """
-        ############ ASK PAIN INTENSITY #######################################
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
         routineTimer.add(ratingTime)
@@ -2665,21 +2674,25 @@ for runs in range(8):
         IntensityRatingClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
 
+        IntensityRating.fillColor='red'
+        obtainedRating = 0
+
         # -------Run Routine "IntensityRating"-------
         while continueRoutine:
-            timeNow = globalClock.getTime()
-            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-                mouseRel=IntensityMouse.getRel()
-                mouseX=oldMouseX + mouseRel[0]
-            IntensityRating.pos = ((sliderMin + mouseX)/2,0)
-            IntensityRating.width = abs((mouseX-sliderMin))
-            if mouseX > sliderMax:
-                mouseX = sliderMax
-            if mouseX < sliderMin:
-                mouseX = sliderMin
-            timeAtLastInterval = timeNow
-            oldMouseX=mouseX
-            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            if obtainedRating == 0:
+                timeNow = globalClock.getTime()
+                if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                    mouseRel=IntensityMouse.getRel()
+                    mouseX=oldMouseX + mouseRel[0]
+                IntensityRating.pos = ((sliderMin + mouseX)/2,0)
+                IntensityRating.width = abs((mouseX-sliderMin))
+                if mouseX > sliderMax:
+                    mouseX = sliderMax
+                if mouseX < sliderMin:
+                    mouseX = sliderMin
+                timeAtLastInterval = timeNow
+                oldMouseX=mouseX
+                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
 
             # get current time
             t = IntensityRatingClock.getTime()
@@ -2708,8 +2721,8 @@ for runs in range(8):
                 if buttons != prevButtonState:  # button state changed?
                     prevButtonState = buttons
                     if sum(buttons) > 0:  # state changed to a new click
-                        # abort routine on response
-                        continueRoutine = False
+                        IntensityRating.fillColor='white'
+                        obtainedRating = 1
             
             # *IntensityRating* updates
             if IntensityRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -2817,53 +2830,40 @@ for runs in range(8):
         thisExp.addData('IntensityRating.started', IntensityRating.tStart)
         thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
 
-        distractmap_bids.append(["intensity: ", sliderValue])
+        rating_bids_trial = []
+        rating_bids_trial.extend((onset, t, bodySites[runs], sliderValue, temperature, "1back", jitter2))
+        rating_bids.append(rating_bids_trial)
 
         # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
 
+    """ 
+    15. Begin First 2-Back Trials
     """
-    2-Back Prompt
-    """
-    ## "The following trials will be 2-back, please indicate whether or not the square in the current position matches the position that was presented two trials before. Experimenter press [Space] to continue." 
     NbackInstructions.setText("The following trials will be 2-back, please indicate whether or not the square in the current position matches the position that was presented two trials before.")
     NbackInstructions.draw()
+    if biopac_exists:
+        biopac.setData(biopac, 0)
+        biopac.setData(biopac, nback_instructions)
     win.flip()
-    # event.waitKeys(keyList = 'space')
-    # core.wait(10)
 
     timer = core.CountdownTimer(10)
     while timer.getTime() < 0:
         continue
     routineTimer.reset()
 
-    hot = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]
-    BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    temperature = participant_settingsHeat[bodySites[runs]]
-    bodySiteData = bodySites[runs]
-    thermodeCommand = hot  
-
-    """
-    7ii. Start 2-Back Loop
-    """
-    # Jittered Fixation 5-12 seconds
-
-    # Start Thermal Program
-    # Trigger Biopac
-    # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
     for r in range(8): # 8 repetitions
         jitter2=None # Reset jitter2 
-        # thermodeCommand = 171
+        """
+        15i. Select Medoc Thermal Program
+        """
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
-
         """
-        7ii. Pre 2-Back Fixation
+        15ii. Pre-2-Back Task Fixation Cross
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        # jitter = randint(5,12)
-        # jitter = 18
         if not jitter2:
             jitter1 = random.choice([5,7.5,10])
         elif jitter2 == 5:
@@ -2905,6 +2905,9 @@ for runs in range(8):
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -2933,6 +2936,8 @@ for runs in range(8):
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -2941,14 +2946,9 @@ for runs in range(8):
 
         routineTimer.reset()
 
-        """ 
-        7. 2-Back Real
-        4x Trials
         """
-        # Trigger Thermal Program
-        # if thermode_exists == 1:
-        #     sendCommand('trigger')
-
+        15iii. Second Phase: 8 trials of 2-Back Task Start
+        """
         # set up handler to look after randomisation of conditions etc
         if not TwobackFiles:
             TwobackFiles = ["N-back-2_1.xlsx", "N-back-2_2.xlsx", "N-back-2_3.xlsx", "N-back-2_4.xlsx", "N-back-2_5.xlsx", "N-back-2_6.xlsx", "N-back-2_7.xlsx", "N-back-2_8.xlsx"]
@@ -2962,10 +2962,8 @@ for runs in range(8):
         # abbreviate parameter names if possible (e.g. rgb = thisTrial_2.rgb)
         if thisTrial_2 != None:
             for paramName in thisTrial_2:
-                exec('{} = thisTrial_2[paramName]'.format(paramName))    
-        """ 
-        7iii. Working Memory 2-Back Main Loop
-        """
+                exec('{} = thisTrial_2[paramName]'.format(paramName))
+
         for thisTrial_2 in trials_2:
             currentLoop = trials_2
             # abbreviate parameter names if possible (e.g. rgb = thisTrial_2.rgb)
@@ -2974,6 +2972,7 @@ for runs in range(8):
                     exec('{} = thisTrial_2[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_2_trials"-------
+            onset = globalClock.getTime() - fmriStart
             # Trigger Thermal Program
             if trials_2.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
@@ -3177,16 +3176,14 @@ for runs in range(8):
             trials_2.addData('response_2.stopped', response_2.tStopRefresh)
 
             distractmap_bids_trial = []
-            distractmap_bids_trial.extend((grid_lines_2.tStartRefresh, t, response_2.rt, mouse_response, response_2.corr, bodySites[runs], temperature, "2back"))
-            distractmap_bids.append(distractmap_bids_trial)
+            distractmap_bids_trial.extend((onset, t, response_2.rt, mouse_response, response_2.corr, bodySites[runs], temperature, "2back", jitter1))
 
             routineTimer.reset()
-
             thisExp.nextEntry()
             
         # completed 1 repeats of 'trials_2'
         """
-        7ii. Post 2-Back Fixation
+        15iv. Post 2-Back Fixation Cross
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
@@ -3225,6 +3222,9 @@ for runs in range(8):
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -3253,17 +3253,23 @@ for runs in range(8):
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
 
+        distractmap_bids_trial.extend(jitter2)
+        distractmap_bids.append(distractmap_bids_trial)
+
         routineTimer.reset()
 
         """
-        2nd Pain Rating Period
+        15v. Phase-2 2-back Pain Rating Trial
         """
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         ############ ASK PAIN INTENSITY #######################################
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
@@ -3292,21 +3298,25 @@ for runs in range(8):
         IntensityRatingClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
 
+        IntensityRating.fillColor='red'
+        obtainedRating = 0
+
         # -------Run Routine "IntensityRating"-------
         while continueRoutine:
-            timeNow = globalClock.getTime()
-            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-                mouseRel=IntensityMouse.getRel()
-                mouseX=oldMouseX + mouseRel[0]
-            IntensityRating.pos = ((sliderMin + mouseX)/2,0)
-            IntensityRating.width = abs((mouseX-sliderMin))
-            if mouseX > sliderMax:
-                mouseX = sliderMax
-            if mouseX < sliderMin:
-                mouseX = sliderMin
-            timeAtLastInterval = timeNow
-            oldMouseX=mouseX
-            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            if obtainedRating == 0:
+                timeNow = globalClock.getTime()
+                if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                    mouseRel=IntensityMouse.getRel()
+                    mouseX=oldMouseX + mouseRel[0]
+                IntensityRating.pos = ((sliderMin + mouseX)/2,0)
+                IntensityRating.width = abs((mouseX-sliderMin))
+                if mouseX > sliderMax:
+                    mouseX = sliderMax
+                if mouseX < sliderMin:
+                    mouseX = sliderMin
+                timeAtLastInterval = timeNow
+                oldMouseX=mouseX
+                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
 
             # get current time
             t = IntensityRatingClock.getTime()
@@ -3335,8 +3345,8 @@ for runs in range(8):
                 if buttons != prevButtonState:  # button state changed?
                     prevButtonState = buttons
                     if sum(buttons) > 0:  # state changed to a new click
-                        # abort routine on response
-                        continueRoutine = False
+                        IntensityRating.fillColor='white'
+                        obtainedRating = 1
             
             # *IntensityRating* updates
             if IntensityRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -3443,52 +3453,37 @@ for runs in range(8):
         thisExp.nextEntry()
         thisExp.addData('IntensityRating.started', IntensityRating.tStart)
         thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
+
+        rating_bids_trial = []
+        rating_bids_trial.extend((onset, t, bodySites[runs], sliderValue, temperature, "2back", jitter2))
+        rating_bids.append(rating_bids_trial)
         
-        distractmap_bids.append(["intensity:", sliderValue])
         # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
 
     """ 
-    7. 1-Back Real
+    16. Begin Second 1-Back Trials
     """
-    """ 
-    7i. 1-Back Prompt
-    """
-    ## "The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial. Experimenter press [Space] to continue." 
     NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial.")
     NbackInstructions.draw()
     win.flip()
-    # event.waitKeys(keyList = 'space')
-    # core.wait(10)
     timer = core.CountdownTimer(10)
     while timer.getTime() < 0:
         continue
     routineTimer.reset()
-
-    # Jittered Fixation 5-12 seconds
-
-    # Start Thermal Program
-    # Trigger Biopac
-    # thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runLoop.thisTrialN]]]
  
-    """ 
-    7ii. Start Second 1-back Loop
-    """
-    for r in range(4): # 8 repetitions 
+    for r in range(4): # 4 repetitions 
         jitter2=None # Reset jitter2
-        # thermodeCommand = 171
+        """
+        16i. Select Medoc Thermal Program
+        """
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
-
         """ 
-        7ii. Pre-1-Back Task Fixation Cross
+        16ii. Pre-1-Back Task Fixation Cross
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        # jitter = randint(5,12)
-        # jitter = 18
-        # jitter = random.choice([7,12,18])
-        
         if not jitter2:
             jitter1 = random.choice([5,7.5,10])
         elif jitter2 == 5:
@@ -3531,6 +3526,9 @@ for runs in range(8):
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -3559,6 +3557,8 @@ for runs in range(8):
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -3567,14 +3567,8 @@ for runs in range(8):
         routineTimer.reset()
 
         """
-        Start 1-back Trials
-        4x Trials
+        16iii. Third Phase: 4 trials of 1-Back Task Start
         """
-        # Trigger Thermal Program
-        # if thermode_exists == 1:
-        #     sendCommand('trigger')
-
-
         # set up handler to look after randomisation of conditions etc
         if not OnebackFiles:
             OnebackFiles = ["N-back-1_1.xlsx", "N-back-1_2.xlsx", "N-back-1_3.xlsx", "N-back-1_4.xlsx", "N-back-1_5.xlsx", "N-back-1_6.xlsx", "N-back-1_7.xlsx", "N-back-1_8.xlsx"] 
@@ -3598,6 +3592,7 @@ for runs in range(8):
                     exec('{} = thisTrial[paramName]'.format(paramName))
             
             # ------Prepare to start Routine "N_back_1_Trial"-------
+            onset = globalClock.getTime() - fmriStart
             # Trigger Thermal Program
             if trials.thisTrialN == 4 and thermode_exists == 1:
                 sendCommand('trigger')
@@ -3779,15 +3774,11 @@ for runs in range(8):
             trials.addData('fixation_2.started', fixation_2.tStartRefresh)
             trials.addData('fixation_2.stopped', fixation_2.tStopRefresh)
             # store data for trials (TrialHandler)
-    #         trials.addData('response.keys',response.keys)
             trials.addData('response.corr', response.corr)
             
             trials.addData('response.x', x)
             trials.addData('response.y', y)
             trials.addData('response.leftButton', response.click)
-
-            # if response.keys != None:  # we had a response
-            #     trials.addData('response.rt', response.rt)
 
             if gotValidClick==True and (response.click_left == 1 or response.click_right == 1):  # we had a response
                 trials.addData('response.rt_left', response.rt_left)
@@ -3799,21 +3790,16 @@ for runs in range(8):
             trials.addData('response.stopped', response.tStopRefresh)
 
             distractmap_bids_trial = []
-            distractmap_bids_trial.extend((grid_lines.tStartRefresh, t, response.rt, mouse_response, response.corr, bodySites[runs], temperature, "1back"))
-            distractmap_bids.append(distractmap_bids_trial)
+            distractmap_bids_trial.extend((onset, t, response.rt, mouse_response, response.corr, bodySites[runs], temperature, "1back", jitter1))
 
             routineTimer.reset()
-            thisExp.nextEntry()
-            
-            # completed 4 repeats of 'trials'    
+            thisExp.nextEntry()  
         
         """ 
-        7ii. Post Second 1-Back Fixation Cross
+        16iv. Post Second 1-Back Fixation Cross
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        # jitter = randint(5,12) # Make this into discrete values
-        # jitter = 18
         jitter2 = random.choice([5,7.5,10])
         routineTimer.add(jitter2)
         # update component parameters for each repeat
@@ -3848,6 +3834,9 @@ for runs in range(8):
                 fixation_1.tStart = t  # local t and not account for scr refresh
                 fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+                if biopac_exists:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, nback_fixation)
                 fixation_1.setAutoDraw(True)
             if fixation_1.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -3876,17 +3865,23 @@ for runs in range(8):
                 win.flip()
 
         # -------Ending Routine "Fixation"-------
+        if biopac_exists:
+            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in FixationComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
         thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
 
+        distractmap_bids_trial.extend(jitter2)
+        distractmap_bids.append(distractmap_bids_trial)
+
         routineTimer.reset()        
         
         """
-        4th Pain Rating Period
+        16v. Phase-2 2-back Pain Rating Trial
         """   
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         ############ ASK PAIN INTENSITY #######################################
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
@@ -3915,21 +3910,25 @@ for runs in range(8):
         IntensityRatingClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
 
+        IntensityRating.fillColor='red'
+        obtainedRating = 0
+
         # -------Run Routine "IntensityRating"-------
         while continueRoutine:
-            timeNow = globalClock.getTime()
-            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-                mouseRel=IntensityMouse.getRel()
-                mouseX=oldMouseX + mouseRel[0]
-            IntensityRating.pos = ((sliderMin + mouseX)/2,0)
-            IntensityRating.width = abs((mouseX-sliderMin))
-            if mouseX > sliderMax:
-                mouseX = sliderMax
-            if mouseX < sliderMin:
-                mouseX = sliderMin
-            timeAtLastInterval = timeNow
-            oldMouseX=mouseX
-            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            if obtainedRating == 0:
+                timeNow = globalClock.getTime()
+                if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                    mouseRel=IntensityMouse.getRel()
+                    mouseX=oldMouseX + mouseRel[0]
+                IntensityRating.pos = ((sliderMin + mouseX)/2,0)
+                IntensityRating.width = abs((mouseX-sliderMin))
+                if mouseX > sliderMax:
+                    mouseX = sliderMax
+                if mouseX < sliderMin:
+                    mouseX = sliderMin
+                timeAtLastInterval = timeNow
+                oldMouseX=mouseX
+                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
 
             # get current time
             t = IntensityRatingClock.getTime()
@@ -3958,8 +3957,8 @@ for runs in range(8):
                 if buttons != prevButtonState:  # button state changed?
                     prevButtonState = buttons
                     if sum(buttons) > 0:  # state changed to a new click
-                        # abort routine on response
-                        continueRoutine = False
+                        IntensityRating.fillColor='white'
+                        obtainedRating = 1
             
             # *IntensityRating* updates
             if IntensityRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -4067,32 +4066,40 @@ for runs in range(8):
         thisExp.addData('IntensityRating.started', IntensityRating.tStart)
         thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
         
-        distractmap_bids.append(["intensity:", sliderValue])
+        rating_bids_trial = []
+        rating_bids_trial.extend((onset, t, bodySites[runs], sliderValue, temperature, "2back", jitter2))
+        rating_bids.append(rating_bids_trial)
+
         # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
     
     """
-    9. Save data into Excel and .CSV formats and Tying up Loose Ends
+    17. Save data into Excel and .CSV formats and Tying up Loose Ends
     """ 
-    # nback_bids_data = pd.DataFrame(nback_bids, columns = ['order', 'onset', 'duration', 'rt', 'correct'])
-    ## CHANGE ALL THESE
-    distractmap_bids_data = pd.DataFrame(distractmap_bids, columns = ['onset', 'duration', 'rt', 'response', 'correct', 'bodySite', 'temperature', 'condition'])
-    bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
-    distractmap_bids_data.to_csv(bids_filename, sep="\t")
+    distractmap_bids_data = pd.DataFrame(distractmap_bids, columns = ['onset', 'duration', 'rt', 'response', 'correct', 'bodySite', 'temperature', 'condition', 'pretrial-jitter', 'posttrial-jitter'])
+    distractmap_bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    distractmap_bids_data.to_csv(distractmap_bids_filename, sep="\t")
+    
+    rating_bids_data = pd.DataFrame(rating_bids, columns = ['onset', 'duration', 'bodySite', 'intensity', 'temperature', 'condition', 'posttrial-jitter'])
+    rating_bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), 'distractmap-ratings', bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    rating_bids_data.to_csv(rating_bids_filename, sep="\t")
+
     # Reset for the next run
     distractmap_bids_data = []
     distractmap_bids = []
-    
+
+    rating_bids_data = []
+    rating_bids = []
+
     """
-    8. End of Run, Wait for Experimenter instructions to begin next run
+    18. End of Run, Wait for Experimenter instructions to begin next run
     """   
     message = visual.TextStim(win, text=in_between_run_msg, height=0.05, units='height')
     message.draw()
     win.callOnFlip(print, "Awaiting Experimenter to start next run...\nPress [e] to continue")
     if biopac_exists:
         win.callOnFlip(biopac.setData, biopac,0)
-        win.callOnFlip(biopac.setData, biopac,second_run)
-        win.callOnFlip(biopac.setData,biopac,0)
+        win.callOnFlip(biopac.setData, biopac,between_run_msg)
     win.flip()
     # Autoresponder
     if autorespond != 1:
@@ -4104,12 +4111,11 @@ for runs in range(8):
                 continueRoutine = False
 
 """
-Wrap up
+19. Wrap up
 """
 if biopac_exists:
     biopac.setData(biopac,0)
     biopac.setData(biopac,end_task)
-    biopac.setData(biopac,0)
 win.flip()
 
 # these shouldn't be strictly necessary (should auto-save)
