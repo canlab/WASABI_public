@@ -74,16 +74,18 @@ __version__ = "1.0.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
+
+
 """  
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
+debug = 0
 cheat = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
-thermode_exists = 0
+biopac_exists = 1
+thermode_exists = 1
 
 class simKeys:
     '''
