@@ -360,7 +360,7 @@ else:
                 dlg1=None
         else:
             errorDlg2 = gui.Dlg(title="Error - invalid file")
-            errorDlg2.addText("Selected file is not a valid1324 calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
+            errorDlg2.addText("Selected file is not a valid calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
             errorDlg2.show()
             dlg1=None
     if dlg1==None:

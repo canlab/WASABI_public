@@ -22,7 +22,6 @@ The paradigm will generate these files of name:
 1x sub-XXXX_ses-XX_task-Practice1back_events.tsv
 1x sub-XXXX_ses-XX_task-Practice2back_events.tsv
 8x sub-XXXX_ses-XX_task-distractmap_acq-[bodySite]_run-XX_events.tsv
-8x sub-XXXX_ses-XX_task-distractmap-ratings_acq-[bodySite]_run-XX_events.tsv
 
 x16 trials per file with the following
 headers:
@@ -74,18 +73,16 @@ __version__ = "2.0.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
-
-
 """  
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 0
-cheat = 0
+debug = 1
+cheat = 1 
 autorespond = 0
 # Device togglers
-biopac_exists = 1
-thermode_exists = 1
+biopac_exists = 0
+thermode_exists = 0
 
 class simKeys:
     '''
@@ -235,8 +232,9 @@ psychopyVersion = '2020.2.10'
 expName = 'distractmap'  # from the Builder filename that created this script
 if debug == 1:
     expInfo = {
-    'subject number': '99', 
+    'subject number': '99',
     'gender': 'm',
+    'distractMap first- or second-half (1 or 2)': '1', 
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS'
@@ -245,6 +243,7 @@ else:
     expInfo = {
     'subject number': '', 
     'gender': '',
+    'distractMap first- or second-half (1 or 2)': '',
     'session': '',
     'handedness': '', 
     'scanner': '' 
@@ -267,7 +266,7 @@ if debug==1:
     expInfo = {
         'subject number': '999', 
         'gender': 'm',
-        'bodymap first- or second-half (1 or 2)': '2',
+        'distractMap first- or second-half (1 or 2)': '2',
         'session': '99',
         'handedness': 'r', 
         'scanner': 'TEST'
@@ -282,7 +281,6 @@ if debug==1:
         'Chest': 46,
         'Abdomen': 46
     }
-
 else:
     dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
     if dlg1!=None:
@@ -309,7 +307,7 @@ else:
                 distractmap_num = str(1)
                 ses_num = str(1) 
                 expInfo2 = {
-                'bodymap first- or second-half (1 or 2)': distractmap_num,
+                'distractMap first- or second-half (1 or 2)': distractmap_num,
                 'session': ses_num,
                 'scanner': ''
                 }
@@ -1474,7 +1472,7 @@ turns = 0
 score = 0
 while turns <= 3 and score <= 70:
     # ------Prepare to start Routine "Instructions_2"-------
-    NbackInstructionText8 = "2-back\n\n\nDuring 2-back you will have to indicate whether the current position matches the position matches the position that was presented two trials ago, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
+    NbackInstructionText8 = "2-back\n\n\nDuring 2-back you will have to indicate whether the current position matches the position that was presented two trials ago, by either pressing the \"yes\" button (left click) or the \"no\" button (right click).\n\n\nExperimenter press [Space] to see an example."
 
     NbackInstructions.setText(NbackInstructionText8)
     NbackInstructions.draw()
