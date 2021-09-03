@@ -77,12 +77,12 @@ __status__ = "Production"
 0b. Beta-Testing Togglers
 Set to 1 during development, 0 during production
 """
-debug = 1
-cheat = 1 
+debug = 0
+cheat = 1
 autorespond = 0
 # Device togglers
-biopac_exists = 0
-thermode_exists = 0
+biopac_exists = 1
+thermode_exists = 1
 
 class simKeys:
     '''
@@ -315,10 +315,11 @@ else:
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
                 bodySites = bodySites.strip('][').replace("'","").split(', ')
-                if expInfo['distractMap first- or second-half (1 or 2)'] == '1':
+                if expInfo2['distractMap first- or second-half (1 or 2)'] == '1':
                     bodySites = bodySites[0:4]
-                if expInfo['distractMap first- or second-half (1 or 2)'] == '2':
+                if expInfo2['distractMap first- or second-half (1 or 2)'] == '2':
                     bodySites = bodySites[4:8]
+                expInfo['distractMap first- or second-half (1 or 2)'] = expInfo2['distractMap first- or second-half (1 or 2)']
                 if dlg2.OK == False:
                     core.quit()  # user pressed cancel
             else:
@@ -2063,24 +2064,26 @@ for runs in range(len(bodySites)):
     12. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
         Also, generate a list of 16 N-back trialTypes to be randomly presented 
     """
-    trialTypes = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
-    random.shuffle(trialTypes)
-    NbackTrials = []
-    triplicate = 0
-    lastElement = 0
-    while trialTypes:
-        element = trialTypes.pop()
-        if element == lastElement:
-            triplicate = triplicate + 1
-        else:
-            triplicate = 0
-        if triplicate >= 3:
-            lastElement = element
-            trialTypes.append(element)
-        else:
-            lastElement = element
-            NbackTrials.append(element)
-            
+    # trialTypes = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
+    # random.shuffle(trialTypes)
+    # NbackTrials = []
+    # triplicate = 0
+    # lastElement = 0
+    # while trialTypes:
+    #     element = trialTypes.pop()
+    #     if element == lastElement:
+    #         triplicate = triplicate + 1
+    #     else:
+    #         triplicate = 0
+    #     if triplicate >= 3:
+    #         lastElement = element
+    #         trialTypes.insert(0, element)
+    #     else:
+    #         lastElement = element
+    #         NbackTrials.insert(0,element)
+
+    ## For Carmen's run:
+    NbackTrials = [1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 1, 2, 2]
 
     # ------Prepare to start Routine "BodySiteInstruction"-------
     routineTimer.reset()
@@ -2233,6 +2236,12 @@ for runs in range(len(bodySites)):
                             continue
                         continueRoutine = False
 
+    jitter2 = None  # Reset Jitter2
+    bodySiteData = bodySites[runs]
+    temperature = participant_settingsHeat[bodySites[runs]]
+    BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
+    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]  
+    routineTimer.reset()
 
     for r in NbackTrials: # 16 repetitions
         # Randomly select either 1-back or 2-back
@@ -2242,13 +2251,7 @@ for runs in range(len(bodySites)):
             """ 
             14. Begin 1-Back Trials
             """
-            bodySiteData = bodySites[runs]
-            temperature = participant_settingsHeat[bodySites[runs]]
-            BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-            
-            thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]  
 
-            routineTimer.reset()
 
             NbackInstructions.setText("The following trials will be 1-back, please indicate whether or not the square in the current position matches the position that was presented in the last trial.")
             NbackInstructions.draw()
@@ -2264,7 +2267,7 @@ for runs in range(len(bodySites)):
                 continue
             
             distractmap_bids_trial = []
-            distractmap_bids_trial.extend((onset, globalClock.getTime - fmriStart, None, None, None, bodySites[runs], temperature, "1back Instructions", None))
+            distractmap_bids_trial.extend((onset, globalClock.getTime() - fmriStart, None, None, None, bodySites[runs], temperature, "1back Instructions", None))
             distractmap_bids.append(distractmap_bids_trial)
             
             routineTimer.reset()
@@ -2589,7 +2592,10 @@ for runs in range(len(bodySites)):
                 trials.addData('response.stopped', response.tStopRefresh)
 
                 distractmap_bids_trial = []
-                distractmap_bids_trial.extend((onset, t, mouse_response_rt, mouse_response, response.corr, bodySites[runs], temperature, "1back", jitter1))
+                if trials.thisTrialN == 1:
+                    distractmap_bids_trial.extend((onset, t, mouse_response_rt, mouse_response, response.corr, bodySites[runs], temperature, "1back", jitter1))
+                else:
+                    distractmap_bids_trial.extend((onset, t, mouse_response_rt, mouse_response, response.corr, bodySites[runs], temperature, "1back", None))
                 distractmap_bids.append(distractmap_bids_trial)
 
                 routineTimer.reset()
@@ -2893,7 +2899,7 @@ for runs in range(len(bodySites)):
             # jitter2 = None # Reset jitter2 
 
             distractmap_bids_trial = []
-            distractmap_bids_trial.extend((onset, globalClock.getTime - fmriStart, None, None, None, bodySites[runs], temperature, "2back Instructions", None))
+            distractmap_bids_trial.extend((onset, globalClock.getTime() - fmriStart, None, None, None, bodySites[runs], temperature, "2back Instructions", None))
             distractmap_bids.append(distractmap_bids_trial)
 
             """
@@ -3218,9 +3224,11 @@ for runs in range(len(bodySites)):
                 trials_2.addData('response_2.stopped', response_2.tStopRefresh)
 
                 distractmap_bids_trial = []
-                distractmap_bids_trial.extend((onset, t, mouse_response_rt, mouse_response, response_2.corr, bodySites[runs], temperature, "2back", jitter1))
+                if trials_2.thisTrialN == 1:
+                    distractmap_bids_trial.extend((onset, t, mouse_response_rt, mouse_response, response_2.corr, bodySites[runs], temperature, "2back", jitter1))
+                else:
+                    distractmap_bids_trial.extend((onset, t, mouse_response_rt, mouse_response, response_2.corr, bodySites[runs], temperature, "2back", None))
                 distractmap_bids.append(distractmap_bids_trial)
-
                 routineTimer.reset()
                 thisExp.nextEntry()
                 
@@ -3508,7 +3516,7 @@ for runs in range(len(bodySites)):
     """
     17. Save data into Excel and .CSV formats and Tying up Loose Ends
     """ 
-    distractmap_bids_data = pd.DataFrame(distractmap_bids, columns = ['onset', 'duration', 'rt', 'response', 'correct', 'bodySite', 'temperature', 'condition'])
+    distractmap_bids_data = pd.DataFrame(distractmap_bids, columns = ['onset', 'duration', 'rt', 'response', 'correct', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'])
     distractmap_bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
     distractmap_bids_data.to_csv(distractmap_bids_filename, sep="\t")
     
