@@ -86,7 +86,7 @@ thermode_exists = 1
 
 class simKeys:
     '''
-    an object to simulate key presses
+    an object to simulate key presses55555555555555555555555555555555555555
     
     keyList: a list of keys/ to watch
     name: randomly selected from keyList
