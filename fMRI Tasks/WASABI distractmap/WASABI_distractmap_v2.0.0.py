@@ -78,7 +78,7 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 0
-cheat = 1
+cheat = 0
 autorespond = 0
 # Device togglers
 biopac_exists = 1
@@ -2081,9 +2081,10 @@ for runs in range(len(bodySites)):
     #     else:
     #         lastElement = element
     #         NbackTrials.insert(0,element)
+    # print(NbackTrials)
 
-    ## For Carmen's run:
-    NbackTrials = [1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 1, 2, 2]
+    ## For Michael's run:
+    NbackTrials = [2, 1, 2, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 2, 1, 1]
 
     # ------Prepare to start Routine "BodySiteInstruction"-------
     routineTimer.reset()
