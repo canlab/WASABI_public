@@ -25,6 +25,7 @@ The paradigm will generate 8x of these files of name:
 sub-XX_task-Nback_run-X_events.tsv
 
 42x trials per file with the following
+
 headers:
 onset   duration    trial_type  body_site
 3124

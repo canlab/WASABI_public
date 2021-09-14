@@ -1,6 +1,7 @@
  # -*- coding: utf-8 -*-
 """
-This experiment was initialized using PsychoPy3 Experiment Builder (v2020.2.5),
+This experim
+ent was initialized using PsychoPy3 Experiment Builder (v2020.2.5),
     on November 10, 2020, at 15:04
 If you publish work using this script the most relevant publication is:
 
