@@ -77,7 +77,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 class simKeys:
     '''
@@ -449,176 +449,176 @@ for thisRunLoop in runLoop:
         for paramName in thisRunLoop:
             exec('{} = thisRunLoop[paramName]'.format(paramName))
     
-    """ 
-    8c. Play Movies
-    """
-    # set up handler to look after randomisation of conditions etc
-    trialLoop = data.TrialHandler(nReps=1, method='sequential', 
-        extraInfo=expInfo, originPath=-1,
-        trialList=runLoop.trialList[runLoop.thisIndex]['runSeq'],
-        seed=None, name='trialLoop')
+#     """ 
+#     8c. Play Movies
+#     """
+#     # set up handler to look after randomisation of conditions etc
+#     trialLoop = data.TrialHandler(nReps=1, method='sequential', 
+#         extraInfo=expInfo, originPath=-1,
+#         trialList=runLoop.trialList[runLoop.thisIndex]['runSeq'],
+#         seed=None, name='trialLoop')
 
-    thisExp.addLoop(trialLoop)  # add the loop to the experiment
-    thisTrialLoop = trialLoop.trialList[0]  # so we can initialise stimuli with some values
-    # abbreviate parameter names if possible (e.g. rgb = thisTrialLoop.rgb)
-    if thisTrialLoop != None:
-        for paramName in thisTrialLoop:
-            exec('{} = thisTrialLoop[paramName]'.format(paramName))
+#     thisExp.addLoop(trialLoop)  # add the loop to the experiment
+#     thisTrialLoop = trialLoop.trialList[0]  # so we can initialise stimuli with some values
+#     # abbreviate parameter names if possible (e.g. rgb = thisTrialLoop.rgb)
+#     if thisTrialLoop != None:
+#         for paramName in thisTrialLoop:
+#             exec('{} = thisTrialLoop[paramName]'.format(paramName))
     
-    for thisTrialLoop in trialLoop:
-        currentLoop = trialLoop
-        # abbreviate parameter names if possible (e.g. rgb = thisTrialLoop.rgb)
-        if thisTrialLoop != None:
-            for paramName in thisTrialLoop:
-                exec('{} = thisTrialLoop[paramName]'.format(paramName))
+#     for thisTrialLoop in trialLoop:
+#         currentLoop = trialLoop
+#         # abbreviate parameter names if possible (e.g. rgb = thisTrialLoop.rgb)
+#         if thisTrialLoop != None:
+#             for paramName in thisTrialLoop:
+#                 exec('{} = thisTrialLoop[paramName]'.format(paramName))
         
-        """
-        8b. Prepare the scanner trigger, set clock(s), and wait for dummy scans
-        """
-        ###############################################################################################
-        # Experimenter fMRI Start Instruction ____________________________________________________
-        ###############################################################################################
-        start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
-        start.draw()  # Automatically draw every frame
-        win.flip()
-        fmriStart = globalClock.getTime()
+#         """
+#         8b. Prepare the scanner trigger, set clock(s), and wait for dummy scans
+#         """
+#         ###############################################################################################
+#         # Experimenter fMRI Start Instruction ____________________________________________________
+#         ###############################################################################################
+#         start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
+#         start.draw()  # Automatically draw every frame
+#         win.flip()
+#         fmriStart = globalClock.getTime()
 
-        if autorespond != 1:
-            # Trigger
-            event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
-            event.waitKeys(keyList='5')   # fMRI trigger
-            fmriStart = globalClock.getTime()
-            TR = 0.46
-            core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
+#         if autorespond != 1:
+#             # Trigger
+#             event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
+#             event.waitKeys(keyList='5')   # fMRI trigger
+#             fmriStart = globalClock.getTime()
+#             TR = 0.46
+#             core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
-        # ------Prepare to start Routine "Movie"-------
-        continueRoutine = True
-        # update component parameters for each repeat
-        # movie = visual.MovieStim3(
-        #     win=win, name='movie',
-        #     noAudio = False,
-        #     filename=movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile'],
-        #     # filename='C:\\Users\\Michael\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\WASABI_Main\\hyperalignment\\videos\\practice_videos\\design\\Duck plays dead CUT.mp4',
-        #     ori=0, pos=(0, 0), opacity=1,
-        #     loop=False,
-        #     depth=-1.0
-        #     )
-        movie = movies[trialLoop.thisTrialN]
-        # Start a new BIDS data collection array for each run
-        hyperalignment_bids_data = []
-        movie_duration = movie.duration
-        if debug==1:
-            movie_duration = 10     # debugging
-        routineTimer.reset()
-        routineTimer.add(movie_duration)
+#         # ------Prepare to start Routine "Movie"-------
+#         continueRoutine = True
+#         # update component parameters for each repeat
+#         # movie = visual.MovieStim3(
+#         #     win=win, name='movie',
+#         #     noAudio = False,
+#         #     filename=movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile'],
+#         #     # filename='C:\\Users\\Michael\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\WASABI_Main\\hyperalignment\\videos\\practice_videos\\design\\Duck plays dead CUT.mp4',
+#         #     ori=0, pos=(0, 0), opacity=1,
+#         #     loop=False,
+#         #     depth=-1.0
+#         #     )
+#         movie = movies[trialLoop.thisTrialN]
+#         # Start a new BIDS data collection array for each run
+#         hyperalignment_bids_data = []
+#         movie_duration = movie.duration
+#         if debug==1:
+#             movie_duration = 10     # debugging
+#         routineTimer.reset()
+#         routineTimer.add(movie_duration)
 
-        # keep track of which components have finished
-        MovieComponents = [movie]
-        for thisComponent in MovieComponents:
-            thisComponent.tStart = None
-            thisComponent.tStop = None
-            thisComponent.tStartRefresh = None
-            thisComponent.tStopRefresh = None
-            if hasattr(thisComponent, 'status'):
-                thisComponent.status = NOT_STARTED
-        # reset timers
-        t = 0
-        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        MovieClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-        frameN = -1
+#         # keep track of which components have finished
+#         MovieComponents = [movie]
+#         for thisComponent in MovieComponents:
+#             thisComponent.tStart = None
+#             thisComponent.tStop = None
+#             thisComponent.tStartRefresh = None
+#             thisComponent.tStopRefresh = None
+#             if hasattr(thisComponent, 'status'):
+#                 thisComponent.status = NOT_STARTED
+#         # reset timers
+#         t = 0
+#         _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+#         MovieClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+#         frameN = -1
         
-        # -------Run Routine "Movie"-------
-        onset = globalClock.getTime() - fmriStart 
-        while continueRoutine and routineTimer.getTime() > 0:
-            # get current time
-            t = MovieClock.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=MovieClock)
-            tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-            # update/draw components on each frame
+#         # -------Run Routine "Movie"-------
+#         onset = globalClock.getTime() - fmriStart 
+#         while continueRoutine and routineTimer.getTime() > 0:
+#             # get current time
+#             t = MovieClock.getTime()
+#             tThisFlip = win.getFutureFlipTime(clock=MovieClock)
+#             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+#             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+#             # update/draw components on each frame
             
-            # *movie* updates
-            if movie.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                movie.frameNStart = frameN  # exact frame index
-                movie.tStart = t  # local t and not account for scr refresh
-                movie.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(movie, 'tStartRefresh')  # time at next scr refresh
-                movie.setAutoDraw(True)
+#             # *movie* updates
+#             if movie.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+#                 # keep track of start time/frame for later
+#                 movie.frameNStart = frameN  # exact frame index
+#                 movie.tStart = t  # local t and not account for scr refresh
+#                 movie.tStartRefresh = tThisFlipGlobal  # on global time
+#                 win.timeOnFlip(movie, 'tStartRefresh')  # time at next scr refresh
+#                 movie.setAutoDraw(True)
                 
-                win.callOnFlip(print, "Starting ", movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile'])
-                win.callOnFlip(print, "Cue Biopac " + str(movie_code[trialLoop.thisTrialN]))
-                if biopac_exists == 1:
-                    win.callOnFlip(biopac.setData, biopac, 0)
-                    win.callOnFlip(biopac.setData, biopac, movie_code[trialLoop.thisTrialN])
-            # if movie.status == STARTED:  # one frame should pass before updating params and completing
-                # updating other components during *movie*
-                # movie.setMovie(movieOrder[0]['runseq'][runLoop.thisTrialN+1]['moviefile'])
-                if tThisFlipGlobal > movie.tStartRefresh + movie_duration-frameTolerance:
-                    # keep track of stop time/frame for later
-                    movie.tStop = t  # not accounting for scr refresh
-                    movie.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(movie, 'tStopRefresh')  # time at next scr refresh
-                    movie.setAutoDraw(False)
-            if movie.status == FINISHED:  # force-end the routine
-                continueRoutine = False
+#                 win.callOnFlip(print, "Starting ", movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile'])
+#                 win.callOnFlip(print, "Cue Biopac " + str(movie_code[trialLoop.thisTrialN]))
+#                 if biopac_exists == 1:
+#                     win.callOnFlip(biopac.setData, biopac, 0)
+#                     win.callOnFlip(biopac.setData, biopac, movie_code[trialLoop.thisTrialN])
+#             # if movie.status == STARTED:  # one frame should pass before updating params and completing
+#                 # updating other components during *movie*
+#                 # movie.setMovie(movieOrder[0]['runseq'][runLoop.thisTrialN+1]['moviefile'])
+#                 if tThisFlipGlobal > movie.tStartRefresh + movie_duration-frameTolerance:
+#                     # keep track of stop time/frame for later
+#                     movie.tStop = t  # not accounting for scr refresh
+#                     movie.frameNStop = frameN  # exact frame index
+#                     win.timeOnFlip(movie, 'tStopRefresh')  # time at next scr refresh
+#                     movie.setAutoDraw(False)
+#             if movie.status == FINISHED:  # force-end the routine
+#                 continueRoutine = False
             
-            # check for quit (typically the Esc key)
-            if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-                core.quit()
+#             # check for quit (typically the Esc key)
+#             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+#                 core.quit()
             
-            # check if all components have finished
-            if not continueRoutine:  # a component has requested a forced-end of Routine
-                break
-            continueRoutine = False  # will revert to True if at least one component still running
-            for thisComponent in MovieComponents:
-                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                    continueRoutine = True
-                    break  # at least one component has not yet finished
+#             # check if all components have finished
+#             if not continueRoutine:  # a component has requested a forced-end of Routine
+#                 break
+#             continueRoutine = False  # will revert to True if at least one component still running
+#             for thisComponent in MovieComponents:
+#                 if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+#                     continueRoutine = True
+#                     break  # at least one component has not yet finished
             
-            # refresh the screen
-            if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-                win.flip()
+#             # refresh the screen
+#             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+#                 win.flip()
 
-        # -------Ending Routine "Movie"-------
-        for thisComponent in MovieComponents:
-            if hasattr(thisComponent, "setAutoDraw"):
-                thisComponent.setAutoDraw(False)
-        trialLoop.addData('movie.started', movie.tStartRefresh)
-        trialLoop.addData('movie.stopped', movie.tStopRefresh)
-        movie.stop()
-        hyperalignment_trial = []
-        hyperalignment_trial.extend((onset, t, movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile']))
-        hyperalignment_bids_data.append(hyperalignment_trial)
+#         # -------Ending Routine "Movie"-------
+#         for thisComponent in MovieComponents:
+#             if hasattr(thisComponent, "setAutoDraw"):
+#                 thisComponent.setAutoDraw(False)
+#         trialLoop.addData('movie.started', movie.tStartRefresh)
+#         trialLoop.addData('movie.stopped', movie.tStopRefresh)
+#         movie.stop()
+#         hyperalignment_trial = []
+#         hyperalignment_trial.extend((onset, t, movieOrder[0]['runSeq'][trialLoop.thisTrialN]['moviefile']))
+#         hyperalignment_bids_data.append(hyperalignment_trial)
 
-        # the Routine "Movie" was not non-slip safe, so reset the non-slip timer
-        routineTimer.reset()
-        thisExp.nextEntry()
+#         # the Routine "Movie" was not non-slip safe, so reset the non-slip timer
+#         routineTimer.reset()
+#         thisExp.nextEntry()
 
-        """
-        9. Save Run File
-        """
-        bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, str(trialLoop.thisTrialN+1))
-        hyperalignment_bids_data = pd.DataFrame(hyperalignment_bids_data, columns = ['onset','duration','condition'])
-        hyperalignment_bids_data.to_csv(bids_run_filename, sep="\t")
+#         """
+#         9. Save Run File
+#         """
+#         bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, str(trialLoop.thisTrialN+1))
+#         hyperalignment_bids_data = pd.DataFrame(hyperalignment_bids_data, columns = ['onset','duration','condition'])
+#         hyperalignment_bids_data.to_csv(bids_run_filename, sep="\t")
 
-        """
-        8d. End of a Movie, Wait for Experimenter instructions to begin next run
-        """   
-        message = visual.TextStim(win, text=in_between_run_msg, height=0.05)
-        message.draw()
-        win.callOnFlip(print, "Awaiting Experimenter to start next run...")
-        if biopac_exists == 1:
-            win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, between_run_msg)
-        win.flip()
-        # Autoresponder
-        if autorespond != 1:
-            event.waitKeys(keyList = 'e')
-        routineTimer.reset()
-    # completed Movie repeats of 'trialLoop'
+#         """
+#         8d. End of a Movie, Wait for Experimenter instructions to begin next run
+#         """   
+#         message = visual.TextStim(win, text=in_between_run_msg, height=0.05)
+#         message.draw()
+#         win.callOnFlip(print, "Awaiting Experimenter to start next run...")
+#         if biopac_exists == 1:
+#             win.callOnFlip(biopac.setData, biopac, 0)
+#             win.callOnFlip(biopac.setData, biopac, between_run_msg)
+#         win.flip()
+#         # Autoresponder
+#         if autorespond != 1:
+#             event.waitKeys(keyList = 'e')
+#         routineTimer.reset()
+#     # completed Movie repeats of 'trialLoop'
     
-# completed 1 repeats of 'runLoop'
+# # completed 1 repeats of 'runLoop'
 
 """
 8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
