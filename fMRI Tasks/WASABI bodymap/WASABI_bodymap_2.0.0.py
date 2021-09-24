@@ -1,3 +1,4 @@
+
  # -*- coding: utf-8 -*-
 """
 This experiment was initialized using PsychoPy3 Experiment Builder (v2020.2.5),
