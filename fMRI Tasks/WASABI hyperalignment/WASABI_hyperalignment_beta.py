@@ -1,3 +1,6 @@
+
+
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
@@ -22,9 +25,10 @@ The paradigm will generate 8x of these files of name:
 sub-XX_task-Nback_run-X_events.tsv
 
 42x trials per file with the following
+
 headers:
 onset   duration    trial_type  body_site
-
+3124
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
 pip uninstall pyglet
@@ -72,8 +76,9 @@ Set to 1 during development, 0 during production
 """
 debug = 0
 autorespond = 0
+
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 class simKeys:
     '''
@@ -445,10 +450,10 @@ for thisRunLoop in runLoop:
         for paramName in thisRunLoop:
             exec('{} = thisRunLoop[paramName]'.format(paramName))
     
-    """ 
-    8c. Play Movies
-    """
-    # set up handler to look after randomisation of conditions etc
+#     """ 
+#     8c. Play Movies
+#     """
+#     # set up handler to look after randomisation of conditions etc
     trialLoop = data.TrialHandler(nReps=1, method='sequential', 
         extraInfo=expInfo, originPath=-1,
         trialList=runLoop.trialList[runLoop.thisIndex]['runSeq'],
@@ -612,9 +617,9 @@ for thisRunLoop in runLoop:
         if autorespond != 1:
             event.waitKeys(keyList = 'e')
         routineTimer.reset()
-    # completed Movie repeats of 'trialLoop'
+#     # completed Movie repeats of 'trialLoop'
     
-# completed 1 repeats of 'runLoop'
+# # completed 1 repeats of 'runLoop'
 
 """
 8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans

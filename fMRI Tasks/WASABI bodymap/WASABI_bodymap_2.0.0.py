@@ -1,8 +1,9 @@
+
  # -*- coding: utf-8 -*-
 """
 This experiment was initialized using PsychoPy3 Experiment Builder (v2020.2.5),
     on November 10, 2020, at 15:04
-If you publish work using this script the most relevant publication is:
+If you publish work using this script the most relevant publication is:5555
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
         PsychoPy2: Experiments in behavior made easy Behav Res 51: 195. 
@@ -230,7 +231,8 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
-calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'Calibration')
+# Brings up the Calibration/Data folder to load the appropriate calibration data right away.
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'Calibration', 'data')
 
 """
 2. Start Experimental Dialog Boxes
@@ -359,7 +361,7 @@ else:
                 dlg1=None
         else:
             errorDlg2 = gui.Dlg(title="Error - invalid file")
-            errorDlg2.addText("Selected file is not a valid1324 calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
+            errorDlg2.addText("Selected file is not a valid calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
             errorDlg2.show()
             dlg1=None
     if dlg1==None:
