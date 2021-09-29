@@ -1,0 +1,1 @@
+This participant had their calibration redone because they reported stopping their pain threshold in accordance to anticipated discomfort as opposed to actual discomfort, and so their calibrated temperatures are unusually low. Their second round of calibration temperatures are more reasonable.
