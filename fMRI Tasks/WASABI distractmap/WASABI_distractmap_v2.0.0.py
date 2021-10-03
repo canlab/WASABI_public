@@ -430,6 +430,10 @@ if bodySites_exists == False:
 
 random.shuffle(bodySites)
 
+# If bodysites need to be manually set for the participant:
+# Bodysites for Michael:
+# bodySites = ["Left Leg", "Abdomen"]
+
 expInfo['body_site_order'] = str(bodySites)
 
 """
@@ -2577,7 +2581,7 @@ for runs in range(len(bodySites)):
                     response_2.rt = None
                     if str(corrAns).lower() == 'none':
                         response.corr=1
-                        correct = correct + 1
+                correct = correct + 1
                     else:
                         response.corr = 0;  # failed to respond (incorrectly)
 
