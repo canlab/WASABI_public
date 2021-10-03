@@ -87,8 +87,7 @@ thermode_exists = 1
 
 class simKeys:
     '''
-    an object to simulate key presses55555555555555555555555555555555555555
-    
+    an object to simulate key presses    
     keyList: a list of keys/ to watch
     name: randomly selected from keyList
     rtRange: [min RT, max RT] where min and max RT are sepecified in ms
@@ -2060,6 +2059,17 @@ while continueRoutine == True:
         continueRoutine = False
 routineTimer.reset()
 
+BigTrialList = [[2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2], 
+                [1, 2, 2, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2],
+                [1, 2, 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2],
+                [1, 1, 1, 2, 2, 2, 1, 2, 1, 2, 2, 1, 1, 1, 2, 2],
+                [1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 1, 2, 2, 2],
+                [1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1],
+                [2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 1, 2, 2, 1],
+                [2, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2],
+                [2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2]]
+
+
 for runs in range(len(bodySites)):
     """
     12. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
@@ -2084,8 +2094,8 @@ for runs in range(len(bodySites)):
     #         NbackTrials.insert(0,element)
     # print(NbackTrials)
 
-    ## For Michael's run:
-    NbackTrials = [2, 1, 2, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 2, 1, 1]
+    random.shuffle(BigTrialList)
+    NbackTrials = BigTrialList.pop()
 
     # ------Prepare to start Routine "BodySiteInstruction"-------
     routineTimer.reset()
