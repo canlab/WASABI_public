@@ -4,7 +4,7 @@
 """
 This experiment was initialized using PsychoPy3 Experiment Builder (v2020.2.5),
     on November 10, 2020, at 15:04
-If you publish work using this script the most relevant publication is:5555
+If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
         PsychoPy2: Experiments in behavior made easy Behav Res 51: 195. 
