@@ -2581,7 +2581,7 @@ for runs in range(len(bodySites)):
                     response_2.rt = None
                     if str(corrAns).lower() == 'none':
                         response.corr=1
-                correct = correct + 1
+                        correct = correct + 1
                     else:
                         response.corr = 0;  # failed to respond (incorrectly)
 
