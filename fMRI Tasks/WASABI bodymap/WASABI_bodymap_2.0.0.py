@@ -498,6 +498,9 @@ if bodySites_exists == False:
 
 random.shuffle(bodySites)
 
+# For melanie's run
+bodySites = ["Left Leg"]
+
 expInfo['body_site_order'] = str(bodySites)
 
 """
