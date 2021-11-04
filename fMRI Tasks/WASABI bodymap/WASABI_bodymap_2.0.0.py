@@ -1,5 +1,3 @@
-
-
  # -*- coding: utf-8 -*-
 """
 This experiment was initialized using PsychoPy3 Experiment Builder (v2020.2.5),
@@ -498,8 +496,8 @@ if bodySites_exists == False:
 
 random.shuffle(bodySites)
 
-# For melanie's run
-bodySites = ["Left Leg"]
+# # For melanie's run
+# bodySites = ["Left Leg"]
 
 expInfo['body_site_order'] = str(bodySites)
 
