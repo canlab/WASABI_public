@@ -496,8 +496,8 @@ if bodySites_exists == False:
 
 random.shuffle(bodySites)
 
-# # For melanie's run
-bodySites = ["Left Leg"]
+# # For melanie's run / if a session needs to be rerun; enter body site in below array and make sure varaible name is in line with if statemnet/no indent or space
+# bodySites = ["Left Leg"]
 
 expInfo['body_site_order'] = str(bodySites)
 
