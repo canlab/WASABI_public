@@ -24,7 +24,7 @@ The paradigm will generate these files of name:
 1x sub-XXXX_ses-XX_task-Practice2back_events.tsv
 8x sub-XXXX_ses-XX_task-distractmap_acq-[bodySite]_run-XX_events.tsv
 
-x16 trials per file with the 5555following
+x16 trials per file with the following
 headers:
 'onset','duration','rt','response','correct','attempt','condition'
 
