@@ -4,7 +4,7 @@
 from __future__ import division, absolute_import
 from psychopy import locale_setup
 from psychopy import prefs
-import argparsee
+import argparse
 from collections import OrderedDict
 import sys
 import numpy as np
