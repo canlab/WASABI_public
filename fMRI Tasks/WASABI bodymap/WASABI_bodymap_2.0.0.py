@@ -1877,6 +1877,8 @@ for thisrunLoop in runLoop:                     # Loop through each run.
         timeAtLastInterval = timeNow
         oldMouseX=mouseX
         sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+        ## 1/27/2022: This is actually a bipolar question so the data recording should be this:
+        # sliderValue = ((mouseX - sliderMin) / (sliderMax - sliderMin) * 200)-100
 
         # *ComfortMouse* updates
         if ComfortMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
