@@ -18,7 +18,7 @@ import serial
 #prefs.general['audioLib'] = ['pyo']
 from psychopy import sound, visual, data, event, core, gui, logging, clock
 
-biopac_exists = 1
+biopac_exists = 0
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  

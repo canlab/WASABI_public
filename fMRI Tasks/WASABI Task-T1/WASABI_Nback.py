@@ -73,7 +73,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 
 T1_time = 268      # should be 258 seconds to match the 4:18 on the clock, but there's also about 10 more seconds the scanner takes to warmup
 
@@ -135,6 +135,7 @@ if biopac_exists == 1:
         else:
             byteStr = '{0:08b}'.format(byte)
         [self.writeRegister(address+pin, int(entry)) for (pin, entry) in enumerate(byteStr)]
+   
     biopac = U3()
     biopac.setData = biopacSetData
     # Set all FIO bits to digital output and set to low (i.e. “0")
