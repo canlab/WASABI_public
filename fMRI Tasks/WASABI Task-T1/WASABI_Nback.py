@@ -73,7 +73,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 
 T1_time = 268      # should be 258 seconds to match the 4:18 on the clock, but there's also about 10 more seconds the scanner takes to warmup
 
