@@ -82,8 +82,8 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
-thermode_exists = 0
+biopac_exists = 1
+thermode_exists = 1
 
 class simKeys:
     '''
@@ -371,7 +371,18 @@ if bodySites_exists == False:
 
 # If bodysites need to be manually set for the participant:
 # Bodysites for Michael:
-# bodySites = ["Left Leg"]
+
+# Run 1
+# bodySites = "Left Face"
+# Run 2
+# bodySites = "Left Arm"
+# Run 3
+bodySites = "Left Face"
+# Run 4
+# bodySites = "Left Arm"
+
+
+
 
 if expInfo['acceptMap (1)pre- or (2)post-Experience (1 or 2)'] == '1':
     expName = 'acceptmap-pre-exp'
@@ -480,7 +491,7 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
 end_msg = 'Please wait for instructions from the experimenter'
 
-totalTrials = 8
+totalTrials = 16
 
 stimtrialTime = 13 # This becomes very unreliable with the use of poll_for_change().
 ratingTime = 5 # Rating Time limit in seconds
@@ -1115,7 +1126,8 @@ jitter2 = None  # Reset Jitter2
 bodySiteData = bodySites
 temperature = participant_settingsHeat[bodySites]
 BiopacChannel = bodysite_word2heatcode[bodySites]
-thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites]]  
+# thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites]]
+thermodeCommand = 135 # 49 degrees
 routineTimer.reset()
 
 """
@@ -2268,7 +2280,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Avoid Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Avoid_rating)
+            win.callOnFlip(biopac.setData, biopac, avoid_rating)
         win.timeOnFlip(AvoidRating, 'tStartRefresh')  # time at next scr refresh
         AvoidRating.setAutoDraw(True)
     if AvoidRating.status == STARTED:
@@ -2451,7 +2463,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Relax Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Relax_rating)
+            win.callOnFlip(biopac.setData, biopac, relax_rating)
         win.timeOnFlip(RelaxRating, 'tStartRefresh')  # time at next scr refresh
         RelaxRating.setAutoDraw(True)
     if RelaxRating.status == STARTED:
@@ -2634,7 +2646,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show TaskAttention Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, TaskAttention_rating)
+            win.callOnFlip(biopac.setData, biopac, taskattention_rating)
         win.timeOnFlip(TaskAttentionRating, 'tStartRefresh')  # time at next scr refresh
         TaskAttentionRating.setAutoDraw(True)
     if TaskAttentionRating.status == STARTED:
@@ -2817,7 +2829,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Boredom Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Boredom_rating)
+            win.callOnFlip(biopac.setData, biopac, boredom_rating)
         win.timeOnFlip(BoredomRating, 'tStartRefresh')  # time at next scr refresh
         BoredomRating.setAutoDraw(True)
     if BoredomRating.status == STARTED:
@@ -2998,7 +3010,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Alertness Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Alertness_rating)
+            win.callOnFlip(biopac.setData, biopac, alertness_rating)
         win.timeOnFlip(AlertnessRating, 'tStartRefresh')  # time at next scr refresh
         AlertnessRating.setAutoDraw(True)
     if AlertnessRating.status == STARTED:
@@ -3179,7 +3191,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show PosThx Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, PosThx_rating)
+            win.callOnFlip(biopac.setData, biopac, posthx_rating)
         win.timeOnFlip(PosThxRating, 'tStartRefresh')  # time at next scr refresh
         PosThxRating.setAutoDraw(True)
     if PosThxRating.status == STARTED:
@@ -3361,7 +3373,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show NegThx Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, NegThx_rating)
+            win.callOnFlip(biopac.setData, biopac, negthx_rating)
         win.timeOnFlip(NegThxRating, 'tStartRefresh')  # time at next scr refresh
         NegThxRating.setAutoDraw(True)
     if NegThxRating.status == STARTED:
@@ -3542,7 +3554,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Self Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Self_rating)
+            win.callOnFlip(biopac.setData, biopac, self_rating)
         win.timeOnFlip(SelfRating, 'tStartRefresh')  # time at next scr refresh
         SelfRating.setAutoDraw(True)
     if SelfRating.status == STARTED:
@@ -3723,7 +3735,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Other Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Other_rating)
+            win.callOnFlip(biopac.setData, biopac, other_rating)
         win.timeOnFlip(OtherRating, 'tStartRefresh')  # time at next scr refresh
         OtherRating.setAutoDraw(True)
     if OtherRating.status == STARTED:
@@ -3904,7 +3916,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Imagery Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Imagery_rating)
+            win.callOnFlip(biopac.setData, biopac, imagery_rating)
         win.timeOnFlip(ImageryRating, 'tStartRefresh')  # time at next scr refresh
         ImageryRating.setAutoDraw(True)
     if ImageryRating.status == STARTED:
@@ -4085,7 +4097,7 @@ while continueRoutine:
         win.callOnFlip(print, "Show Present Rating")
         if biopac_exists == 1:
             win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, Present_rating)
+            win.callOnFlip(biopac.setData, biopac, present_rating)
         win.timeOnFlip(PresentRating, 'tStartRefresh')  # time at next scr refresh
         PresentRating.setAutoDraw(True)
     if PresentRating.status == STARTED:
