@@ -71,7 +71,7 @@ except ImportError:
 import random
 
 __author__ = "Michael Sun"
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -239,7 +239,6 @@ if debug == 1:
     expInfo = {
     'subject number': '99',
     'gender': 'm',
-    'acceptMap body-site # (day1: 1-4; day2: 5-8)': '1',
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS',
@@ -249,7 +248,6 @@ else:
     expInfo = {
     'subject number': '', 
     'gender': '',
-    'acceptMap body-site # (day1: 1-4; day2: 5-8)': '1', 
     'session': '',
     'handedness': '', 
     'scanner': '',
@@ -273,21 +271,20 @@ if debug==1:
     expInfo = {
         'subject number': '999', 
         'gender': 'm',
-        'acceptMap body-site # (day1: 1-4; day2: 5-8)': '1', 
         'session': '99',
         'handedness': 'r', 
         'scanner': 'TEST',
         'run': '1'
     }
     participant_settingsHeat = {
-        'Left Face': 46,
-        'Right Face': 46,
-        'Left Arm': 46,
-        'Right Arm': 46,
-        'Left Leg': 46,
-        'Right Leg': 46,
-        'Chest': 46,
-        'Abdomen': 46
+        'Left Face': 49,
+        'Right Face': 49,
+        'Left Arm': 49,
+        'Right Arm': 49,
+        'Left Leg': 49,
+        'Right Leg': 49,
+        'Chest': 49,
+        'Abdomen': 49
     }
 else:
     dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
@@ -301,7 +298,6 @@ else:
                 expInfo['subject number'] = p_info['participant_id']
                 expInfo['gender'] = p_info['gender']
                 expInfo['handedness'] = p_info['handedness']
-                bodySites = p_info['calibration_order']
                 # Heat Settings
                 participant_settingsHeat['Left Face'] = p_info['leftface_ht']
                 participant_settingsHeat['Right Face'] = p_info['rightface_ht']
@@ -312,19 +308,15 @@ else:
                 participant_settingsHeat['Chest'] = p_info['chest_ht']
                 participant_settingsHeat['Abdomen'] = p_info['abdomen_ht']
                 ses_num = str(1)
-                acceptmap_bodysite = str(1)
                 acceptmap_prepost = str(1) 
                 expInfo2 = {
-                'acceptMap body-site # (day1: 1-4; day2: 5-8)': acceptmap_bodysite,
                 'session': ses_num,
                 'scanner': '',
                 'run': '1'
                 }
-                dlg2 = gui.DlgFromDict(title="WASABI Acceptance Map: Experience Scan", dictionary=expInfo2, sortKeys=False) 
+                dlg2 = gui.DlgFromDict(title="WASABI Acceptance Map: Regulate Scan", dictionary=expInfo2, sortKeys=False) 
                 expInfo['session'] = expInfo2['session']
                 expInfo['scanner'] = expInfo2['scanner']
-                bodySites = bodySites.strip('][').replace("'","").split(', ')
-                bodySites = bodySites[int(expInfo2['acceptMap body-site # (day1: 1-4; day2: 5-8)'])]
                 expInfo['run'] = expInfo2['run']
                 if dlg2.OK == False:
                     core.quit()  # user pressed cancel
@@ -367,6 +359,21 @@ if bodySites_exists == False:
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     random.shuffle(bodySites)
     bodySites = bodySites[1]
+
+
+test_bodysite = {
+    1: 'Right Face',
+    2: 'Abdomen',
+    3: 'Left Arm',
+    4: 'Right Arm',
+    5: 'Left Leg',
+    6: 'Right Leg',
+    7: 'Right Face',
+    8: 'Chest',
+    1002: 'Right Face'
+}
+
+
 
 # If bodysites need to be manually set for the participant:
 # Bodysites for Michael:
@@ -473,7 +480,6 @@ in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Exp
 end_msg = 'Please wait for instructions from the experimenter'
 
 totalTrials = 16 # Figure out how many trials would be equated to 5 minutes
-
 stimtrialTime = 13 # This becomes very unreliable with the use of poll_for_change().
 ratingTime = 5 # Rating Time limit in seconds
 

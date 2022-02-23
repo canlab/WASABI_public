@@ -1,0 +1,52 @@
+	onset	duration	intensity	bodySite	temperature	condition	pretrial-jitter
+0	2.7741943998262286	5.008952899836004		Right Face	49.0	Experience Instruction	
+1	12.777783199679106	1.0128456903621554		Right Face	49.0	Experience Phase	5.0
+2	16.77934559993446	5.016325689852238	50.0	Right Face	49.0	Intensity Rating	3.0
+3	Comfort Rating:	-35.55555555555556					
+4	Valence Rating:	-90.0					
+5	Intensity Rating:	52.77777777777778					
+6	Pain Avoidance Rating:	61.01851851851852					
+7	Body Relaxation Rating:	51.85185185185185					
+8	TaskAttention Rating:	56.388888888888886					
+9	Pain Boredomance Rating:	58.333333333333336					
+10	Pain Alertnessance Rating:	11.851851851851848					
+11	Positive Thoughts Rating:	0.0					
+12	Negative Thoughts Rating:	-30.185185185185176					
+13	Self-Thoughts Rating:	-13.518518518518519					
+14	Other People Thoughts Rating:	-20.18518518518519					
+15	Clear and Vivid Imagery Rating:	-18.703703703703695					
+16	Presentness Thoughts Rating:	-19.259259259259252					
+17	2.7605429999530315	5.010921299923211		Left Face	49.0	Experience Instruction	
+18	12.764242200180888	1.0143088903278112		Left Face	49.0	Experience Phase	5.0
+19	16.768009399995208	5.0126874898560345	33.51851851851852	Left Face	49.0	Intensity Rating	3.0
+20	Comfort Rating:	-20.0					
+21	Valence Rating:	-10.925925925925924					
+22	Intensity Rating:	44.629629629629626					
+23	Pain Avoidance Rating:	46.85185185185185					
+24	Body Relaxation Rating:	48.79629629629629					
+25	TaskAttention Rating:	50.0					
+26	Pain Boredomance Rating:	45.55555555555556					
+27	Pain Alertnessance Rating:	0.0					
+28	Positive Thoughts Rating:	0.0					
+29	Negative Thoughts Rating:	6.481481481481495					
+30	Self-Thoughts Rating:	0.0					
+31	Other People Thoughts Rating:	0.0					
+32	Clear and Vivid Imagery Rating:	0.0					
+33	Presentness Thoughts Rating:	0.0					
+34	2.760486999992281	5.012721500359476		Right Face	49.0	Experience Instruction	
+35	12.775960700120777	1.0003865896724164		Right Face	49.0	Experience Phase	5.0
+36	20.780757199972868	5.017623490188271	50.0	Right Face	49.0	Intensity Rating	7.0
+37	Comfort Rating:	-17.962962962962962					
+38	Valence Rating:	-0.9259259259259238					
+39	Intensity Rating:	40.46296296296297					
+40	Pain Avoidance Rating:	50.0					
+41	Body Relaxation Rating:	51.85185185185185					
+42	TaskAttention Rating:	50.0					
+43	Pain Boredomance Rating:	50.0					
+44	Pain Alertnessance Rating:	0.0					
+45	Positive Thoughts Rating:	0.0					
+46	Negative Thoughts Rating:	-22.40740740740742					
+47	Self-Thoughts Rating:	0.0					
+48	Other People Thoughts Rating:	-6.296296296296305					
+49	Clear and Vivid Imagery Rating:	-4.8148148148148096					
+50	Presentness Thoughts Rating:	-0.5555555555555571					
