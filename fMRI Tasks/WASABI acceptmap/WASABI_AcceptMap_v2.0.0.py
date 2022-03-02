@@ -1136,7 +1136,7 @@ for runs in range(len(bodySites)):
     bodySiteData = bodySites[runs]
     temperature = participant_settingsHeat[bodySites[runs]]
     BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    thermodeCommand = thermode1_temp2program[participant_settingsHeat[bodySites[runs]]]  
+    thermodeCommand = 135
     routineTimer.reset()
 
     """
