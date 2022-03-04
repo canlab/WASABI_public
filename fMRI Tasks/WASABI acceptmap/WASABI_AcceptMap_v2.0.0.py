@@ -348,7 +348,7 @@ ExperienceInstruction = "Experience the following sensations as they come."
 RegulateInstruction = "Focus on your breath.\n\nFeel your body float.\n\nAccept the following sensations as they come.\n\nTransform negative sensations into positive."
 
 if expInfo['experience(1) or regulate(2)'] == '1':
-    expName = 'acceptmap-exp'
+    expName = 'acceptmap-experience'
     task_ID=8
     InstructionText = ExperienceInstruction
     instructioncode = experience_instructions
