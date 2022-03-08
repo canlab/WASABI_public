@@ -24,7 +24,7 @@ This paradigm is a simple instruction: either to simply experience or to follow 
 which is followed by a repeating series of fixation crosses will coincide with a hot stimulation, followed by an intensity rating.
 Following a set number of trials, the subject will be asked a series of questions regarding the run.
 
-One day will consist of 4 total runs of either Left Face or the Experimental Body Site. Each run will feature 16 heat trials at 49 degrees C. 
+One day will consist of 4 total runs of either Left Face or the Experimental Body Sit1234e. Each run will feature 16 heat trials at 49 degrees C. 
 
 As a consequence, in one day, correct running of these paradigms will generate 4x files of the names:
 sub-XXXXX_ses-XX_task-acceptmap-XXXX_acq-XXXX_run-X_events.tsv
