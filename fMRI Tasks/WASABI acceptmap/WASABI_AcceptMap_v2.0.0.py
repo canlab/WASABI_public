@@ -30,7 +30,7 @@ As a consequence, in one day, correct running of these paradigms will generate 4
 sub-XXXXX_ses-XX_task-acceptmap-XXXX_acq-XXXX_run-X_events.tsv
 
 Each file will consist of the following headers:
-onset   duration    intensity   bodySite    temperature condition   pretrial-jitter
+onset   duration    intensity   bodySite    temperature condition   pretrial-jitter\
 
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
@@ -976,6 +976,17 @@ win.flip()
 
 for runs in range(len(bodySites)):
     ratingTime = 5 # Intensity Rating Time limit in seconds during the inter-trial-interval
+    # Reset intensity scale parameters:
+    intensityText = "How intense was that overall?" # (Unipolar)
+    IntensityAnchors = visual.ImageStim(
+        win=win,
+        image= os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]),
+        name='intensityAnchors', 
+        mask=None,
+        ori=0, pos=(0, -0.09), size=(1.5, .4),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=512, interpolate=True, depth=0.0)
     """
     7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run 
     """
