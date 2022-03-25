@@ -1,0 +1,32 @@
+	onset	duration	intensity	bodySite	temperature	condition	pretrial-jitter
+0	2.7643444999994244	5.017161399999168		Left Arm	46.0	Pre-Regulated Experience Instruction	
+1	12.781600300018908	12.999977929983288		Left Arm	46.0	Pre-Regulated Experience Phase	5.0
+2	32.782161300012376	5.016127030015923	1.7283950617283939	Left Arm	46.0	Intensity Rating	7.0
+3	40.783935600018594	13.012436129996786		Left Arm	46.0	Pre-Regulated Experience Phase	3.0
+4	56.78439499999513	5.012044130009599	0.0	Left Arm	46.0	Intensity Rating	3.0
+5	68.78395720000844	13.012773530004779		Left Arm	46.0	Pre-Regulated Experience Phase	7.0
+6	86.78418220000458	5.0129947300301865	0.0	Left Arm	46.0	Intensity Rating	5.0
+7	96.78383640001994	13.013568730006227		Left Arm	46.0	Pre-Regulated Experience Phase	5.0
+8	114.78420740002184	5.013387929997407	0.9876543209876557	Left Arm	46.0	Intensity Rating	5.0
+9	124.7839700000186	13.013772329984931		Left Arm	46.0	Pre-Regulated Experience Phase	5.0
+10	140.78428610000992	5.013675930007594	0.0	Left Arm	46.0	Intensity Rating	3.0
+11	152.78483069999493	13.012571330036735		Left Arm	46.0	Pre-Regulated Experience Phase	7.0
+12	170.78534890001174	5.012060129985912	0.0	Left Arm	46.0	Intensity Rating	5.0
+13	180.78509250000934	13.012461530015571		Left Arm	46.0	Pre-Regulated Experience Phase	5.0
+14	200.7852103000041	5.012875129992608	0.0	Left Arm	46.0	Intensity Rating	7.0
+15	208.78486110002268	13.013438630034216		Left Arm	46.0	Pre-Regulated Experience Phase	3.0
+16	224.78547440000693	5.0127073299954645	0.0	Left Arm	46.0	Intensity Rating	3.0
+17	Comfort Rating:	31.358024691358025					
+18	Valence Rating:	-100.0					
+19	Intensity Rating:	0.0					
+20	Pain Avoidance Rating:	0.0					
+21	Body Relaxation Rating:	100.0					
+22	TaskAttention Rating:	100.0					
+23	Pain Boredomance Rating:	100.0					
+24	Pain Alertnessance Rating:	41.85185185185185					
+25	Positive Thoughts Rating:	51.111111111111114					
+26	Negative Thoughts Rating:	12.46913580246914					
+27	Self-Thoughts Rating:	-27.407407407407405					
+28	Other People Thoughts Rating:	-100.0					
+29	Clear and Vivid Imagery Rating:	31.481481481481495					
+30	Presentness Thoughts Rating:	100.0					
