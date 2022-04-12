@@ -79,7 +79,7 @@ __status__ = "Production"
 Set to 1 during development, 0 during production
 """
 debug = 0
-cheat = 0
+cheat = 1
 autorespond = 0
 # Device togglers
 biopac_exists = 1
