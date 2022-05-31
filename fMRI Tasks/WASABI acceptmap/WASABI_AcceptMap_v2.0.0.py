@@ -30,7 +30,7 @@ As a consequence, in one day, correct running of these paradigms will generate 4
 sub-XXXXX_ses-XX_task-acceptmap-XXXX_acq-XXXX_run-X_events.tsv
 
 Each file will consist of the following headers:
-onset   duration    intensity   bodySite    temperature condition   pretrial-jitter\
+onset   duration    intensity   bodySite    temperature condition   pretrial-jitter
 
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
