@@ -74,7 +74,7 @@ except ImportError:
 import random
 
 __author__ = "Michael Sun"
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -462,6 +462,7 @@ test_bodysite = {
     '999': 'Right Face'
 }
 
+# Bodysite Order is counterbalanced across but not within participants.
 bodySites1 = [test_bodysite[expInfo['subject number']], 'Left Face', test_bodysite[expInfo['subject number']], 'Left Face']
 bodySites2 = ['Left Face', test_bodysite[expInfo['subject number']], 'Left Face', test_bodysite[expInfo['subject number']]] 
 
@@ -2215,8 +2216,9 @@ for runs in range(len(bodySites)):
 
     BlockTrials=BigTrialList.pop()
 
-    if debug==1:
-        BlockTrials=[2,1,2,1,2,1]
+    # in order to debug rest trials.
+    # if debug==1:
+    #     BlockTrials=[2,1,2,1,2,1]
 
     # ------Prepare to start Routine "BodySiteInstruction"-------
     routineTimer.reset()
@@ -2938,7 +2940,7 @@ for runs in range(len(bodySites)):
                 routineTimer.reset()
 
                 if r==2:
-
+                    rating_sound.play() # Play a sound to ensure the participant is awake.
                     """
                     14v. Rest-Stim Pain Rating Trial
                     """
@@ -3140,6 +3142,7 @@ for runs in range(len(bodySites)):
                 """
                 NbackInstructions.setText("ready...\n2-back")
                 NbackInstructions.height=0.15
+                rating_sound.play()
                 NbackInstructions.draw()
                 if biopac_exists:
                     biopac.setData(biopac, 0)
@@ -3609,6 +3612,7 @@ for runs in range(len(bodySites)):
                 routineTimer.reset()
 
                 if r==4:
+                    rating_sound.play() # Play a sound to ensure the participant is awake.
                     """
                     15v. 2-back Pain Rating Trial
                     """
