@@ -879,138 +879,135 @@ routineTimer.reset()
 """
 7. Button Test
 """
+# ------Prepare to start Routine "trial"-------
+continueRoutine = True
+# update component parameters for each repeat
+checkboxes = [box1, box2]
+clicked = []
+mouseDown = False
+for box in checkboxes:
+    box.color = "white"
+    
+# setup some python lists for storing info about the mouse
+mouse.x = []
+mouse.y = []
+mouse.leftButton = []
+mouse.midButton = []
+mouse.rightButton = []
+mouse.time = []
+mouse.clicked_name = []
 
-if debug!=1:
+# keep track of which components have finished
+trialComponents = [box1Text, box2Text, box1, box2, box1Check, box2Check, mouse, continueText]
+for thisComponent in trialComponents:
+    thisComponent.tStart = None
+    thisComponent.tStop = None
+    thisComponent.tStartRefresh = None
+    thisComponent.tStopRefresh = None
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = NOT_STARTED
+# reset timers
+t = 0
+_timeToFirstFrame = win.getFutureFlipTime(clock="now")
+# trialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+frameN = -1
 
-    # ------Prepare to start Routine "trial"-------
-    continueRoutine = True
-    # update component parameters for each repeat
-    checkboxes = [box1, box2]
-    clicked = []
-    mouseDown = False
-    for box in checkboxes:
-        box.color = "white"
+# -------Run Routine "ButtonTest"-------
+while continueRoutine:
+    # get current time
+    t = ButtonTestClock.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=ButtonTestClock)
+    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+
+    # *box1* updates
+    if box1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        box1Text.setAutoDraw(True)
+        box1.setAutoDraw(True)
+    
+    # *box2* updates
+    if box2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        box2Text.setAutoDraw(True)
+        box2.setAutoDraw(True)
+    
+    if mouse.getPressed()[0] == 0 & mouse.getPressed()[2] == 0:
+        mouseDown = False
         
-    # setup some python lists for storing info about the mouse
-    mouse.x = []
-    mouse.y = []
-    mouse.leftButton = []
-    mouse.midButton = []
-    mouse.rightButton = []
-    mouse.time = []
-    mouse.clicked_name = []
+    if mouse.getPressed()[0]==1 and box1.name not in clicked and not mouseDown:
+        # box1.color = "black"        # replace this with a check mark?
+        box1Check.setAutoDraw(True)
+        clicked.append(box1.name)
+        mouseDown = True  
+    if mouse.getPressed()[2]==1 and box2.name not in clicked and not mouseDown:
+        # box2.color = "black"        # replace this with a check mark?
+        box2Check.setAutoDraw(True)
+        clicked.append(box2.name)
+        mouseDown = True
 
-    # keep track of which components have finished
-    trialComponents = [box1Text, box2Text, box1, box2, box1Check, box2Check, mouse, continueText]
+    # *mouse* updates
+    if mouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        mouse.frameNStart = frameN  # exact frame index
+        mouse.tStart = t  # local t and not account for scr refresh
+        mouse.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(mouse, 'tStartRefresh')  # time at next scr refresh
+        mouse.status = STARTED
+        mouse.mouseClock.reset()
+        prevButtonState = mouse.getPressed()  # if button is down already this ISN'T a new click
+    if mouse.status == STARTED:  # only update if started and not finished!
+        buttons = mouse.getPressed()
+        if buttons != prevButtonState:  # button state changed?
+            prevButtonState = buttons
+            if sum(buttons) > 0:  # state changed to a new click
+                x, y = mouse.getPos()
+                mouse.x.append(x)
+                mouse.y.append(y)
+                buttons = mouse.getPressed()
+                mouse.leftButton.append(buttons[0])
+                mouse.midButton.append(buttons[1])
+                mouse.rightButton.append(buttons[2])
+                mouse.time.append(mouse.mouseClock.getTime())
+    
+    if box1.name in clicked and box2.name in clicked:
+        continueText.setAutoDraw(True)
+        win.flip()
+        continueRoutine = False
+
+
+    # check for quit (typically the Esc key)
+    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+        core.quit()
+    
+    # check if all components have finished
+    if not continueRoutine:  # a component has requested a forced-end of Routine
+        win.flip()
+        # event.waitKeys(keyList = 'space')
+        continueRoutine = True
+        event.clearEvents()
+        while continueRoutine == True:
+            if 'space' in event.getKeys(keyList = 'space'):
+                continueRoutine = False        
+        break
+    continueRoutine = False  # will revert to True if at least one component still running
     for thisComponent in trialComponents:
-        thisComponent.tStart = None
-        thisComponent.tStop = None
-        thisComponent.tStartRefresh = None
-        thisComponent.tStopRefresh = None
-        if hasattr(thisComponent, 'status'):
-            thisComponent.status = NOT_STARTED
-    # reset timers
-    t = 0
-    _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    # trialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-    frameN = -1
-
-    # -------Run Routine "ButtonTest"-------
-    while continueRoutine:
-        # get current time
-        t = ButtonTestClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=ButtonTestClock)
-        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-
-        # *box1* updates
-        if box1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            box1Text.setAutoDraw(True)
-            box1.setAutoDraw(True)
-        
-        # *box2* updates
-        if box2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            box2Text.setAutoDraw(True)
-            box2.setAutoDraw(True)
-        
-        if mouse.getPressed()[0] == 0 & mouse.getPressed()[2] == 0:
-            mouseDown = False
-            
-        if mouse.getPressed()[0]==1 and box1.name not in clicked and not mouseDown:
-            # box1.color = "black"        # replace this with a check mark?
-            box1Check.setAutoDraw(True)
-            clicked.append(box1.name)
-            mouseDown = True  
-        if mouse.getPressed()[2]==1 and box2.name not in clicked and not mouseDown:
-            # box2.color = "black"        # replace this with a check mark?
-            box2Check.setAutoDraw(True)
-            clicked.append(box2.name)
-            mouseDown = True
-
-        # *mouse* updates
-        if mouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            mouse.frameNStart = frameN  # exact frame index
-            mouse.tStart = t  # local t and not account for scr refresh
-            mouse.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(mouse, 'tStartRefresh')  # time at next scr refresh
-            mouse.status = STARTED
-            mouse.mouseClock.reset()
-            prevButtonState = mouse.getPressed()  # if button is down already this ISN'T a new click
-        if mouse.status == STARTED:  # only update if started and not finished!
-            buttons = mouse.getPressed()
-            if buttons != prevButtonState:  # button state changed?
-                prevButtonState = buttons
-                if sum(buttons) > 0:  # state changed to a new click
-                    x, y = mouse.getPos()
-                    mouse.x.append(x)
-                    mouse.y.append(y)
-                    buttons = mouse.getPressed()
-                    mouse.leftButton.append(buttons[0])
-                    mouse.midButton.append(buttons[1])
-                    mouse.rightButton.append(buttons[2])
-                    mouse.time.append(mouse.mouseClock.getTime())
-        
-        if box1.name in clicked and box2.name in clicked:
-            continueText.setAutoDraw(True)
-            win.flip()
-            continueRoutine = False
-
-
-        # check for quit (typically the Esc key)
-        if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            win.flip()
-            # event.waitKeys(keyList = 'space')
+        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
             continueRoutine = True
-            event.clearEvents()
-            while continueRoutine == True:
-                if 'space' in event.getKeys(keyList = 'space'):
-                    continueRoutine = False        
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in trialComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
+            break  # at least one component has not yet finished
+    
+    # refresh the screen
+    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        win.flip()
 
-    # -------Ending Routine "ButtonTest"-------
-    for thisComponent in trialComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-    routineTimer.reset()
+# -------Ending Routine "ButtonTest"-------
+for thisComponent in trialComponents:
+    if hasattr(thisComponent, "setAutoDraw"):
+        thisComponent.setAutoDraw(False)
+routineTimer.reset()
 
 
-    ClickToContinueText = "Click to continue"
-    ClickToStartText = "Click to start practice"
+ClickToContinueText = "Click to continue"
+ClickToStartText = "Click to start practice"
 
 
 ## Removed with 3.0.0
@@ -2389,6 +2386,14 @@ for runs in range(len(bodySites)):
     if runs==1 or runs==3:
         temperature = temperature2
         thermodeCommand = thermodeCommand2
+
+## For sub-00007's Run. Delete if not running them!
+    if runs==0 or runs==2:
+        temperature = 47.5
+        thermodeCommand = 132
+    if runs==1 or runs==3:
+        temperature = 47.5
+        thermodeCommand = 132
 
     routineTimer.reset()
 
