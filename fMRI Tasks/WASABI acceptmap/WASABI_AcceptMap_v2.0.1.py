@@ -303,8 +303,8 @@ else:
                 expInfo['handedness'] = p_info['handedness']
                 # Heat Settings
                 participant_settingsHeat = {
-                    'Left Face': 49,
-                    'Right Face': 49,
+                    'Left Face': 47.5,
+                    'Right Face': 47.5,
                     'Left Arm': 49,
                     'Right Arm': 49,
                     'Left Leg': 49,
@@ -1156,8 +1156,8 @@ for runs in range(len(bodySites)):
     bodySiteData = bodySites[runs]
     temperature = participant_settingsHeat[bodySites[runs]]
     BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    thermodeCommand = 135
-    # thermodeCommand = 132 # Set to 47.5 for Maryam
+    # thermodeCommand = 135
+    thermodeCommand = 132 # Set to 47.5 for Maryam
     routineTimer.reset()
 
     """

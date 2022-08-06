@@ -2387,13 +2387,13 @@ for runs in range(len(bodySites)):
         temperature = temperature2
         thermodeCommand = thermodeCommand2
 
-## For sub-00007's Run. Delete if not running them!
-  #  if runs==0 or runs==2:
-  #      temperature = 47.5
-   #     thermodeCommand = 132
-  #  if runs==1 or runs==3:
-    #    temperature = 47.5
-   #     thermodeCommand = 132
+    # For sub-00007's Run. Delete if not running them!
+    # if runs==0 or runs==2:
+    #     temperature = 47.5
+    #     thermodeCommand = 132
+    # if runs==1 or runs==3:
+    #     temperature = 47.5
+    #     thermodeCommand = 132
 
     routineTimer.reset()
 
