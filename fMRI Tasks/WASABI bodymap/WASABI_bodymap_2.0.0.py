@@ -499,6 +499,11 @@ random.shuffle(bodySites)
 # # For melanie's run / if a session needs to be rerun; enter body site in below array and make sure varaible name is in line with if statemnet/no indent or space
 ###bodySites = ["Right Face"]
 
+
+# For Stephanie's run / if a session needs to be rerun; enter body site in below array and make sure varaible name is in line with if statemnet/no indent or space
+# bodySites = ["Left Arm", "Left Leg", "Right Face"]
+# random.shuffle(bodySites)
+
 expInfo['body_site_order'] = str(bodySites)
 
 """
