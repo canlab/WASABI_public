@@ -18,16 +18,12 @@ Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) fil
 Following this format:
 all data headers are in lower snake_case.
 
-This paradigm is run as 2 parts of an AcceptanceMap paradigm for 2 body sites: A bodysite randomly selected for the participant, and Left Face as a control bodysite. 
+This paradigm is run as 2 parts of a MedMap paradigm for 2 body sites: Left Face and Right Leg. 
 
-This paradigm is a simple instruction: either to simply experience or to follow regulation instructions that come from a prior training, 
-which is followed by a repeating series of fixation crosses will coincide with a hot stimulation, followed by an intensity rating.
-Following a set number of trials, the subject will be asked a series of questions regarding the run.
+One day will consist of 8 total runs of either Left Face or Right Leg interchanging between each run. Each run will feature 6 heat trials at 49 degrees C. 
 
-One day will consist of 4 total runs of either Left Face or the Experimental Body Site. Each run will feature 16 heat trials at 49 degrees C. 
-
-As a consequence, in one day, correct running of these paradigms will generate 4x files of the names:
-sub-XXXXX_ses-XX_task-acceptmap-XXXX_acq-XXXX_run-X_events.tsv
+As a consequence, in one day, correct running of these paradigms will generate 8x files of the names:
+sub-XXXXX_ses-XX_task-MedMap1_acq-[bodySite]_run-X_events.tsv
 
 Each file will consist of the following headers:
 onset   duration    intensity   bodySite    temperature condition   pretrial-jitter
@@ -36,10 +32,6 @@ Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
 pip uninstall pyglet
 pip install pyglet==1.4.1
-
-06/29/2022: Update from 2.0.0, based on Tor's suggestion to add a audio-ding to alert participants to make ratings.
-
-
 
 0a. Import Libraries
 """
@@ -135,6 +127,9 @@ visual.ImageStim.rescale = rescale
 # task_ID=8   # If experience
 # task_ID=9  # If regulate
 
+task_ID=2
+task_start=7
+
 bodymapping_instruction=15
 leftface_heat=17
 rightface_heat=18
@@ -145,24 +140,11 @@ rightleg_heat=22
 chest_heat=23
 abdomen_heat=24
 
-experience_instructions=198
-regulate_instructions=199
+instruction_code=198
 
-valence_rating=42
+pain_binary=42
 intensity_rating=43
-comfort_rating=44
-
-avoid_rating = 200
-relax_rating = 201
-taskattention_rating = 202
-boredom_rating = 203
-alertness_rating = 204
-posthx_rating = 205
-negthx_rating = 206
-self_rating = 207
-other_rating = 208
-imagery_rating = 209
-present_rating = 210
+tolerance_binary=44
 
 between_run_msg=45
 
@@ -229,7 +211,7 @@ main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
 
 # Brings up the Calibration/Data folder to load the appropriate calibration data right away.
-calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'Calibration', 'data')
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI bodyCalibration', 'data')
 
 """
 2. Start Experimental Dialog Boxes
@@ -274,7 +256,6 @@ if debug==1:
     expInfo = {
         'subject number': '999', 
         'gender': 'm',
-        'experience(1) or regulate(2)': '1',
         'session': '99',
         'handedness': 'r', 
         'scanner': 'TEST'
@@ -290,7 +271,7 @@ if debug==1:
         'Abdomen': 49
     }
 else:
-    dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-Calibration_participants.tsv)", allowed="Calibration files (*.tsv)")
+    dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-bodyCalibration_participants.tsv)", allowed="Calibration files (*.tsv)")
     if dlg1!=None:
         if "_task-Calibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
@@ -385,20 +366,13 @@ bodySites1 = ['Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', '
 bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg'] 
 
 # Michael Test
-bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
+# bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
 
-runOrder = {
-    1: bodySites1,
-    2: bodySites2,
-    3: bodySites1,
-    4: bodySites2,
-    5: bodySites1,
-    6: bodySites2,
-    7: bodySites1,
-    8: bodySites2,
-    1002: bodySites2,
-    '999': bodySites1
-}
+if expInfo['subject number'] % 2==0:
+    bodySites=bodySites1
+else
+    bodySites=bodySites2
+
 
 bodySites = runOrder[expInfo['subject number']]
 
@@ -571,17 +545,44 @@ unipolar_verts = [(sliderMin, .2), # left point
             (sliderMax, .2),     # right point
             (sliderMin, -.2)]   # bottom-point, # bottom-point
 
-## Intensity Ratings are taken after every heat stimulation
+## These Ratings are taken after every heat stimulation
+painText="Was that painful?"
+intensityText="How intense was the heat stimulation?"
+tolerableText="Was it tolerable or was that too much heat?"
+
+# Initialize components for Routine "PainBinary"
+PainBinaryClock = core.Clock()
+PainBinary = visual.Rect(win, height=ratingScaleHeight, width=0, pos= [0, 0], fillColor='red', lineColor='black')
+PainMouse = event.Mouse(win=win)
+PainMouse.mouseClock = core.Clock()
+PainAnchors = visual.ImageStim(
+    win=win,
+    image= os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]),
+    name='PainQuestion', 
+    mask=None,
+    ori=0, pos=(0, -.09), size=(1.5, .4),
+    color=[1,1,1], colorSpace='rgb', opacity=1,
+    flipHoriz=False, flipVert=False,
+    texRes=512, interpolate=True, depth=0.0)
+PainPrompt = visual.TextStim(win, name='PainPrompt', 
+    text=painText,
+    font = 'Arial',
+    pos=(0, 0.3), height=0.05, wrapWidth=None, ori=0, 
+    color='white', colorSpace='rgb', opacity=1, 
+    languageStyle='LTR',
+    depth=0.0,
+    anchorHoriz='center')
 
 # Initialize components for Routine "IntensityRating"
-intensityText = "How intense was that overall?" # (Unipolar)
 IntensityRatingClock = core.Clock()
-IntensityMouse = event.Mouse(win=win, visible=False)
+IntensityMouse = event.Mouse(win=win)
 IntensityMouse.mouseClock = core.Clock()
 IntensityRating = visual.Rect(win, height=ratingScaleHeight, width=abs(sliderMin), pos= [sliderMin/2, -.1], fillColor='red', lineColor='black')
 IntensityBlackTriangle = visual.ShapeStim(
     win, 
-    vertices=unipolar_verts,
+    vertices=[(sliderMin, .2), # left point
+            (sliderMax, .2),     # right point
+            (sliderMin, -.2)],   # bottom-point, 
     fillColor='black', lineColor='black')
 IntensityAnchors = visual.ImageStim(
     win=win,
@@ -1158,47 +1159,51 @@ for runs in range(len(bodySites)):
     bodySiteData = bodySites[runs]
     # temperature = participant_settingsHeat[bodySites[runs]]
     BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    # thermodeCommand = 135
-    # thermodeCommand = 132 # Set to 47.5 for Maryam
     routineTimer.reset()
 
+    ## Conditioning parameters; Ideally this should be read from the participant file 
+    if runs==0:
+        thermodeCommand=135 # 49 degrees
+        temperature=49
+        # Highest tolerable temperature
+    if runs==1:
+        thermodeCommand=135 # 49 degrees
+        temperature=49
+        # Highest tolerable temperature
+    if runs==2:
+        thermodeCommand=125 # 44 degrees
+        temperature=42
+    if runs==3:
+        thermodeCommand=125 # 44 degrees
+        temperature=42
+    if runs==4:
+        thermodeCommand=125 # 44 degrees
+        temperature=42
+    if runs==5:
+        thermodeCommand=125 # 44 degrees
+        temperature=42
+    if runs==6:
+        thermodeCommand=131 # 47 degrees
+        temperature=47
+        # Highest tolerable temperature - 2
+    if runs==7:
+        thermodeCommand=131 # 47 degrees
+        temperature=47
+        # Highest tolerable temperature - 2
+
+    ## If only 4 Runs:
     # if runs==0:
     #     thermodeCommand=135 # 49 degrees
     #     temperature=49
     # if runs==1:
-    #     thermodeCommand=135 # 49 degrees
-    #     temperature=49
+    #     thermodeCommand=125 # 44 degrees
+    #     temperature=44
     # if runs==2:
     #     thermodeCommand=125 # 44 degrees
     #     temperature=44
     # if runs==3:
-    #     thermodeCommand=125 # 44 degrees
-    #     temperature=44
-    # if runs==4:
-    #     thermodeCommand=125 # 44 degrees
-    #     temperature=44
-    # if runs==5:
-    #     thermodeCommand=125 # 44 degrees
-    #     temperature=44
-    # if runs==6:
     #     thermodeCommand=131 # 47 degrees
-    #     temperature=47
-    # if runs==7:
-    #     thermodeCommand=131 # 47 degrees
-    #     temperature=47
-
-    if runs==0:
-        thermodeCommand=135 # 49 degrees
-        temperature=49
-    if runs==1:
-        thermodeCommand=125 # 44 degrees
-        temperature=44
-    if runs==2:
-        thermodeCommand=125 # 44 degrees
-        temperature=44
-    if runs==3:
-        thermodeCommand=131 # 47 degrees
-        temperature=49
+    #     temperature=49
 
     """
     10. Start Trial Loop
@@ -1496,8 +1501,192 @@ for runs in range(len(bodySites)):
         routineTimer.reset()
 
         """
-        15. Intensity Rating
-        """
+        8f. Begin post-trial self-report questions
+        """        
+        ############ ASK PAIN BINARY Question #######################################
+        # ------Prepare to start Routine "PainBinary"-------
+        continueRoutine = True
+        routineTimer.add(ratingTime)
+        # update component parameters for each repeat
+        # setup some python lists for storing info about the mouse
+        
+        PainMouse = event.Mouse(win=win, visible=False) # Re-initialize PainMouse
+        PainMouse.setPos((0,0))
+        timeAtLastInterval = 0
+        mouseX = 0
+        oldMouseX = 0
+        PainBinary.width = 0
+        PainBinary.pos = (0,0)
+        
+        # keep track of which components have finished
+        PainBinaryComponents = [PainMouse, PainBinary, PainAnchors, PainPrompt]
+        for thisComponent in PainBinaryComponents:
+            thisComponent.tStart = None
+            thisComponent.tStop = None
+            thisComponent.tStartRefresh = None
+            thisComponent.tStopRefresh = None
+            if hasattr(thisComponent, 'status'):
+                thisComponent.status = NOT_STARTED
+        # reset timers
+        t = 0
+        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+        PainBinaryClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+        frameN = -1
+
+        # -------Run Routine "PainBinary"-------
+        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
+        while continueRoutine:
+            # get current time
+            t = PainBinaryClock.getTime()
+            tThisFlip = win.getFutureFlipTime(clock=PainBinaryClock)
+            tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+            # update/draw components on each frame
+
+            timeNow = globalClock.getTime()
+            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                mouseRel=PainMouse.getRel()
+                mouseX=oldMouseX + mouseRel[0]
+            PainBinary.pos = (mouseX/2,0)
+            PainBinary.width = abs(mouseX)
+
+            # Binarize response:
+            if mouseX > 0:
+                mouseX = sliderMax
+            if mouseX < 0:
+                mouseX = sliderMin
+
+            timeAtLastInterval = timeNow
+            oldMouseX=mouseX
+
+            sliderValue = mouseX/sliderMax  
+
+            # *PainMouse* updates
+            if PainMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                PainMouse.frameNStart = frameN  # exact frame index
+                PainMouse.tStart = t  # local t and not account for scr refresh
+                PainMouse.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(PainMouse, 'tStartRefresh')  # time at next scr refresh
+                PainMouse.status = STARTED
+                PainMouse.mouseClock.reset()
+                prevButtonState = PainMouse.getPressed()  # if button is down already this ISN'T a new click
+            if PainMouse.status == STARTED:  # only update if started and not finished!
+                if tThisFlipGlobal > PainMouse.tStartRefresh + ratingTime-frameTolerance:
+                    # keep track of stop time/frame for later
+                    PainMouse.tStop = t  # not accounting for scr refresh
+                    PainMouse.frameNStop = frameN  # exact frame index
+                    PainMouse.status = FINISHED
+                buttons = PainMouse.getPressed()
+                if buttons != prevButtonState:  # button state changed?
+                    prevButtonState = buttons
+                    if sum(buttons) > 0:  # state changed to a new click
+                        # abort routine on response
+                        continueRoutine = False
+
+            # *PainBinary* updates
+            if PainBinary.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                PainBinary.frameNStart = frameN  # exact frame index
+                PainBinary.tStart = t  # local t and not account for scr refresh
+                PainBinary.tStartRefresh = tThisFlipGlobal  # on global time
+                win.callOnFlip(print, "Show Pain Rating")
+                if biopac_exists == 1:
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(biopac.setData, biopac, pain_binary)
+                win.timeOnFlip(PainBinary, 'tStartRefresh')  # time at next scr refresh
+                PainBinary.setAutoDraw(True)
+            if PainBinary.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > PainBinary.tStartRefresh + ratingTime-frameTolerance:
+                    # keep track of stop time/frame for later
+                    PainBinary.tStop = t  # not accounting for scr refresh
+                    PainBinary.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(PainBinary, 'tStopRefresh')  # time at next scr refresh
+                    PainBinary.setAutoDraw(False)
+            
+            # *PainAnchors* updates
+            if PainAnchors.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                PainAnchors.frameNStart = frameN  # exact frame index
+                PainAnchors.tStart = t  # local t and not account for scr refresh
+                PainAnchors.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(PainAnchors, 'tStartRefresh')  # time at next scr refresh
+                PainAnchors.setAutoDraw(True)
+            if PainAnchors.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > PainAnchors.tStartRefresh + ratingTime-frameTolerance:
+                    # keep track of stop time/frame for later
+                    PainAnchors.tStop = t  # not accounting for scr refresh
+                    PainAnchors.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(PainAnchors, 'tStopRefresh')  # time at next scr refresh
+                    PainAnchors.setAutoDraw(False)
+
+            # *PainPrompt* updates
+            if PainPrompt.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                PainPrompt.frameNStart = frameN  # exact frame index
+                PainPrompt.tStart = t  # local t and not account for scr refresh
+                PainPrompt.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(PainPrompt, 'tStartRefresh')  # time at next scr refresh
+                PainPrompt.setAutoDraw(True)
+            if PainPrompt.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > PainPrompt.tStartRefresh + ratingTime-frameTolerance:
+                    # keep track of stop time/frame for later
+                    PainPrompt.tStop = t  # not accounting for scr refresh
+                    PainPrompt.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(PainPrompt, 'tStopRefresh')  # time at next scr refresh
+                    PainPrompt.setAutoDraw(False)
+
+            # Autoresponder
+            if t >= thisSimKey.rt and autorespond == 1:
+                sliderValue = random.randint(-100,100)
+                continueRoutine = False
+
+            # check for quit (typically the Esc key)
+            if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+                core.quit()
+            
+            # check if all components have finished
+            if not continueRoutine:  # a component has requested a forced-end of Routine
+                break
+            continueRoutine = False  # will revert to True if at least one component still running
+            for thisComponent in PainBinaryComponents:
+                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                    continueRoutine = True
+                    break  # at least one component has not yet finished
+            
+            # refresh the screen
+            if continueRoutine:
+                win.flip()
+
+        # -------Ending Routine "PainBinary"-------
+        print("CueOff Channel " + str(pain_binary))
+        for thisComponent in PainBinaryComponents:
+            if hasattr(thisComponent, "setAutoDraw"):
+                thisComponent.setAutoDraw(False)
+        # store data for thisExp (ExperimentHandler)
+        thisExp.addData('PainBinary.response', sliderValue)
+        thisExp.addData('PainBinary.rt', timeNow-PainBinary.tStart)
+        thisExp.nextEntry()
+        thisExp.addData('PainBinary.started', PainBinary.tStart)
+        thisExp.addData('PainBinary.stopped', PainBinary.tStop)
+        painRating=sliderValue
+        # bodyCalibration_bids_data.append(["Pain Binary:", sliderValue])
+
+        # Update Temperature if Pain Binary is -1
+        if painRating<0 and currentTemp < maxTemp:
+            currentTemp=currentTemp+.5
+
+        bodyCalibration_bids_trial = []
+        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, painRating, bodySites[runs], currentTemp, 'Pain Rating', jitter2))
+        bodyCalibration_bids.append(bodyCalibration_bids_trial)
+
+        # the Routine "PainBinary" was not non-slip safe, so reset the non-slip timer
+        routineTimer.reset()
+
+        ############ ASK PAIN INTENSITY #######################################
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
         routineTimer.add(ratingTime)
@@ -1525,26 +1714,22 @@ for runs in range(len(bodySites)):
         IntensityRatingClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
 
-        IntensityRating.fillColor='red'
-        obtainedRating = 0
-
         # -------Run Routine "IntensityRating"-------
         onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
         while continueRoutine:
-            if obtainedRating == 0:
-                timeNow = globalClock.getTime()
-                if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-                    mouseRel=IntensityMouse.getRel()
-                    mouseX=oldMouseX + mouseRel[0]
-                IntensityRating.pos = ((sliderMin + mouseX)/2,0)
-                IntensityRating.width = abs((mouseX-sliderMin))
-                if mouseX > sliderMax:
-                    mouseX = sliderMax
-                if mouseX < sliderMin:
-                    mouseX = sliderMin
-                timeAtLastInterval = timeNow
-                oldMouseX=mouseX
-                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            timeNow = globalClock.getTime()
+            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                mouseRel=IntensityMouse.getRel()
+                mouseX=oldMouseX + mouseRel[0]
+            IntensityRating.pos = ((sliderMin + mouseX)/2,0)
+            IntensityRating.width = abs((mouseX-sliderMin))
+            if mouseX > sliderMax:
+                mouseX = sliderMax
+            if mouseX < sliderMin:
+                mouseX = sliderMin
+            timeAtLastInterval = timeNow
+            oldMouseX=mouseX
+            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
 
             # get current time
             t = IntensityRatingClock.getTime()
@@ -1573,8 +1758,8 @@ for runs in range(len(bodySites)):
                 if buttons != prevButtonState:  # button state changed?
                     prevButtonState = buttons
                     if sum(buttons) > 0:  # state changed to a new click
-                        IntensityRating.fillColor='white'
-                        obtainedRating = 1
+                        # abort routine on response
+                        continueRoutine = False
             
             # *IntensityRating* updates
             if IntensityRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -1672,8 +1857,6 @@ for runs in range(len(bodySites)):
 
         # -------Ending Routine "IntensityRating"-------
         print("CueOff Channel " + str(intensity_rating))
-        if biopac_exists:
-            win.callOnFlip(biopac.setData, biopac, 0)
         for thisComponent in IntensityRatingComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
@@ -1684,15 +1867,17 @@ for runs in range(len(bodySites)):
         thisExp.addData('IntensityRating.started', IntensityRating.tStart)
         thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
 
-        acceptmap_bids_trial = []
-        acceptmap_bids_trial.extend((onset, t, sliderValue, bodySites[runs], temperature, "Intensity Rating", jitter2))
-        acceptmap_bids.append(acceptmap_bids_trial)
+        bodyCalibration_bids_trial = []
+        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, sliderValue, bodySites[runs], currentTemp, 'Intensity Rating', None))
+        bodyCalibration_bids.append(bodyCalibration_bids_trial)
 
         # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
 
+        ########################## END SELF REPORT #######################################################
 
     rating_sound.play()
+
     """
     16. Begin post-run self-report questions
     """        
