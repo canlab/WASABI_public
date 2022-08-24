@@ -27,10 +27,10 @@ onset   duration    trial_type  body_site   temp
 after every stimulation there will be rows for:
 [x] "Was that painful?"
 [x] "How intense was the heat stimulation?" (Bartoshuk gLMS)
-[x] "Was it tolerable or was that too much?"
+[x] "Was it tolerable, and can you take more of that heat?"
 
 The design is as follows:
-1. Start with a 47.5 degree stimulation trial (to be thrown away)
+1. Start with a 48 degree stimulation trial (to be thrown away)
 2. If not painful, increase the temperature by .5 degrees (max at 48.5)
 3. If intolerable, then reduce the temperature by .5 degrees and set that new temperature as the maximum temperature for the bodysite.
 4. Average the ratings of the 6 subsequent trials
@@ -66,9 +66,10 @@ except ImportError:
     OrderedDict=dict
 
 import random
+from datetime import datetime
 
 __author__ = "Michael Sun"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -79,7 +80,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -119,7 +120,11 @@ def round_down(num, divisor):
 # For setting the calibrated average heat
 def round_to(n, precision):
     correction = 0.5 if n >= 0 else -0.5
-    return int( n/precision+correction ) * precision
+    # check if n is nan before casting to int
+    try:
+        return int( n/precision+correction ) * precision
+    except:
+        return np.nan
 
 def round_to_halfdegree(n):
     return round_to(n, 0.5)
@@ -240,21 +245,21 @@ psychopyVersion = '2020.2.10'
 expName = 'bodyCalibration'  # from the Builder filename that created this script
 if debug == 1:
     expInfo = {
-    'subject number': '99',
+    'DBIC Number': '99',
+    'dob (mm/dd/yyyy)': '06/20/1988',
     'gender': 'm',
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS',
-    'run': '1'
     }
 else:
     expInfo = {
-    'subject number': '', 
+    'DBIC Number': '',
+    'dob (mm/dd/yyyy)': '', 
     'gender': '',
     'session': '',
     'handedness': '', 
     'scanner': '',
-    'run': '' 
     }
 
 
@@ -347,11 +352,11 @@ with open("thermode1_programs.txt") as f:
 """
 4. Prepare files to write
 """
-sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-psypy_filename = os.path.join(sub_dir, '%05d_%s_%s' % (int(expInfo['subject number']), expName, expInfo['date']))
+psypy_filename = os.path.join(sub_dir, '%05d_%s_%s' % (int(expInfo['DBIC Number']), expName, expInfo['date']))
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -367,6 +372,8 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # Create python lists to later concatenate or convert into pandas dataframes
+
+bodyCalibration_bids_total = []
 bodyCalibration_bids_trial = []
 bodyCalibration_bids = []
 
@@ -378,6 +385,7 @@ averaged_data = []
 """
 # General Instructional Text
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
+s_text='[s]-press confirmed.'
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
 end_msg = 'Please wait for instructions from the experimenter'
 
@@ -386,7 +394,7 @@ stimtrialTime = 20 # This becomes very unreliable with the use of poll_for_chang
 
 if debug == 1:
     stimtrialTime = 1 # This becomes very unreliable with the use of poll_for_change().
-    totalTrials = 1
+    totalTrials = 2
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
 
@@ -449,7 +457,7 @@ unipolar_verts = [(sliderMin, .2), # left point
 ## These Ratings are taken after every heat stimulation
 painText="Was that painful?"
 intensityText="How intense was the heat stimulation?"
-tolerableText="Was it tolerable or was that too much heat?"
+tolerableText="Was it tolerable, and can you take more of that heat?"
 
 # Initialize components for Routine "PainBinary"
 PainBinaryClock = core.Clock()
@@ -461,7 +469,7 @@ PainAnchors = visual.ImageStim(
     image= os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]),
     name='PainQuestion', 
     mask=None,
-    ori=0, pos=(0, -.09), size=(1.5, .4),
+    ori=0, pos=(0, 0), size=(1, .25),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=512, interpolate=True, depth=0.0)
@@ -513,7 +521,7 @@ ToleranceAnchors = visual.ImageStim(
     image= os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]),
     name='ToleranceQuestion', 
     mask=None,
-    ori=0, pos=(0, -.09), size=(1.5, .4),
+    ori=0, pos=(0, 0), size=(1, .25),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=512, interpolate=True, depth=0.0)
@@ -540,23 +548,17 @@ win.mouseVisible = False
 """
 6. Welcome Instructions
 """
-# RegulateInstructions.setText("Text")
+# Show Instructions for 6 seconds
 Instructions.draw()
 win.flip()
-core.wait(6)
+continueRoutine=True
+while continueRoutine == True:
+    if 'space' in event.getKeys(keyList = 'space'):
+        continueRoutine = False
 
 for runs in range(len(bodySites)):
     ratingTime = 5 # Intensity Rating Time limit in seconds during the inter-trial-interval
 
-    IntensityAnchors = visual.ImageStim(
-        win=win,
-        image= os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]),
-        name='intensityAnchors', 
-        mask=None,
-        ori=0, pos=(0, -0.09), size=(1.5, .4),
-        color=[1,1,1], colorSpace='rgb', opacity=1,
-        flipHoriz=False, flipVert=False,
-        texRes=512, interpolate=True, depth=0.0)
     """
     7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run 
     """
@@ -699,7 +701,13 @@ for runs in range(len(bodySites)):
         event.clearEvents()
         while continueRoutine == True:
             if 's' in event.getKeys(keyList = 's'):         # experimenter start key - safe key before fMRI trigger
+                s_confirm = visual.TextStim(win, text=s_text, height =.05, color="green", pos=(0.0, -.3))
+                start.draw()
+                s_confirm.draw()
+                win.flip()
                 event.clearEvents()
+                if debug==1:
+                    continueRoutine=False
                 while continueRoutine == True:
                     if '5' in event.getKeys(keyList = '5'): # fMRI trigger
                         fmriStart = globalClock.getTime()   # Start the clock
@@ -714,7 +722,7 @@ for runs in range(len(bodySites)):
     """
     jitter2 = None  # Reset Jitter2
 
-    currentTemp=47.5
+    currentTemp=48
     maxTemp=48.5
     minTemp=45
 
@@ -741,12 +749,15 @@ for runs in range(len(bodySites)):
             win.flip()
 
             timer = core.CountdownTimer()
-            timer.add(5)
+            if debug==1:
+                timer.add(1)
+            else:
+                timer.add(5)
             while timer.getTime() > 0:
                 continue
             
             bodyCalibration_bids_trial = []
-            bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, None, None, bodySites[runs], currentTemp, None))
+            bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, None, bodySites[runs], currentTemp, 'Instruction', None))
             bodyCalibration_bids.append(bodyCalibration_bids_trial)
             
             routineTimer.reset()
@@ -768,6 +779,11 @@ for runs in range(len(bodySites)):
             jitter1 = 5
         elif jitter2 == 7:
             jitter1 = 3
+
+        if debug==1:
+            jitter1=1
+            jitter2=1
+
         routineTimer.add(jitter1)
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -925,6 +941,11 @@ for runs in range(len(bodySites)):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('fixation.started', fixation.tStartRefresh)
         thisExp.addData('fixation.stopped', fixation.tStopRefresh)
+
+        bodyCalibration_bids_trial = []
+        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, r+1, None, bodySites[runs], currentTemp, 'Heat Stimulation', jitter1))
+        bodyCalibration_bids.append(bodyCalibration_bids_trial)
+
         routineTimer.reset()
 
         """
@@ -933,6 +954,12 @@ for runs in range(len(bodySites)):
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         jitter2 = random.choice([3,5,7])
+
+        if debug==1:
+            jitter1=1
+            jitter2=1
+
+
         routineTimer.add(jitter2)
 
         # update component parameters for each repeat
@@ -1006,11 +1033,6 @@ for runs in range(len(bodySites)):
         thisExp.addData('fixation.started', fixation.tStartRefresh)
         thisExp.addData('fixation.stopped', fixation.tStopRefresh)
 
-        bodyCalibration_bids_trial = []
-        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, bodySites[runs], currentTemp, 'Heat Stimulation', jitter1))
-        bodyCalibration_bids.append(bodyCalibration_bids_trial)
-
-
         rating_sound.play()
         routineTimer.reset()
 
@@ -1061,19 +1083,21 @@ for runs in range(len(bodySites)):
             if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
                 mouseRel=PainMouse.getRel()
                 mouseX=oldMouseX + mouseRel[0]
-            PainBinary.pos = (mouseX/2,0)
-            PainBinary.width = abs(mouseX)
 
-            # Binarize response:
-            if mouseX > 0:
-                mouseX = sliderMax
-            if mouseX < 0:
-                mouseX = sliderMin
+            if mouseX==0:
+                PainBinary.width = 0
+            else:
+                if mouseX>0:
+                    PainBinary.pos = (.28,0)
+                    sliderValue=1
+                elif mouseX<0:
+                    PainBinary.pos = (-.4,0)
+                    sliderValue=-1
+                PainBinary.width = .5
 
             timeAtLastInterval = timeNow
             oldMouseX=mouseX
 
-            sliderValue = mouseX/sliderMax  
 
             # *PainMouse* updates
             if PainMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -1189,401 +1213,430 @@ for runs in range(len(bodySites)):
         painRating=sliderValue
         # bodyCalibration_bids_data.append(["Pain Binary:", sliderValue])
 
+        bodyCalibration_bids_trial = []
+        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, painRating, bodySites[runs], currentTemp, 'Pain Rating', jitter2))
+        bodyCalibration_bids.append(bodyCalibration_bids_trial)
+
         # Update Temperature if Pain Binary is -1
         if painRating<0 and currentTemp < maxTemp:
             currentTemp=currentTemp+.5
 
-        bodyCalibration_bids_trial = []
-        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, painRating, bodySites[runs], currentTemp, 'Pain Rating', jitter2))
-        bodyCalibration_bids.append(bodyCalibration_bids_trial)
-
         # the Routine "PainBinary" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
 
-        ############ ASK PAIN INTENSITY #######################################
-        # ------Prepare to start Routine "IntensityRating"-------
-        continueRoutine = True
-        routineTimer.add(ratingTime)
-        # update component parameters for each repeat
-        # keep track of which components have finished
-        IntensityMouse = event.Mouse(win=win, visible=False) # Re-initialize IntensityMouse
-        IntensityMouse.setPos((0,0))
-        timeAtLastInterval = 0
-        mouseX = 0
-        oldMouseX = 0
-        IntensityRating.width = abs(sliderMin)
-        IntensityRating.pos = [sliderMin/2, -.1]
+        if painRating < 0:
+            ## Show nothing for 10 seconds
+            win.flip()
+            onset = globalClock.getTime() - fmriStart
 
-        IntensityRatingComponents = [IntensityMouse, IntensityBlackTriangle, IntensityRating, IntensityAnchors, IntensityPrompt]
-        for thisComponent in IntensityRatingComponents:
-            thisComponent.tStart = None
-            thisComponent.tStop = None
-            thisComponent.tStartRefresh = None
-            thisComponent.tStopRefresh = None
-            if hasattr(thisComponent, 'status'):
-                thisComponent.status = NOT_STARTED
-        # reset timers
-        t = 0
-        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        IntensityRatingClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-        frameN = -1
+            timer = core.CountdownTimer()
+            if debug==1:
+                timer.add(1)
+            else:
+                timer.add(10)
+            while timer.getTime() > 0:
+                continue
+            
+            bodyCalibration_bids_trial = []
+            bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, None, bodySites[runs], currentTemp, 'No-Pain Interval', None))
+            bodyCalibration_bids.append(bodyCalibration_bids_trial)
 
-        # -------Run Routine "IntensityRating"-------
-        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
-        while continueRoutine:
-            timeNow = globalClock.getTime()
-            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-                mouseRel=IntensityMouse.getRel()
-                mouseX=oldMouseX + mouseRel[0]
-            IntensityRating.pos = ((sliderMin + mouseX)/2,0)
-            IntensityRating.width = abs((mouseX-sliderMin))
-            if mouseX > sliderMax:
-                mouseX = sliderMax
-            if mouseX < sliderMin:
-                mouseX = sliderMin
-            timeAtLastInterval = timeNow
-            oldMouseX=mouseX
-            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            bodyCalibration_total_trial =[]
+            bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, None, 1))
+            bodyCalibration_bids_total.append(bodyCalibration_total_trial)
+            
+            routineTimer.reset()
+        else:
+            ## Otherwise show Intensity and Tolerance Ratings
+            ############ ASK PAIN INTENSITY #######################################
+            # ------Prepare to start Routine "IntensityRating"-------
+            continueRoutine = True
+            routineTimer.add(ratingTime)
+            # update component parameters for each repeat
+            # keep track of which components have finished
+            IntensityMouse = event.Mouse(win=win, visible=False) # Re-initialize IntensityMouse
+            IntensityMouse.setPos((0,0))
+            timeAtLastInterval = 0
+            mouseX = 0
+            oldMouseX = 0
+            IntensityRating.width = abs(sliderMin)
+            IntensityRating.pos = [sliderMin/2, -.1]
 
-            # get current time
-            t = IntensityRatingClock.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=IntensityRatingClock)
-            tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-            # update/draw components on each frame
-            
-            # *IntensityMouse* updates
-            if IntensityMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                IntensityMouse.frameNStart = frameN  # exact frame index
-                IntensityMouse.tStart = t  # local t and not account for scr refresh
-                IntensityMouse.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(IntensityMouse, 'tStartRefresh')  # time at next scr refresh
-                IntensityMouse.status = STARTED
-                IntensityMouse.mouseClock.reset()
-                prevButtonState = IntensityMouse.getPressed()  # if button is down already this ISN'T a new click
-            if IntensityMouse.status == STARTED:  # only update if started and not finished!
-                if tThisFlipGlobal > IntensityMouse.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    IntensityMouse.tStop = t  # not accounting for scr refresh
-                    IntensityMouse.frameNStop = frameN  # exact frame index
-                    IntensityMouse.status = FINISHED
-                buttons = IntensityMouse.getPressed()
-                if buttons != prevButtonState:  # button state changed?
-                    prevButtonState = buttons
-                    if sum(buttons) > 0:  # state changed to a new click
-                        # abort routine on response
-                        continueRoutine = False
-            
-            # *IntensityRating* updates
-            if IntensityRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                IntensityRating.frameNStart = frameN  # exact frame index
-                IntensityRating.tStart = t  # local t and not account for scr refresh
-                IntensityRating.tStartRefresh = tThisFlipGlobal  # on global time
-                win.callOnFlip(print, "Show Intensity Rating")
-                if biopac_exists == 1:
-                    win.callOnFlip(biopac.setData, biopac, 0)
-                    win.callOnFlip(biopac.setData, biopac, intensity_rating)
-                win.timeOnFlip(IntensityRating, 'tStartRefresh')  # time at next scr refresh
-                IntensityRating.setAutoDraw(True)
-            if IntensityRating.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > IntensityRating.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    IntensityRating.tStop = t  # not accounting for scr refresh
-                    IntensityRating.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(IntensityRating, 'tStopRefresh')  # time at next scr refresh
-                    IntensityRating.setAutoDraw(False)
-            
-            # *IntensityBlackTriangle* updates
-            if IntensityBlackTriangle.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                IntensityBlackTriangle.frameNStart = frameN  # exact frame index
-                IntensityBlackTriangle.tStart = t  # local t and not account for scr refresh
-                IntensityBlackTriangle.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(IntensityBlackTriangle, 'tStartRefresh')  # time at next scr refresh
-                IntensityBlackTriangle.setAutoDraw(True)
-            if IntensityBlackTriangle.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > IntensityBlackTriangle.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    IntensityBlackTriangle.tStop = t  # not accounting for scr refresh
-                    IntensityBlackTriangle.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(IntensityBlackTriangle, 'tStopRefresh')  # time at next scr refresh
-                    IntensityBlackTriangle.setAutoDraw(False)
-            
-            # *IntensityAnchors* updates
-            if IntensityAnchors.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                IntensityAnchors.frameNStart = frameN  # exact frame index
-                IntensityAnchors.tStart = t  # local t and not account for scr refresh
-                IntensityAnchors.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(IntensityAnchors, 'tStartRefresh')  # time at next scr refresh
-                IntensityAnchors.setAutoDraw(True)
-            if IntensityAnchors.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > IntensityAnchors.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    IntensityAnchors.tStop = t  # not accounting for scr refresh
-                    IntensityAnchors.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(IntensityAnchors, 'tStopRefresh')  # time at next scr refresh
-                    IntensityAnchors.setAutoDraw(False)
-            
-            # *IntensityPrompt* updates
-            if IntensityPrompt.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                IntensityPrompt.frameNStart = frameN  # exact frame index
-                IntensityPrompt.tStart = t  # local t and not account for scr refresh
-                IntensityPrompt.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(IntensityPrompt, 'tStartRefresh')  # time at next scr refresh
-                IntensityPrompt.setAutoDraw(True)
-            if IntensityPrompt.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > IntensityPrompt.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    IntensityPrompt.tStop = t  # not accounting for scr refresh
-                    IntensityPrompt.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(IntensityPrompt, 'tStopRefresh')  # time at next scr refresh
-                    IntensityPrompt.setAutoDraw(False)
-
-            # Autoresponder
-            if t >= thisSimKey.rt and autorespond == 1:
-                sliderValue = random.randint(0,100)
-                continueRoutine = False
-
-            # check for quit (typically the Esc key)
-            if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-                core.quit()
-            
-            # check if all components have finished
-            if not continueRoutine:  # a component has requested a forced-end of Routine
-                break
-            continueRoutine = False  # will revert to True if at least one component still running
+            IntensityRatingComponents = [IntensityMouse, IntensityBlackTriangle, IntensityRating, IntensityAnchors, IntensityPrompt]
             for thisComponent in IntensityRatingComponents:
-                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                    continueRoutine = True
-                    break  # at least one component has not yet finished
+                thisComponent.tStart = None
+                thisComponent.tStop = None
+                thisComponent.tStartRefresh = None
+                thisComponent.tStopRefresh = None
+                if hasattr(thisComponent, 'status'):
+                    thisComponent.status = NOT_STARTED
+            # reset timers
+            t = 0
+            _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+            IntensityRatingClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+            frameN = -1
 
-            # refresh the screen
-            if continueRoutine:
-                win.flip()
+            # -------Run Routine "IntensityRating"-------
+            onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
+            while continueRoutine:
+                timeNow = globalClock.getTime()
+                if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                    mouseRel=IntensityMouse.getRel()
+                    mouseX=oldMouseX + mouseRel[0]
+                IntensityRating.pos = ((sliderMin + mouseX)/2,0)
+                IntensityRating.width = abs((mouseX-sliderMin))
+                if mouseX > sliderMax:
+                    mouseX = sliderMax
+                if mouseX < sliderMin:
+                    mouseX = sliderMin
+                timeAtLastInterval = timeNow
+                oldMouseX=mouseX
+                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
 
-        # -------Ending Routine "IntensityRating"-------
-        print("CueOff Channel " + str(intensity_rating))
-        for thisComponent in IntensityRatingComponents:
-            if hasattr(thisComponent, "setAutoDraw"):
-                thisComponent.setAutoDraw(False)
-        # store data for thisExp (ExperimentHandler)
-        thisExp.addData('IntensityRating.response', sliderValue)
-        thisExp.addData('IntensityRating.rt', timeNow - IntensityRating.tStart)
-        thisExp.nextEntry()
-        thisExp.addData('IntensityRating.started', IntensityRating.tStart)
-        thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
+                # get current time
+                t = IntensityRatingClock.getTime()
+                tThisFlip = win.getFutureFlipTime(clock=IntensityRatingClock)
+                tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+                frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+                # update/draw components on each frame
+                
+                # *IntensityMouse* updates
+                if IntensityMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    IntensityMouse.frameNStart = frameN  # exact frame index
+                    IntensityMouse.tStart = t  # local t and not account for scr refresh
+                    IntensityMouse.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(IntensityMouse, 'tStartRefresh')  # time at next scr refresh
+                    IntensityMouse.status = STARTED
+                    IntensityMouse.mouseClock.reset()
+                    prevButtonState = IntensityMouse.getPressed()  # if button is down already this ISN'T a new click
+                if IntensityMouse.status == STARTED:  # only update if started and not finished!
+                    if tThisFlipGlobal > IntensityMouse.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        IntensityMouse.tStop = t  # not accounting for scr refresh
+                        IntensityMouse.frameNStop = frameN  # exact frame index
+                        IntensityMouse.status = FINISHED
+                    buttons = IntensityMouse.getPressed()
+                    if buttons != prevButtonState:  # button state changed?
+                        prevButtonState = buttons
+                        if sum(buttons) > 0:  # state changed to a new click
+                            # abort routine on response
+                            continueRoutine = False
+                
+                # *IntensityRating* updates
+                if IntensityRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    IntensityRating.frameNStart = frameN  # exact frame index
+                    IntensityRating.tStart = t  # local t and not account for scr refresh
+                    IntensityRating.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.callOnFlip(print, "Show Intensity Rating")
+                    if biopac_exists == 1:
+                        win.callOnFlip(biopac.setData, biopac, 0)
+                        win.callOnFlip(biopac.setData, biopac, intensity_rating)
+                    win.timeOnFlip(IntensityRating, 'tStartRefresh')  # time at next scr refresh
+                    IntensityRating.setAutoDraw(True)
+                if IntensityRating.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > IntensityRating.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        IntensityRating.tStop = t  # not accounting for scr refresh
+                        IntensityRating.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(IntensityRating, 'tStopRefresh')  # time at next scr refresh
+                        IntensityRating.setAutoDraw(False)
+                
+                # *IntensityBlackTriangle* updates
+                if IntensityBlackTriangle.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    IntensityBlackTriangle.frameNStart = frameN  # exact frame index
+                    IntensityBlackTriangle.tStart = t  # local t and not account for scr refresh
+                    IntensityBlackTriangle.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(IntensityBlackTriangle, 'tStartRefresh')  # time at next scr refresh
+                    IntensityBlackTriangle.setAutoDraw(True)
+                if IntensityBlackTriangle.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > IntensityBlackTriangle.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        IntensityBlackTriangle.tStop = t  # not accounting for scr refresh
+                        IntensityBlackTriangle.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(IntensityBlackTriangle, 'tStopRefresh')  # time at next scr refresh
+                        IntensityBlackTriangle.setAutoDraw(False)
+                
+                # *IntensityAnchors* updates
+                if IntensityAnchors.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    IntensityAnchors.frameNStart = frameN  # exact frame index
+                    IntensityAnchors.tStart = t  # local t and not account for scr refresh
+                    IntensityAnchors.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(IntensityAnchors, 'tStartRefresh')  # time at next scr refresh
+                    IntensityAnchors.setAutoDraw(True)
+                if IntensityAnchors.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > IntensityAnchors.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        IntensityAnchors.tStop = t  # not accounting for scr refresh
+                        IntensityAnchors.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(IntensityAnchors, 'tStopRefresh')  # time at next scr refresh
+                        IntensityAnchors.setAutoDraw(False)
+                
+                # *IntensityPrompt* updates
+                if IntensityPrompt.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    IntensityPrompt.frameNStart = frameN  # exact frame index
+                    IntensityPrompt.tStart = t  # local t and not account for scr refresh
+                    IntensityPrompt.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(IntensityPrompt, 'tStartRefresh')  # time at next scr refresh
+                    IntensityPrompt.setAutoDraw(True)
+                if IntensityPrompt.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > IntensityPrompt.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        IntensityPrompt.tStop = t  # not accounting for scr refresh
+                        IntensityPrompt.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(IntensityPrompt, 'tStopRefresh')  # time at next scr refresh
+                        IntensityPrompt.setAutoDraw(False)
 
-        bodyCalibration_bids_trial = []
-        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, sliderValue, bodySites[runs], currentTemp, 'Intensity Rating', None))
-        bodyCalibration_bids.append(bodyCalibration_bids_trial)
+                # Autoresponder
+                if t >= thisSimKey.rt and autorespond == 1:
+                    sliderValue = random.randint(0,100)
+                    continueRoutine = False
 
-        # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
-        routineTimer.reset()
+                # check for quit (typically the Esc key)
+                if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+                    core.quit()
+                
+                # check if all components have finished
+                if not continueRoutine:  # a component has requested a forced-end of Routine
+                    break
+                continueRoutine = False  # will revert to True if at least one component still running
+                for thisComponent in IntensityRatingComponents:
+                    if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                        continueRoutine = True
+                        break  # at least one component has not yet finished
 
-        ############ ASK TOLERANCE BINARY Question #######################################
-        # ------Prepare to start Routine "ToleranceBinary"-------
-        continueRoutine = True
-        routineTimer.add(ratingTime)
-        # update component parameters for each repeat
-        # setup some python lists for storing info about the mouse
-        
-        ToleranceMouse = event.Mouse(win=win, visible=False) # Re-initialize ToleranceMouse
-        ToleranceMouse.setPos((0,0))
-        timeAtLastInterval = 0
-        mouseX = 0
-        oldMouseX = 0
-        ToleranceBinary.width = 0
-        ToleranceBinary.pos = (0,0)
-        
-        # keep track of which components have finished
-        ToleranceBinaryComponents = [ToleranceMouse, ToleranceBinary, ToleranceAnchors, TolerancePrompt]
-        for thisComponent in ToleranceBinaryComponents:
-            thisComponent.tStart = None
-            thisComponent.tStop = None
-            thisComponent.tStartRefresh = None
-            thisComponent.tStopRefresh = None
-            if hasattr(thisComponent, 'status'):
-                thisComponent.status = NOT_STARTED
-        # reset timers
-        t = 0
-        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        ToleranceBinaryClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-        frameN = -1
+                # refresh the screen
+                if continueRoutine:
+                    win.flip()
 
-        # -------Run Routine "ToleranceBinary"-------
-        onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
-        while continueRoutine:
-            # get current time
-            t = ToleranceBinaryClock.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=ToleranceBinaryClock)
-            tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-            # update/draw components on each frame
+            # -------Ending Routine "IntensityRating"-------
+            print("CueOff Channel " + str(intensity_rating))
+            for thisComponent in IntensityRatingComponents:
+                if hasattr(thisComponent, "setAutoDraw"):
+                    thisComponent.setAutoDraw(False)
+            # store data for thisExp (ExperimentHandler)
+            thisExp.addData('IntensityRating.response', sliderValue)
+            thisExp.addData('IntensityRating.rt', timeNow - IntensityRating.tStart)
+            thisExp.nextEntry()
+            thisExp.addData('IntensityRating.started', IntensityRating.tStart)
+            thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
 
-            timeNow = globalClock.getTime()
-            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-                mouseRel=ToleranceMouse.getRel()
-                mouseX=oldMouseX + mouseRel[0]
-            ToleranceBinary.pos = (mouseX/2,0)
-            ToleranceBinary.width = abs(mouseX)
+            intensityRating=sliderValue
+            bodyCalibration_bids_trial = []
+            bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, intensityRating, bodySites[runs], currentTemp, 'Intensity Rating', None))
+            bodyCalibration_bids.append(bodyCalibration_bids_trial)
 
-            # Binarize response:
-            if mouseX > 0:
-                mouseX = sliderMax
-            if mouseX < 0:
-                mouseX = sliderMin
-            sliderValue = mouseX/sliderMax  
+            # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
+            routineTimer.reset()
 
-            timeAtLastInterval = timeNow
-            oldMouseX=mouseX
-
-            # *ToleranceMouse* updates
-            if ToleranceMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                ToleranceMouse.frameNStart = frameN  # exact frame index
-                ToleranceMouse.tStart = t  # local t and not account for scr refresh
-                ToleranceMouse.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(ToleranceMouse, 'tStartRefresh')  # time at next scr refresh
-                ToleranceMouse.status = STARTED
-                ToleranceMouse.mouseClock.reset()
-                prevButtonState = ToleranceMouse.getPressed()  # if button is down already this ISN'T a new click
-            if ToleranceMouse.status == STARTED:  # only update if started and not finished!
-                if tThisFlipGlobal > ToleranceMouse.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    ToleranceMouse.tStop = t  # not accounting for scr refresh
-                    ToleranceMouse.frameNStop = frameN  # exact frame index
-                    ToleranceMouse.status = FINISHED
-                buttons = ToleranceMouse.getPressed()
-                if buttons != prevButtonState:  # button state changed?
-                    prevButtonState = buttons
-                    if sum(buttons) > 0:  # state changed to a new click
-                        # abort routine on response
-                        continueRoutine = False
-
-            # *ToleranceBinary* updates
-            if ToleranceBinary.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                ToleranceBinary.frameNStart = frameN  # exact frame index
-                ToleranceBinary.tStart = t  # local t and not account for scr refresh
-                ToleranceBinary.tStartRefresh = tThisFlipGlobal  # on global time
-                win.callOnFlip(print, "Show Tolerance Binary")
-                if biopac_exists == 1:
-                    win.callOnFlip(biopac.setData, biopac, 0)
-                    win.callOnFlip(biopac.setData, biopac, tolerance_binary)
-                win.timeOnFlip(ToleranceBinary, 'tStartRefresh')  # time at next scr refresh
-                ToleranceBinary.setAutoDraw(True)
-            if ToleranceBinary.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > ToleranceBinary.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    ToleranceBinary.tStop = t  # not accounting for scr refresh
-                    ToleranceBinary.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(ToleranceBinary, 'tStopRefresh')  # time at next scr refresh
-                    ToleranceBinary.setAutoDraw(False)
+            ############ ASK TOLERANCE BINARY Question #######################################
+            # ------Prepare to start Routine "ToleranceBinary"-------
+            continueRoutine = True
+            routineTimer.add(ratingTime)
+            # update component parameters for each repeat
+            # setup some python lists for storing info about the mouse
             
-            # *ToleranceAnchors* updates
-            if ToleranceAnchors.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                ToleranceAnchors.frameNStart = frameN  # exact frame index
-                ToleranceAnchors.tStart = t  # local t and not account for scr refresh
-                ToleranceAnchors.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(ToleranceAnchors, 'tStartRefresh')  # time at next scr refresh
-                ToleranceAnchors.setAutoDraw(True)
-            if ToleranceAnchors.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > ToleranceAnchors.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    ToleranceAnchors.tStop = t  # not accounting for scr refresh
-                    ToleranceAnchors.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(ToleranceAnchors, 'tStopRefresh')  # time at next scr refresh
-                    ToleranceAnchors.setAutoDraw(False)
-
-            # *TolerancePrompt* updates
-            if TolerancePrompt.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                TolerancePrompt.frameNStart = frameN  # exact frame index
-                TolerancePrompt.tStart = t  # local t and not account for scr refresh
-                TolerancePrompt.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(TolerancePrompt, 'tStartRefresh')  # time at next scr refresh
-                TolerancePrompt.setAutoDraw(True)
-            if TolerancePrompt.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > TolerancePrompt.tStartRefresh + ratingTime-frameTolerance:
-                    # keep track of stop time/frame for later
-                    TolerancePrompt.tStop = t  # not accounting for scr refresh
-                    TolerancePrompt.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(TolerancePrompt, 'tStopRefresh')  # time at next scr refresh
-                    TolerancePrompt.setAutoDraw(False)
-
-            # Autoresponder
-            if t >= thisSimKey.rt and autorespond == 1:
-                sliderValue = random.randint(-100,100)
-                continueRoutine = False
-
-            # check for quit (typically the Esc key)
-            if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-                core.quit()
+            ToleranceMouse = event.Mouse(win=win, visible=False) # Re-initialize ToleranceMouse
+            ToleranceMouse.setPos((0,0))
+            timeAtLastInterval = 0
+            mouseX = 0
+            oldMouseX = 0
+            ToleranceBinary.width = 0
+            ToleranceBinary.pos = (0,0)
             
-            # check if all components have finished
-            if not continueRoutine:  # a component has requested a forced-end of Routine
-                break
-            continueRoutine = False  # will revert to True if at least one component still running
+            # keep track of which components have finished
+            ToleranceBinaryComponents = [ToleranceMouse, ToleranceBinary, ToleranceAnchors, TolerancePrompt]
             for thisComponent in ToleranceBinaryComponents:
-                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                    continueRoutine = True
-                    break  # at least one component has not yet finished
-            
-            # refresh the screen
-            if continueRoutine:
-                win.flip()
+                thisComponent.tStart = None
+                thisComponent.tStop = None
+                thisComponent.tStartRefresh = None
+                thisComponent.tStopRefresh = None
+                if hasattr(thisComponent, 'status'):
+                    thisComponent.status = NOT_STARTED
+            # reset timers
+            t = 0
+            _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+            ToleranceBinaryClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+            frameN = -1
 
-        # -------Ending Routine "ToleranceBinary"-------
-        print("CueOff Channel " + str(tolerance_binary))
-        for thisComponent in ToleranceBinaryComponents:
-            if hasattr(thisComponent, "setAutoDraw"):
-                thisComponent.setAutoDraw(False)
-        # store data for thisExp (ExperimentHandler)
-        thisExp.addData('ToleranceBinary.response', sliderValue)
-        thisExp.addData('ToleranceBinary.rt', timeNow-ToleranceBinary.tStart)
-        thisExp.nextEntry()
-        thisExp.addData('ToleranceBinary.started', ToleranceBinary.tStart)
-        thisExp.addData('ToleranceBinary.stopped', ToleranceBinary.tStop)
+            # -------Run Routine "ToleranceBinary"-------
+            onset = globalClock.getTime() - fmriStart           # Record onset time of the trial
+            while continueRoutine:
+                # get current time
+                t = ToleranceBinaryClock.getTime()
+                tThisFlip = win.getFutureFlipTime(clock=ToleranceBinaryClock)
+                tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+                frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+                # update/draw components on each frame
 
-        toleranceRating=sliderValue
-        # Adjust temperature down if the temperature is not tolerable
-        if toleranceRating<0 and currentTemp > minTemp:
-            currentTemp=currentTemp-.5
-            maxTemp = currentTemp
-        if toleranceRating<0 and currentTemp == minTemp:
-            # End the run
-            break
+                timeNow = globalClock.getTime()
+                if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                    mouseRel=ToleranceMouse.getRel()
+                    mouseX=oldMouseX + mouseRel[0]
 
-        bodyCalibration_bids_trial = []
-        bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, toleranceRating, bodySites[runs], currentTemp, 'Tolerance Rating', None))
-        bodyCalibration_bids.append(bodyCalibration_bids_trial)
+                if mouseX==0:
+                    ToleranceBinary.width = 0
+                else:
+                    if mouseX>0:
+                        ToleranceBinary.pos = (.28,0)
+                        sliderValue = 1 
+                    elif mouseX<0:
+                        ToleranceBinary.pos = (-.4,0)
+                        sliderValue = -1
+                    ToleranceBinary.width = .5
 
-        # the Routine "ToleranceBinary" was not non-slip safe, so reset the non-slip timer
-        routineTimer.reset()
+                timeAtLastInterval = timeNow
+                oldMouseX=mouseX
 
-        ########################## END SELF REPORT #######################################################
+                # *ToleranceMouse* updates
+                if ToleranceMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    ToleranceMouse.frameNStart = frameN  # exact frame index
+                    ToleranceMouse.tStart = t  # local t and not account for scr refresh
+                    ToleranceMouse.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(ToleranceMouse, 'tStartRefresh')  # time at next scr refresh
+                    ToleranceMouse.status = STARTED
+                    ToleranceMouse.mouseClock.reset()
+                    prevButtonState = ToleranceMouse.getPressed()  # if button is down already this ISN'T a new click
+                if ToleranceMouse.status == STARTED:  # only update if started and not finished!
+                    if tThisFlipGlobal > ToleranceMouse.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        ToleranceMouse.tStop = t  # not accounting for scr refresh
+                        ToleranceMouse.frameNStop = frameN  # exact frame index
+                        ToleranceMouse.status = FINISHED
+                    buttons = ToleranceMouse.getPressed()
+                    if buttons != prevButtonState:  # button state changed?
+                        prevButtonState = buttons
+                        if sum(buttons) > 0:  # state changed to a new click
+                            # abort routine on response
+                            continueRoutine = False
 
+                # *ToleranceBinary* updates
+                if ToleranceBinary.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    ToleranceBinary.frameNStart = frameN  # exact frame index
+                    ToleranceBinary.tStart = t  # local t and not account for scr refresh
+                    ToleranceBinary.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.callOnFlip(print, "Show Tolerance Binary")
+                    if biopac_exists == 1:
+                        win.callOnFlip(biopac.setData, biopac, 0)
+                        win.callOnFlip(biopac.setData, biopac, tolerance_binary)
+                    win.timeOnFlip(ToleranceBinary, 'tStartRefresh')  # time at next scr refresh
+                    ToleranceBinary.setAutoDraw(True)
+                if ToleranceBinary.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > ToleranceBinary.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        ToleranceBinary.tStop = t  # not accounting for scr refresh
+                        ToleranceBinary.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(ToleranceBinary, 'tStopRefresh')  # time at next scr refresh
+                        ToleranceBinary.setAutoDraw(False)
+                
+                # *ToleranceAnchors* updates
+                if ToleranceAnchors.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    ToleranceAnchors.frameNStart = frameN  # exact frame index
+                    ToleranceAnchors.tStart = t  # local t and not account for scr refresh
+                    ToleranceAnchors.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(ToleranceAnchors, 'tStartRefresh')  # time at next scr refresh
+                    ToleranceAnchors.setAutoDraw(True)
+                if ToleranceAnchors.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > ToleranceAnchors.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        ToleranceAnchors.tStop = t  # not accounting for scr refresh
+                        ToleranceAnchors.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(ToleranceAnchors, 'tStopRefresh')  # time at next scr refresh
+                        ToleranceAnchors.setAutoDraw(False)
+
+                # *TolerancePrompt* updates
+                if TolerancePrompt.status == NOT_STARTED and t >= 0.0-frameTolerance:
+                    # keep track of start time/frame for later
+                    TolerancePrompt.frameNStart = frameN  # exact frame index
+                    TolerancePrompt.tStart = t  # local t and not account for scr refresh
+                    TolerancePrompt.tStartRefresh = tThisFlipGlobal  # on global time
+                    win.timeOnFlip(TolerancePrompt, 'tStartRefresh')  # time at next scr refresh
+                    TolerancePrompt.setAutoDraw(True)
+                if TolerancePrompt.status == STARTED:
+                    # is it time to stop? (based on global clock, using actual start)
+                    if tThisFlipGlobal > TolerancePrompt.tStartRefresh + ratingTime-frameTolerance:
+                        # keep track of stop time/frame for later
+                        TolerancePrompt.tStop = t  # not accounting for scr refresh
+                        TolerancePrompt.frameNStop = frameN  # exact frame index
+                        win.timeOnFlip(TolerancePrompt, 'tStopRefresh')  # time at next scr refresh
+                        TolerancePrompt.setAutoDraw(False)
+
+                # Autoresponder
+                if t >= thisSimKey.rt and autorespond == 1:
+                    sliderValue = random.randint(-100,100)
+                    continueRoutine = False
+
+                # check for quit (typically the Esc key)
+                if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+                    core.quit()
+                
+                # check if all components have finished
+                if not continueRoutine:  # a component has requested a forced-end of Routine
+                    break
+                continueRoutine = False  # will revert to True if at least one component still running
+                for thisComponent in ToleranceBinaryComponents:
+                    if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                        continueRoutine = True
+                        break  # at least one component has not yet finished
+                
+                # refresh the screen
+                if continueRoutine:
+                    win.flip()
+
+            # -------Ending Routine "ToleranceBinary"-------
+            print("CueOff Channel " + str(tolerance_binary))
+            for thisComponent in ToleranceBinaryComponents:
+                if hasattr(thisComponent, "setAutoDraw"):
+                    thisComponent.setAutoDraw(False)
+            # store data for thisExp (ExperimentHandler)
+            thisExp.addData('ToleranceBinary.response', sliderValue)
+            thisExp.addData('ToleranceBinary.rt', timeNow-ToleranceBinary.tStart)
+            thisExp.nextEntry()
+            thisExp.addData('ToleranceBinary.started', ToleranceBinary.tStart)
+            thisExp.addData('ToleranceBinary.stopped', ToleranceBinary.tStop)
+
+            toleranceRating=sliderValue
+
+            bodyCalibration_bids_trial = []
+            bodyCalibration_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, toleranceRating, bodySites[runs], currentTemp, 'Tolerance Rating', None))
+            bodyCalibration_bids.append(bodyCalibration_bids_trial)
+
+            bodyCalibration_total_trial =[]
+            bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
+            bodyCalibration_bids_total.append(bodyCalibration_total_trial)
+
+            # Adjust temperature down if the temperature is not tolerable
+            if toleranceRating<0 and currentTemp > minTemp:
+                currentTemp=currentTemp-.5
+                maxTemp = currentTemp
+            if toleranceRating<0 and currentTemp == minTemp:
+                # End the run.
+                break
+
+            # the Routine "ToleranceBinary" was not non-slip safe, so reset the non-slip timer
+            routineTimer.reset()
+
+            ########################## END SELF REPORT #######################################################
 
     """
     17. Save data into .TSV formats and Tying up Loose Ends
     """ 
     bodyCalibration_bids_data = pd.DataFrame(bodyCalibration_bids, columns = ['onset', 'duration', 'repetition', 'rating', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'])
-    bodyCalibration_bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    bodyCalibration_bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
     bodyCalibration_bids_data.to_csv(bodyCalibration_bids_filename, sep="\t")
-
-    bodyCalibration_bids_total = bodyCalibration_bids_total.append(bodyCalibration_bids)
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run
@@ -1607,26 +1660,26 @@ for runs in range(len(bodySites)):
 """
 18. Saving data in BIDS
 """
-bids_filename = sub_dir + os.sep + u'sub-%05d_task-%s.tsv' % (int(expInfo['participant']), expName)
-bids_df=pd.DataFrame(pd.DataFrame(bodyCalibration_bids_total, columns = ['onset', 'duration', 'repetition', 'rating', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'])
+bids_filename = sub_dir + os.sep + u'sub-%05d_task-%s.tsv' % (int(expInfo['DBIC Number']), expName)
+bids_df=pd.DataFrame(pd.DataFrame(bodyCalibration_bids_total, columns = ['repetition', 'body_site', 'temperature', 'pain', 'intensity', 'tolerance']))
 bids_df.to_csv(bids_filename, sep="\t")
 
-averaged_filename = sub_dir + os.sep + u'sub-%05d_task-%s_participants.tsv' % (int(expInfo['participant']), expName)
-averaged_data.extend([expInfo['date'], expInfo['participant'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['gender'], expInfo['handedness'], calibrationOrder,
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1))]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].mean()), 
-                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].mean()),
-                    bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), 
-                    bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), 
-                    bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), 
-                    bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean(), bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1) & (bids_df['condition']=='Intensity Rating')]['rating'].mean()])
+averaged_filename = sub_dir + os.sep + u'sub-%05d_task-%s_participants.tsv' % (int(expInfo['DBIC Number']), expName)
+averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['gender'], expInfo['handedness'], bodySites,
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
+                    round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()),
+                    bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
+                    bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
+                    bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
+                    bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean()])
 
-averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','participant_id','age','dob','gender','handedness','calibration_order',
+averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','DBIC_id','age','dob','gender','handedness','calibration_order',
                                                     'leftarm_ht','rightarm_ht','leftleg_ht','rightleg_ht','leftface_ht','rightface_ht','chest_ht','abdomen_ht',
                                                     'leftarm_i','rightarm_i','leftleg_i','rightleg_i','leftface_i','rightface_i','chest_i','abdomen_i'])
 averaged_df.to_csv(averaged_filename, sep="\t")
@@ -1645,10 +1698,11 @@ thisExp.saveAsPickle(psypy_filename)
 logging.flush()
 # make sure everything is closed down
 
-if bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].count()==0:
+# If there are no left face or right leg trials other than the first that are painful yet tolerable, then calibration has failed. 
+if bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study."
 
-if bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['hot_temp'].count()==0:
+if bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study."
 
 message = visual.TextStim(win, text=end_msg, height=0.05, units='height')
