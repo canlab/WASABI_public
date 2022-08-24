@@ -18,22 +18,22 @@ Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) fil
 Following this format:
 all data headers are in lower snake_case.
 
-The paradigm will generate 8x of these files of name:
-sub-SIDXXXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
-
-Trials per file are defined by the following headers:
-onset   duration    trial_type  body_site   temp
-
-after every stimulation there will be rows for:
-[x] "Was that painful?"
-[x] "How intense was the heat stimulation?" (Bartoshuk gLMS)
-[x] "Was it tolerable, and can you take more of that heat?"
-
 The design is as follows:
 1. Start with a 48 degree stimulation trial (to be thrown away)
 2. If not painful, increase the temperature by .5 degrees (max at 48.5)
 3. If intolerable, then reduce the temperature by .5 degrees and set that new temperature as the maximum temperature for the bodysite.
 4. Average the ratings of the 6 subsequent trials
+
+after every stimulation there will be questions (and rows in the data file) for:
+[x] "Was that painful?"
+[x] "How intense was the heat stimulation?" (Bartoshuk gLMS)
+[x] "Was it tolerable, and can you take more of that heat?"
+
+The paradigm will generate 8x of these files of name:
+sub-SIDXXXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
+
+Trials per file are defined by the following headers:
+'onset', 'duration', 'repetition', 'rating', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'
 
 0a. Import Libraries
 """
@@ -772,13 +772,13 @@ for runs in range(len(bodySites)):
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         if not jitter2:
-            jitter1 = random.choice([3,5,7])
-        elif jitter2 == 3:
-            jitter1 = 7
-        elif jitter2 == 5:
-            jitter1 = 5
-        elif jitter2 == 7:
-            jitter1 = 3
+            jitter1 = random.choice([12.5,25,37.5])
+        elif jitter2 == 12.5:
+            jitter1 = 37.5
+        elif jitter2 == 25:
+            jitter1 = 25
+        elif jitter2 == 37.5:
+            jitter1 = 12.5
 
         if debug==1:
             jitter1=1
@@ -953,7 +953,7 @@ for runs in range(len(bodySites)):
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        jitter2 = random.choice([3,5,7])
+        jitter2 = random.choice([12.5,25,37.5])
 
         if debug==1:
             jitter1=1
