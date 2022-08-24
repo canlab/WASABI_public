@@ -19,7 +19,7 @@ Following this format:
 all data headers are in lower snake_case.
 
 The paradigm will generate 8x of these files of name:
-sub-XXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
+sub-SIDXXXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
 
 Trials per file are defined by the following headers:
 onset   duration    trial_type  body_site   temp
@@ -352,11 +352,11 @@ with open("thermode1_programs.txt") as f:
 """
 4. Prepare files to write
 """
-sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
+sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-psypy_filename = os.path.join(sub_dir, '%05d_%s_%s' % (int(expInfo['DBIC Number']), expName, expInfo['date']))
+psypy_filename = os.path.join(sub_dir, 'SID%06d_%s_%s' % (int(expInfo['DBIC Number']), expName, expInfo['date']))
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -1635,7 +1635,7 @@ for runs in range(len(bodySites)):
     17. Save data into .TSV formats and Tying up Loose Ends
     """ 
     bodyCalibration_bids_data = pd.DataFrame(bodyCalibration_bids, columns = ['onset', 'duration', 'repetition', 'rating', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'])
-    bodyCalibration_bids_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    bodyCalibration_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
     bodyCalibration_bids_data.to_csv(bodyCalibration_bids_filename, sep="\t")
 
     """
@@ -1660,11 +1660,11 @@ for runs in range(len(bodySites)):
 """
 18. Saving data in BIDS
 """
-bids_filename = sub_dir + os.sep + u'sub-%05d_task-%s.tsv' % (int(expInfo['DBIC Number']), expName)
+bids_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s.tsv' % (int(expInfo['DBIC Number']), expName)
 bids_df=pd.DataFrame(pd.DataFrame(bodyCalibration_bids_total, columns = ['repetition', 'body_site', 'temperature', 'pain', 'intensity', 'tolerance']))
 bids_df.to_csv(bids_filename, sep="\t")
 
-averaged_filename = sub_dir + os.sep + u'sub-%05d_task-%s_participants.tsv' % (int(expInfo['DBIC Number']), expName)
+averaged_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s_participants.tsv' % (int(expInfo['DBIC Number']), expName)
 averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['gender'], expInfo['handedness'], bodySites,
                     round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
                     round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
