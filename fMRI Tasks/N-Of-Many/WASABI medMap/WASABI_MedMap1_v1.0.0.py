@@ -23,7 +23,7 @@ This paradigm is run as 2 parts of a MedMap paradigm for 2 body sites: Left Face
 One day will consist of 8 total runs of either Left Face or Right Leg interchanging between each run. Each run will feature 6 heat trials at 49 degrees C. 
 
 As a consequence, in one day, correct running of these paradigms will generate 8x files of the names:
-sub-XXXXX_ses-XX_task-MedMap1_acq-[bodySite]_run-X_events.tsv
+sub-SIDXXXXX_ses-XX_task-MedMap1_acq-[bodySite]_run-X_events.tsv
 
 Each file will consist of the following headers:
 onset   duration    intensity   bodySite    temperature condition   pretrial-jitter
@@ -64,6 +64,8 @@ except ImportError:
     OrderedDict=dict
 
 import random
+from datetime import datetime
+
 
 __author__ = "Michael Sun"
 __version__ = "1.0.0"
@@ -77,7 +79,7 @@ Set to 1 during development, 0 during production
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 class simKeys:
@@ -110,6 +112,22 @@ def rescale(self, width=0, height=0, operation='', units=None, log=True):
     self.setSize([width,height],operation,units,log)
  
 visual.ImageStim.rescale = rescale
+
+
+def round_down(num, divisor):
+    return num-(num%divisor)
+
+# For setting the calibrated average heat
+def round_to(n, precision):
+    correction = 0.5 if n >= 0 else -0.5
+    # check if n is nan before casting to int
+    try:
+        return int( n/precision+correction ) * precision
+    except:
+        return np.nan
+
+def round_to_halfdegree(n):
+    return round_to(n, 0.5)
 
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
@@ -243,8 +261,8 @@ psychopyVersion = '2020.2.10'
 expName = 'MedMap_conditioning'  # from the Builder filename that created this script
 if debug == 1:
     expInfo = {
-    'subject number': '99',
-    'first(1) or second(2) half': '1',
+    'DBIC Number': '99',
+    'first(1) or second(2) half': 1,
     'gender': 'm',
     'session': '99',
     'handedness': 'r', 
@@ -253,7 +271,7 @@ if debug == 1:
     }
 else:
     expInfo = {
-    'subject number': '',
+    'DBIC Number': '',
     'first(1) or second(2) half': '', 
     'gender': '',
     'session': '',
@@ -277,14 +295,14 @@ participant_settingsHeat = {
 # Load the subject's calibration file and ensure that it is valid
 if debug==1:
     participant_settingsHeat = {
-        'Left Face': 49,
-        'Right Face': 49,
-        'Left Arm': 49,
-        'Right Arm': 49,
-        'Left Leg': 49,
-        'Right Leg': 49,
-        'Chest': 49,
-        'Abdomen': 49
+        'Left Face': 48.5,
+        'Right Face': 48.5,
+        'Left Arm': 48.5,
+        'Right Arm': 48.5,
+        'Left Leg': 48.5,
+        'Right Leg': 48.5,
+        'Chest': 48.5,
+        'Abdomen': 48.5
     }
 else:
     dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-bodyCalibration_participants.tsv)", allowed="Calibration files (*.tsv)")
@@ -357,7 +375,7 @@ bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', '
 
 # bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
 
-if expInfo['DBIC Number'] % 2==0:
+if int(expInfo['DBIC Number'])%2==0:
     bodySites=bodySites1
 else:
     bodySites=bodySites2
@@ -540,7 +558,7 @@ PainAnchors = visual.ImageStim(
     image= os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]),
     name='PainQuestion', 
     mask=None,
-    ori=0, pos=(0, -.09), size=(1.5, .4),
+    ori=0, pos=(0, 0), size=(1, .25),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=512, interpolate=True, depth=0.0)
@@ -1001,9 +1019,9 @@ for runs in runhalf:
     _BodySiteInstructionRead_allKeys = []
     # Update instructions and cues based on current run's body-sites:
     if runs == 0 or runs == 1 or runs==6 or runs==7:
-        BodySiteInstructionText.text="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n and prepare the site for stimulation."
+        BodySiteInstructionText.text="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Prepare the site for stimulation"
     else:
-        BodySiteInstructionText.text="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n and apply the Lidoderm analgesic cream."
+        BodySiteInstructionText.text="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Apply the Lidoderm analgesic cream"
     # keep track of which components have finished
     BodySiteInstructionComponents = [BodySiteInstructionText, BodySiteImg, BodySiteInstructionRead]
 
@@ -1136,6 +1154,7 @@ for runs in runhalf:
                 s_confirm = visual.TextStim(win, text=s_text, height =.05, color="green", pos=(0.0, -.3))
                 start.draw()
                 s_confirm.draw()
+                win.flip()
                 event.clearEvents()
                 while continueRoutine == True:
                     if '5' in event.getKeys(keyList = '5'): # fMRI trigger
@@ -1156,7 +1175,7 @@ for runs in runhalf:
     BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
     routineTimer.reset()
 
-    ## Conditioning parameters; Ideally this should be read from the participant file 
+    ## Conditioning parameters; Ideally this should be read from the participanst file 
     if runs==0 or runs==1:
         temperature = participant_settingsHeat[bodySites[runs]]
         thermodeCommand=thermode1_temp2program[temperature]
@@ -1168,7 +1187,7 @@ for runs in runhalf:
         ConditionName="Placebo"
         # Warm and not hot temperature
     if runs==4 or runs==5 or runs==6 or runs==7:
-        temperature=participant_settingsHeat[bodySites[runs]]-((participant_settingsHeat[bodySites[runs]]-44)/2)
+        temperature=round_to_halfdegree(participant_settingsHeat[bodySites[runs]]-((participant_settingsHeat[bodySites[runs]]-44)/2))
         thermodeCommand=thermode1_temp2program[temperature] # midway between max and 44 warm
         if runs==4 or runs==5:
             ConditionName="Placebo"
@@ -1227,7 +1246,9 @@ for runs in runhalf:
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        if not jitter2:
+        if not jitter2 and r == 0:
+            jitter1 = random.choice([3,5,7])
+        if not jitter2 and r != 0:
             jitter1 = random.choice([58,60,62])
         elif jitter2 == 3:
             jitter1 = 62
