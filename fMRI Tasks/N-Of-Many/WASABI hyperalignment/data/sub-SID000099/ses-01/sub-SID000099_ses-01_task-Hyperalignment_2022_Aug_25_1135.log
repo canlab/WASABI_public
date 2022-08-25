@@ -1,0 +1,64 @@
+9.7763 	WARNING 	User requested fullscreen with size [1920 1080], but screen is actually [1200, 1920]. Using actual size
+15.0510 	WARNING 	Couldn't measure a consistent frame rate.
+  - Is your graphics card set to sync to vertical blank?
+  - Are you running other processes on your computer?
+
+17.3524 	EXP 	Created Begin = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color='white', colorSpace='named', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='Begin', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=array([255., 255., 255.]), text=str(...), units='height', win=Window(...), wrapWidth=1)
+17.7422 	EXP 	window1: recordFrameIntervals = False
+17.9050 	EXP 	window1: recordFrameIntervals = True
+18.0887 	EXP 	window1: recordFrameIntervals = True
+18.0896 	EXP 	Created movie = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename=str(...), flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='movie', noAudio=False, opacity=1.0, ori=method-wrapper(...), pos=array([0., 0.]), size=method-wrapper(...), units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+23.4595 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.3, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=array([1., 1., 1.]), text='+', units='height', win=Window(...), wrapWidth=1)
+23.4599 	EXP 	window1: mouseVisible = False
+23.5104 	WARNING 	t of last frame was 5422.00ms (=1/0)
+23.5104 	EXP 	movie: autoLog = True
+23.5104 	EXP 	movie: movie = 'c:\\Users\\Admin\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\N-Of-Many\\WASABI hyperalignment\\..\\..\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv'
+23.5104 	EXP 	movie: size = array([1024.,  800.])
+23.5104 	EXP 	movie: ori = 0
+23.5104 	EXP 	Begin: autoDraw = True
+23.5394 	WARNING 	t of last frame was 28.96ms (=1/34)
+23.5687 	WARNING 	t of last frame was 29.34ms (=1/34)
+23.5960 	WARNING 	t of last frame was 27.23ms (=1/36)
+23.6237 	WARNING 	Multiple dropped frames have occurred - I'll stop bothering you about them!
+26.9591 	DATA 	Mouse: Left button down, pos=(369,963)
+27.0780 	DATA 	Mouse:  Left button up, pos=(369,963)
+27.2233 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+27.2244 	EXP 	New trial (rep=0, index=0): OrderedDict([('runSeq', [OrderedDict([('moviefile', 'c:\\Users\\Admin\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\N-Of-Many\\WASABI hyperalignment\\..\\..\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv')])])])
+27.2250 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+27.2257 	EXP 	New trial (rep=0, index=0): OrderedDict([('moviefile', 'c:\\Users\\Admin\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\N-Of-Many\\WASABI hyperalignment\\..\\..\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv')])
+27.3761 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=array([-0.5, -0.5, -0.5]), text=str(...), units='height', win=Window(...), wrapWidth=1)
+27.3809 	DATA 	Keypress: space
+27.3883 	EXP 	Begin: autoDraw = False
+28.0209 	DATA 	Keypress: s
+28.0477 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color='green', colorSpace='named', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([ 0. , -0.3]), rgb=array([  0., 128.,   0.]), text='[s]-press confirmed.', units='height', win=Window(...), wrapWidth=1)
+29.3247 	DATA 	Keypress: space
+30.7770 	DATA 	Keypress: 5
+33.3391 	DATA 	Keypress: 5
+33.3422 	DATA 	Keypress: 5
+33.3427 	DATA 	Keypress: 5
+33.3432 	DATA 	Keypress: 5
+33.3436 	DATA 	Keypress: 5
+33.3440 	DATA 	Keypress: 5
+33.3443 	DATA 	Keypress: 5
+33.3447 	DATA 	Keypress: 5
+33.3450 	DATA 	Keypress: 5
+33.3455 	DATA 	Keypress: 5
+33.3459 	DATA 	Keypress: 5
+33.3462 	DATA 	Keypress: 5
+33.3466 	DATA 	Keypress: 5
+33.3469 	DATA 	Keypress: 5
+33.3473 	DATA 	Keypress: 5
+33.4665 	DATA 	Keypress: 5
+33.5387 	EXP 	Sound  started
+33.5843 	EXP 	movie: autoDraw = True
+33.6875 	DATA 	Keypress: 5
+40.9245 	DATA 	Mouse: Left button down, pos=(457,864)
+40.9996 	DATA 	Mouse:  Left button up, pos=(457,864)
+453.6339 	EXP 	Sound  reached end of file
+453.7031 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=array([1., 1., 1.]), text=str(...), units='height', win=Window(...), wrapWidth=1)
+453.7173 	EXP 	movie: autoDraw = False
+465.6174 	DATA 	Mouse: Left button down, pos=(606,831)
+465.7034 	DATA 	Mouse:  Left button up, pos=(606,831)
+466.3627 	DATA 	Keypress: e
+466.8453 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=array([1., 1., 1.]), text=str(...), units='height', win=Window(...), wrapWidth=1)
+467.0663 	EXP 	window1: mouseVisible = True

@@ -19,13 +19,13 @@ Following this format:
 all data headers are in lower snake_case.
 
 The paradigm will generate 8x of these files of name:
-sub-XX_task-Nback_run-X_events.tsv
+sub-SIDXXXXXX_task-hyperalignment_run-X_events.tsv
 
 42x trials per file with the following
 
 headers:
-onset   duration    trial_type  body_site
-3124
+onset   duration    trial_type
+
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
 pip uninstall pyglet
@@ -108,7 +108,6 @@ task_ID=4
 hyperalignment_intro = 212
 kungfury=213
 inscapes=214
-resting_state=215
 between_run_msg=45
 
 if biopac_exists == 1:
@@ -148,7 +147,28 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
-video_dir = main_dir + os.sep + "stimuli" + os.sep + "videos"
+video_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'WASABI hyperalignment', 'stimuli', 'videos')
+
+
+"""
+If there's an input argument
+"""
+
+# if len(sys.argv) > 1:
+#     newPath = sys.argv[1]
+#     print(newPath)
+#     os.chdir(newPath)
+#     _thisDir = newPath
+
+# if len(sys.argv) > 2:
+#     subnum = sys.argv[2]
+#     expInfo['DBIC number'] = subnum
+
+# #make sure and update the path to the data file
+# filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
+
+
+
 
 """
 2. Start Experimental Dialog Boxes
@@ -158,7 +178,7 @@ video_dir = main_dir + os.sep + "stimuli" + os.sep + "videos"
 psychopyVersion = '2020.2.10'
 expName = 'Hyperalignment'  # from the Builder filename that created this script
 expInfo = {
-'subject number': '1', 
+'subject number': '99', 
 'gender': 'm',
 'session': '1',
 'handedness': 'r', 
@@ -206,22 +226,24 @@ else:
 4. Prepare Experimental Dictionaries for Movies
 """
 movieOrder = [OrderedDict([('runSeq',
-            [OrderedDict([('moviefile', os.path.join(video_dir,'kungfury.mp4'))]),
+            [
+            # OrderedDict([('moviefile', os.path.join(video_dir,'kungfury.mp4'))]),
             OrderedDict([('moviefile', os.path.join(video_dir,'01_Inscapes_NoScannerSound_h264.wmv'))])
             ] 
         )])
         ]
-movie_code = [kungfury, inscapes]
+movie_code = [ # kungfury, 
+                inscapes]
 
 restingstate_time = 420     # 7 minutes
 
 """
 5. Prepare files to write
 """
-sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-psypy_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_%s' % (int(expInfo['subject number']), int(expInfo['session']), expName, expInfo['date'])
+psypy_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_%s' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -243,6 +265,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 """
 # General Instructional Text
 start_msg = 'Please wait. \nThe scan will begin shortly. Please do not move your head. \n Experimenter press [s] to continue.'
+s_text='[s]-press confirmed.'
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Remember to please not move your head. \n Experimenter press [e] to continue.'
 end_msg = 'Thank you for your participation. Please wait for the Experimenter.'
 
@@ -271,20 +294,19 @@ MovieClock = core.Clock()
 # inscapes_file = os.path.join(video_dir, '01_Inscapes_NoScannerSound_h264.wmv')
 
 # Preload Movies
-movie1 = visual.MovieStim3(
-    win=win, name='movie',
-    noAudio = False,
-    filename=movieOrder[0]['runSeq'][0]['moviefile'],
-    # filename='C:\\Users\\Michael\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\WASABI_Main\\hyperalignment\\videos\\practice_videos\\design\\Duck plays dead CUT.mp4',
-    ori=0, pos=(0, 0), opacity=1,
-    loop=False,
-    depth=-1.0
-    )
+# movie1 = visual.MovieStim3(
+#     win=win, name='movie',
+#     noAudio = False,
+#     filename=movieOrder[0]['runSeq'][0]['moviefile'],
+#     # filename='C:\\Users\\Michael\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\WASABI_Main\\hyperalignment\\videos\\practice_videos\\design\\Duck plays dead CUT.mp4',
+#     ori=0, pos=(0, 0), opacity=1,
+#     loop=False,
+#     depth=-1.0
+#     )
 movie2 = visual.MovieStim3(
     win=win, name='movie',
     noAudio = False,
-    filename=movieOrder[0]['runSeq'][1]['moviefile'],
-    # filename='C:\\Users\\Michael\\Dropbox (Dartmouth College)\\CANLab Projects\\WASABI\\Paradigms\\WASABI_Main\\hyperalignment\\videos\\practice_videos\\design\\Duck plays dead CUT.mp4',
+    filename=movieOrder[0]['runSeq'][0]['moviefile'],
     ori=0, pos=(0, 0), opacity=1,
     loop=False,
     depth=-1.0
@@ -297,7 +319,9 @@ movie2 = visual.MovieStim3(
 #     flipVert=False, flipHoriz=False,
 #     loop=False)
 
-movies = [movie1, movie2]
+# movies = [movie1, movie2]
+
+movies = [movie2]
 
 RestingStateClock = core.Clock()
 fix_cross = visual.TextStim(win = win, text = '+', color = [1,1,1], height = 0.3)
@@ -484,6 +508,10 @@ for thisRunLoop in runLoop:
         if autorespond != 1:
             # Trigger
             event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
+            s_confirm = visual.TextStim(win, text=s_text, height =.05, color="green", pos=(0.0, -.3))
+            start.draw()
+            s_confirm.draw()
+            win.flip()
             event.waitKeys(keyList='5')   # fMRI trigger
             fmriStart = globalClock.getTime()
             TR = 0.46
@@ -596,7 +624,7 @@ for thisRunLoop in runLoop:
         """
         9. Save Run File
         """
-        bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, str(trialLoop.thisTrialN+1))
+        bids_run_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, str(trialLoop.thisTrialN+1))
         hyperalignment_bids_data = pd.DataFrame(hyperalignment_bids_data, columns = ['onset','duration','condition'])
         hyperalignment_bids_data.to_csv(bids_run_filename, sep="\t")
 
@@ -618,124 +646,125 @@ for thisRunLoop in runLoop:
     
 # # completed 1 repeats of 'runLoop'
 
-"""
-8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
-"""
-###############################################################################################
-# Experimenter fMRI Start Instruction ____________________________________________________
-###############################################################################################
-start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
-start.draw()  # Automatically draw every frame
-win.flip()
-fmriStart = globalClock.getTime()
-if autorespond != 1:
-    # Trigger
-    event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
-    event.waitKeys(keyList='5')   # fMRI trigger
-    fmriStart = globalClock.getTime()
-    TR = 0.46
-    core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
-hyperalignment_bids_data = []
-"""
-8f. Resting State
-"""
-# ------Prepare to start Routine "RestingState"-------
-continueRoutine = True
-routineTimer.reset()
-if debug == 1:
-    restingstate_time=10 
+# """
+# Resting State Scan
+# """
 
-routineTimer.add(restingstate_time)
-# update component parameters for each repeat
-# keep track of which components have finished
-RestingStateComponents = [fix_cross]
-for thisComponent in RestingStateComponents:
-    thisComponent.tStart = None
-    thisComponent.tStop = None
-    thisComponent.tStartRefresh = None
-    thisComponent.tStopRefresh = None
-    if hasattr(thisComponent, 'status'):
-        thisComponent.status = NOT_STARTED
-# reset timers
-t = 0
-_timeToFirstFrame = win.getFutureFlipTime(clock="now")
-RestingStateClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-frameN = -1
+# """
+# 8e. Prepare the scanner trigger, set clock(s), and wait for dummy scans
+# """
+# ###############################################################################################
+# # Experimenter fMRI Start Instruction ____________________________________________________
+# ###############################################################################################
+# start = visual.TextStim(win, text=start_msg, height=.05, color=win.rgb + 0.5)
+# start.draw()  # Automatically draw every frame
+# win.flip()
+# fmriStart = globalClock.getTime()
+# if autorespond != 1:
+#     # Trigger
+#     event.waitKeys(keyList = 's') # experimenter start key - safe key before fMRI trigger
+#     event.waitKeys(keyList='5')   # fMRI trigger
+#     fmriStart = globalClock.getTime()
+#     TR = 0.46
+#     core.wait(TR*6)         # Wait 6 TRs, Dummy Scans
 
-# -------Run Routine "RestingState"-------
-onset = globalClock.getTime() - fmriStart 
-while continueRoutine and routineTimer.getTime() > 0:
-    # get current time
-    t = RestingStateClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=RestingStateClock)
-    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-    # update/draw components on each frame
+# hyperalignment_bids_data = []
+# """
+# 8f. Resting State
+# """
+# # ------Prepare to start Routine "RestingState"-------
+# continueRoutine = True
+# routineTimer.reset()
+# if debug == 1:
+#     restingstate_time=10 
+
+# routineTimer.add(restingstate_time)
+# # update component parameters for each repeat
+# # keep track of which components have finished
+# RestingStateComponents = [fix_cross]
+# for thisComponent in RestingStateComponents:
+#     thisComponent.tStart = None
+#     thisComponent.tStop = None
+#     thisComponent.tStartRefresh = None
+#     thisComponent.tStopRefresh = None
+#     if hasattr(thisComponent, 'status'):
+#         thisComponent.status = NOT_STARTED
+# # reset timers
+# t = 0
+# _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+# RestingStateClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+# frameN = -1
+
+# # -------Run Routine "RestingState"-------
+# onset = globalClock.getTime() - fmriStart 
+# while continueRoutine and routineTimer.getTime() > 0:
+#     # get current time
+#     t = RestingStateClock.getTime()
+#     tThisFlip = win.getFutureFlipTime(clock=RestingStateClock)
+#     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+#     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+#     # update/draw components on each frame
     
-    # *fix_cross* updates
-    if fix_cross.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        fix_cross.frameNStart = frameN  # exact frame index
-        fix_cross.tStart = t  # local t and not account for scr refresh
-        fix_cross.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(fix_cross, 'tStartRefresh')  # time at next scr refresh
-        if biopac_exists:
-            win.callOnFlip(biopac.setData, biopac, 0)
-            win.callOnFlip(biopac.setData, biopac, resting_state)
-        fix_cross.setAutoDraw(True)
-    if fix_cross.status == STARTED:
-        # is it time to stop? (based on global clock, using actual start)
-        if tThisFlipGlobal > fix_cross.tStartRefresh + restingstate_time-frameTolerance:
-            # keep track of stop time/frame for later
-            fix_cross.tStop = t  # not accounting for scr refresh
-            fix_cross.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(fix_cross, 'tStopRefresh')  # time at next scr refresh
-            fix_cross.setAutoDraw(False)
+#     # *fix_cross* updates
+#     if fix_cross.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+#         # keep track of start time/frame for later
+#         fix_cross.frameNStart = frameN  # exact frame index
+#         fix_cross.tStart = t  # local t and not account for scr refresh
+#         fix_cross.tStartRefresh = tThisFlipGlobal  # on global time
+#         win.timeOnFlip(fix_cross, 'tStartRefresh')  # time at next scr refresh
+#         if biopac_exists:
+#             win.callOnFlip(biopac.setData, biopac, 0)
+#             win.callOnFlip(biopac.setData, biopac, resting_state)
+#         fix_cross.setAutoDraw(True)
+#     if fix_cross.status == STARTED:
+#         # is it time to stop? (based on global clock, using actual start)
+#         if tThisFlipGlobal > fix_cross.tStartRefresh + restingstate_time-frameTolerance:
+#             # keep track of stop time/frame for later
+#             fix_cross.tStop = t  # not accounting for scr refresh
+#             fix_cross.frameNStop = frameN  # exact frame index
+#             win.timeOnFlip(fix_cross, 'tStopRefresh')  # time at next scr refresh
+#             fix_cross.setAutoDraw(False)
     
-    # check for quit (typically the Esc key)
-    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-        core.quit()
+#     # check for quit (typically the Esc key)
+#     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+#         core.quit()
     
-    # check if all components have finished
-    if not continueRoutine:  # a component has requested a forced-end of Routine
-        break
-    continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in RestingStateComponents:
-        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-            continueRoutine = True
-            break  # at least one component has not yet finished
+#     # check if all components have finished
+#     if not continueRoutine:  # a component has requested a forced-end of Routine
+#         break
+#     continueRoutine = False  # will revert to True if at least one component still running
+#     for thisComponent in RestingStateComponents:
+#         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+#             continueRoutine = True
+#             break  # at least one component has not yet finished
     
-    # refresh the screen
-    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-        win.flip()
+#     # refresh the screen
+#     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+#         win.flip()
 
-# -------Ending Routine "RestingState"-------
-if biopac_exists:
-    biopac.setData(biopac, 0)
-for thisComponent in RestingStateComponents:
-    if hasattr(thisComponent, "setAutoDraw"):
-        thisComponent.setAutoDraw(False)
-thisExp.addData('fix_cross.started', fix_cross.tStartRefresh)
-thisExp.addData('fix_cross.stopped', fix_cross.tStopRefresh)
-hyperalignment_trial = []
-hyperalignment_trial.extend((onset, t, "RestingState"))
-hyperalignment_bids_data.append(hyperalignment_trial)
+# # -------Ending Routine "RestingState"-------
+# if biopac_exists:
+#     biopac.setData(biopac, 0)
+# for thisComponent in RestingStateComponents:
+#     if hasattr(thisComponent, "setAutoDraw"):
+#         thisComponent.setAutoDraw(False)
+# thisExp.addData('fix_cross.started', fix_cross.tStartRefresh)
+# thisExp.addData('fix_cross.stopped', fix_cross.tStopRefresh)
+# hyperalignment_trial = []
+# hyperalignment_trial.extend((onset, t, "RestingState"))
+# hyperalignment_bids_data.append(hyperalignment_trial)
 
-thisExp.nextEntry()
-routineTimer.reset()
+# thisExp.nextEntry()
+# routineTimer.reset()
 
-# Flip one final time so any remaining win.callOnFlip() 
-# and win.timeOnFlip() tasks get executed before quitting
-win.flip()
+# # Flip one final time so any remaining win.callOnFlip() 
+# # and win.timeOnFlip() tasks get executed before quitting
+# win.flip()
 
 """
-9. Save data into BIDS .TSV, Excel and .CSV formats and Tying up Loose Ends
+9. Tying up Loose Ends
 """ 
-bids_run_filename = sub_dir + os.sep + u'sub-%05d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['subject number']), int(expInfo['session']), expName, '3')
-hyperalignment_bids_data = pd.DataFrame(hyperalignment_bids_data, columns = ['onset','duration','condition'])
-hyperalignment_bids_data.to_csv(bids_run_filename, sep="\t")
-
 # these shouldn't be strictly necessary (should auto-save)
 thisExp.saveAsWideText(psypy_filename+'.csv', delim='auto')
 thisExp.saveAsPickle(psypy_filename)
