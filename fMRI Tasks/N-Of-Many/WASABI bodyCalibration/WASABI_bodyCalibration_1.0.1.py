@@ -21,6 +21,7 @@ all data headers are in lower snake_case.
 The design is as follows:
 1. Start with a 48 degree stimulation trial (to be thrown away)
 2. If not painful, increase the temperature by .5 degrees (max at 48.5)
+3. If tolerable, then increase the temperature by .5 degrees (max at 48.5)
 3. If intolerable, then reduce the temperature by .5 degrees and set that new temperature as the maximum temperature for the bodysite.
 4. Average the ratings of the 6 subsequent trials
 
@@ -34,6 +35,8 @@ sub-SIDXXXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
 
 Trials per file are defined by the following headers:
 'onset', 'duration', 'repetition', 'rating', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'
+
+With version 1.02, the stimulation duration was extended to 20 seconds.
 
 0a. Import Libraries
 """
@@ -69,7 +72,7 @@ import random
 from datetime import datetime
 
 __author__ = "Michael Sun"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -390,7 +393,8 @@ in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Exp
 end_msg = 'Please wait for instructions from the experimenter'
 
 totalTrials = 7 # Figure out how many trials would be equated to 5 minutes
-stimtrialTime = 20 # This becomes very unreliable with the use of poll_for_change().
+# Attribute 5 seconds to rampup and rampdown time
+stimtrialTime = 25 # This becomes very unreliable with the use of poll_for_change().
 
 if debug == 1:
     stimtrialTime = 1 # This becomes very unreliable with the use of poll_for_change().
@@ -771,14 +775,16 @@ for runs in range(len(bodySites)):
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        if not jitter2:
-            jitter1 = random.choice([12.5,25,37.5])
-        elif jitter2 == 12.5:
-            jitter1 = 37.5
-        elif jitter2 == 25:
-            jitter1 = 25
-        elif jitter2 == 37.5:
-            jitter1 = 12.5
+        if not jitter2 and r == 0:
+            jitter1 = random.choice([3,5,7])
+        if not jitter2 and r != 0:
+            jitter1 = random.choice([58,60,62])
+        elif jitter2 == 3:
+            jitter1 = 62
+        elif jitter2 == 5:
+            jitter1 = 60
+        elif jitter2 == 7:
+            jitter1 = 58
 
         if debug==1:
             jitter1=1
@@ -953,7 +959,7 @@ for runs in range(len(bodySites)):
         """
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
-        jitter2 = random.choice([12.5,25,37.5])
+        jitter2 = random.choice([3,5,7])
 
         if debug==1:
             jitter1=1
@@ -1618,6 +1624,9 @@ for runs in range(len(bodySites)):
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
             bodyCalibration_bids_total.append(bodyCalibration_total_trial)
 
+            # Update Temperature if Tolerance Binary is 1
+            if toleranceRating>0 and currentTemp < maxTemp:
+                currentTemp=currentTemp+.5
             # Adjust temperature down if the temperature is not tolerable
             if toleranceRating<0 and currentTemp > minTemp:
                 currentTemp=currentTemp-.5
@@ -1628,6 +1637,8 @@ for runs in range(len(bodySites)):
 
             # the Routine "ToleranceBinary" was not non-slip safe, so reset the non-slip timer
             routineTimer.reset()
+
+            rating_sound.stop() # I think sounds have to stopped before they can be played again.
 
             ########################## END SELF REPORT #######################################################
 

@@ -23,7 +23,7 @@ This paradigm is run as 2 parts of a MedMap paradigm for 2 body sites: Left Face
 One day will consist of 8 total runs of either Left Face or Right Leg interchanging between each run. Each run will feature 6 heat trials at 49 degrees C. 
 
 As a consequence, in one day, correct running of these paradigms will generate 8x files of the names:
-sub-SIDXXXXX_ses-XX_task-MedMap1_acq-[bodySite]_run-X_events.tsv
+sub-SIDXXXXX_ses-XX_task-medmap_acq-[bodySite]_run-X_events.tsv
 
 Each file will consist of the following headers:
 onset   duration    intensity   bodySite    temperature condition   pretrial-jitter
@@ -40,6 +40,7 @@ from __future__ import absolute_import, division
 
 from psychopy import locale_setup
 from psychopy import prefs
+prefs.hardware['audioLib'] = ['PTB'] # Set a preferred audio library to PsychToolBox (best), so psychopy doesn't yell at you.
 from psychopy import sound, gui, visual, core, data, event, logging, clock
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
@@ -66,6 +67,33 @@ except ImportError:
 import random
 from datetime import datetime
 
+from WASABI_psychopy_utilities import *
+
+
+##### Master Controller Paradigm #####
+
+## Try this
+# import WASABI_hyperalignment
+# import WASABI_pinelLocalizer
+# import WASABI_distractmap
+
+if __name__ == '__main__':
+    arg1 = u"Hey "
+    arg2 = u"Steve."
+
+    result1 = hyperalignment.run(arg1, arg2)
+
+    arg3 = u" How're "
+    arg4 = u"you?"
+
+    result2 = pinellocalizer.run(result1, arg1, arg2)
+    print(result2)
+
+## This is a less good solution
+# os.chdir('experiment2')
+# execfile('blah.py')
+
+#####
 
 __author__ = "Michael Sun"
 __version__ = "1.0.0"
@@ -139,12 +167,6 @@ def round_to_halfdegree(n):
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 #     Another command that may work: biopac.setData(byte)
 
-# biopac channels EDIT
-
-# Set this later
-# task_ID=8   # If experience
-# task_ID=9  # If regulate
-
 task_ID=2
 task_start=7
 
@@ -172,6 +194,12 @@ self_rating = 207
 other_rating = 208
 imagery_rating = 209
 present_rating = 210
+
+# Hyperalignment movie
+hyperalignment_intro = 212
+inscapes=214
+
+# Pinel Localizer
 
 between_run_msg=45
 
@@ -223,7 +251,6 @@ if thermode_exists == 1:
     # Make sure medocControl.py is in the same directory 
     from medocControl import *
 
-
 """
 1. Experimental Parameters
 Clocks, paths, etc.
@@ -237,74 +264,52 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
+video_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'WASABI hyperalignment', 'stimuli', 'videos')
 
 # Brings up the Calibration/Data folder to load the appropriate calibration data right away.
 calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI bodyCalibration', 'data')
 
-"""
-Prepare other psychopy scripts
-"""
-# Access  the top-level directory that all the tasks use:
-sys.path.append(os.path.abspath('..'))
+# """
+# Prepare other psychopy scripts
+# """
+# # Access  the top-level directory that all the tasks use:
+# sys.path.append(os.path.abspath('..'))
 
-# Before calling execfile, prepare the subordinate tasks:
-# sys.argv=["WASABI_hyperalignment.py", os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI hyperalignment'),
-#           "WASABI_pinelLocalizer.py", os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI pinellocalizer')]
-
+# # Before calling execfile, prepare the subordinate tasks:
+# # sys.argv=["WASABI_hyperalignment.py", os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI hyperalignment'),
+# #           "WASABI_pinelLocalizer.py", os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI pinellocalizer')]
 
 """
 2. Start Experimental Dialog Boxes
 """
-# Upload participant file: Browse for file
-# Store info about the experiment session
 psychopyVersion = '2020.2.10'
-expName = 'MedMap_conditioning'  # from the Builder filename that created this script
 if debug == 1:
     expInfo = {
     'DBIC Number': '99',
-    'first(1) or second(2) half': 1,
+    'first(1) or second(2) day': 1,
     'gender': 'm',
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS',
-    'run': '1'
+    'run': '1',
+    'body sites': ''
     }
 else:
     expInfo = {
     'DBIC Number': '',
-    'first(1) or second(2) half': '', 
+    'first(1) or second(2) day': '', 
     'gender': '',
     'session': '',
     'handedness': '', 
     'scanner': '',
-    'run': '' 
-    }
-
-## Limit the entries of this to hot temperatures (32-49 degrees in half-degree-steps)
-participant_settingsHeat = {
-    'Left Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for left face
-    'Right Face': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],   # Calibrated Temp for right face
-    'Left Arm': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for left arm
-    'Right Arm': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for right arm
-    'Left Leg': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],     # Calibrated Temp for left leg
-    'Right Leg': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],    # Calibrated Temp for right leg
-    'Chest': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49],        # Calibrated Temp for chest
-    'Abdomen': [32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49]       # Calibrated Temp for abdomen
+    'run': '',
+    'body sites': '' 
     }
 
 # Load the subject's calibration file and ensure that it is valid
-if debug==1:
-    participant_settingsHeat = {
-        'Left Face': 48.5,
-        'Right Face': 48.5,
-        'Left Arm': 48.5,
-        'Right Arm': 48.5,
-        'Left Leg': 48.5,
-        'Right Leg': 48.5,
-        'Chest': 48.5,
-        'Abdomen': 48.5
-    }
-else:
+# Upload participant file: Browse for file
+# Store info about the experiment session
+if debug!=1:
     dlg1 = gui.fileOpenDlg(tryFilePath=calibration_dir, tryFileName="", prompt="Select participant calibration file (*_task-bodyCalibration_participants.tsv)", allowed="Calibration files (*.tsv)")
     if dlg1!=None:
         if "_task-bodyCalibration_participants.tsv" in dlg1[0]:
@@ -328,8 +333,10 @@ else:
                 ses_num = str(1)
                 expInfo2 = {
                 'session': ses_num,
-                'first(1) or second(2) half': '',
-                'scanner': ''
+                'first(1) or second(2) day': '',
+                'scanner': '',
+                'run': 1, # If re-inserting participant midday
+                'body sites': '' # If inputting a list of body sites, make sure to delimit them with ', ' with the trailing space.
                 }
                 dlg2 = gui.DlgFromDict(title="WASABI MedMap", dictionary=expInfo2, sortKeys=False) 
                 expInfo['session'] = expInfo2['session']
@@ -347,13 +354,42 @@ else:
             errorDlg2.show()
             dlg1=None
     if dlg1==None:
-        dlg2 = gui.DlgFromDict(title="WASABI MedMap1 Scan", dictionary=expInfo, sortKeys=False)
+        ## This is used if an appropriate calibration is not selected. Generate a list of temperature choices.
+        ## Limit the entries of this to hot temperatures (32-49 degrees in half-degree-steps)
+        participant_settingsHeat = {
+            'Left Face': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],    # Calibrated Temp for left face
+            'Right Face': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],   # Calibrated Temp for right face
+            'Left Arm': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],     # Calibrated Temp for left arm
+            'Right Arm': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],    # Calibrated Temp for right arm
+            'Left Leg': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],     # Calibrated Temp for left leg
+            'Right Leg': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],    # Calibrated Temp for right leg
+            'Chest': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5],        # Calibrated Temp for chest
+            'Abdomen': [44,44.5,45,45.5,46,46.5,47,47.5,48,48.5]       # Calibrated Temp for abdomen
+            }
+
+        dlg2 = gui.DlgFromDict(title="WASABI MedMap Scan", dictionary=expInfo, sortKeys=False)
         if dlg2.OK == False:
             core.quit()  # user pressed cancel
         pphDlg = gui.DlgFromDict(participant_settingsHeat, 
                                 title='Participant Heat Parameters')
         if pphDlg.OK == False:
             core.quit()
+else:
+    participant_settingsHeat = {
+        'Left Face': 48.5,
+        'Right Face': 48.5,
+        'Left Arm': 48.5,
+        'Right Arm': 48.5,
+        'Left Leg': 48.5,
+        'Right Leg': 48.5,
+        'Chest': 48.5,
+        'Abdomen': 48.5
+    }
+
+if expInfo['first(1) or second(2) day'] ==1:
+    expName = 'MedMap1-conditioning'
+elif expInfo['first(1) or second(2) day']==2:
+    expName = 'MedMap2-test'  
 
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
@@ -361,33 +397,46 @@ expInfo['expName'] = expName
 
 ExperienceInstruction = "Experience the following sensations as they come."
 
-expName = 'medmap1-conditioning'
 InstructionText = ExperienceInstruction
 instructioncode = instruction_code
 InstructionCondition = "Instruction"
 
 """
-5. Configure the Body-Site for this run
+3. Configure the Stimuli Arrays
 """
+if expInfo['body sites']=="":
+    bodySites1 = ['Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face']
+    bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg'] 
 
-bodySites1 = ['Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face']
-bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg'] 
+    # bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
 
-# bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
-
-if int(expInfo['DBIC Number'])%2==0:
-    bodySites=bodySites1
+    if int(expInfo['DBIC Number'])%2==0:
+        bodySites=bodySites1
+    else:
+        bodySites=bodySites2
 else:
-    bodySites=bodySites2
+    bodySites=list(expInfo['body sites'].split(", "))
 
-# If bodysites and run order need to be manually set for the participant uncomment below and edit:
+# If bodysites and run order need to be manually set for the participant, in a pinch, uncomment below and edit:
 # bodySites = ["Left Leg"]
 
 expInfo['body_site_order'] = str(bodySites)
 expInfo['expName'] = expName
 
+
+# Hyperalignment
+movieOrder = [OrderedDict([('runSeq',
+            [
+            # OrderedDict([('moviefile', os.path.join(video_dir,'kungfury.mp4'))]),
+            OrderedDict([('moviefile', os.path.join(video_dir,'01_Inscapes_NoScannerSound_h264.wmv'))])
+            ] 
+        )])
+        ]
+movie_code = [ # kungfury, 
+                inscapes]
+
 """ 
-3. Setup the Window
+4. Setup the Window
 fullscr = False for testing, True for running participants
 """
 if debug == 1: 
@@ -415,8 +464,12 @@ else:
 
 win.mouseVisible = False # Make the mouse invisible for the remainder of the experiment
 
+
+# win=setupWindow()
+
+
 """
-4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
+5. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
 ## Check gender for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
@@ -445,20 +498,23 @@ with open("thermode1_programs.txt") as f:
        thermode1_temp2program[float(key)] = int(val)
 
 """
-4. Prepare files to write
+5. Prepare files to write
 """
 sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-psypy_filename = os.path.join(sub_dir, 'SID%06d_%s_%s' % (int(expInfo['DBIC Number']), expName, expInfo['date']))
+# psypy_medmap_filename = os.path.join(sub_dir, 'SID%06d_ses-%02d_task-%s_%s' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, expInfo['date'])
+# psypy_hyperalignment_filename = os.path.join(sub_dir, 'sub-SID%06d_ses-%02d_task-%s_%s' % (int(expInfo['DBIC Number']), int(expInfo['session']), "hyperalignment-movie", expInfo['date'])
+# psypy_pinellocalizer_filename = os.path.join(sub_dir, 'sub-SID%06d_ses-%02d_task-%s_%s' % (int(expInfo['DBIC Number']), int(expInfo['session']), "pinelLocalizer", expInfo['date'])
+# psypy_distractMap_filename = os.path.join(sub_dir, 'sub-SID%06d_ses-%02d_task-%s_%s' % (int(expInfo['DBIC Number']), int(expInfo['session']), "distractMap", expInfo['date'])
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
     # originPath='C:\\Users\\Michael\\Downloads\\counterbalance-multiple-tasks-demo.py',
     savePickle=True, saveWideText=True,
-    dataFileName=psypy_filename)
+    dataFileName=psypy_medmap_filename)
 # save a log file for detail verbose info
 logFile = logging.LogFile(psypy_filename+'.log', level=logging.EXP)
 logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
@@ -467,8 +523,13 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # Create python lists to later concatenate or convert into pandas dataframes
-medmap1_bids_trial = []
-medmap1_bids = []
+medmap_bids_trial = []
+medmap_bids = []
+
+# hyperalign_bids_trial = []
+# hyperalign_bids = []
+
+## Others?
 
 """
 5. Initialize Trial-level Components
@@ -979,7 +1040,6 @@ win.mouseVisible = False
 """
 6. Welcome Instructions
 """
-# RegulateInstructions.setText("Text")
 Instructions.draw()
 win.flip()
 continueRoutine=True
@@ -987,13 +1047,23 @@ while continueRoutine == True:
     if 'space' in event.getKeys(keyList = 'space'):
         continueRoutine = False
 
+## Replace above with:
+#  showText("Instructions", Instructions)
 
-if expInfo['first(1) or second(2) half']==1:
-    runhalf=range(len(bodySites)-2)
+
+# if expInfo['first(1) or second(2) half']==1:
+#     runhalf=range(len(bodySites)-2)
+# else:
+#     runhalf=range(len(bodySites)-2, len(bodySites))
+
+# for runs in runhalf:
+
+if expInfo['run']>1:
+    runRange=range(expInfo['run']-1, 8)
 else:
-    runhalf=range(len(bodySites)-2, len(bodySites))
+    runRange=range(len(bodySites))
 
-for runs in runhalf:
+for runs in runRange:
     ratingTime = 5 # Intensity Rating Time limit in seconds during the inter-trial-interval
     # Reset intensity scale parameters:
     intensityText = "How intense was that overall?" # (Unipolar)
@@ -1137,6 +1207,9 @@ for runs in runhalf:
     # the Routine "BodySiteInstruction" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
+    # Replace Above with
+    ## showTextAndImg(bodysite, "bodysite", imgname=bodysite, "bodysite.img", biopacCode)
+
     """
     8. Start Scanner
     """
@@ -1164,6 +1237,11 @@ for runs in runhalf:
                         while timer.getTime() > 0:
                             continue
                         continueRoutine = False
+
+    # Replace above with the following code:
+    # fmriStart=confirmRunStart()
+
+
 
     """
     9. Set Trial parameters
@@ -1229,12 +1307,16 @@ for runs in runhalf:
             while timer.getTime() > 0:
                 continue
             
-            medmap1_bids_trial = []
+            # Replace the above code with 
+            # trialData=showText("Instructions", InstructionText, biopacCode=instructioncode)
+                        
+            medmap_bids_trial = []
             
-            medmap1_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, bodySites[runs], temperature, InstructionCondition, None))
+            medmap_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, None, bodySites[runs], temperature, InstructionCondition, None))
 
-            medmap1_bids.append(medmap1_bids_trial)
-            
+            medmap_bids.append(medmap_bids_trial)
+            # medmap_bids.append(trialData)
+
             routineTimer.reset()
 
         # Select Medoc Thermal Program
@@ -1291,7 +1373,7 @@ for runs in runhalf:
                 win.timeOnFlip(fixation, 'tStartRefresh')  # time at next scr refresh
                 # if biopac_exists:
                 #     win.callOnFlip(biopac.setData, biopac, 0)
-                #     win.callOnFlip(biopac.setData, biopac, medmap1_fixation)
+                #     win.callOnFlip(biopac.setData, biopac, medmap_fixation)
                 fixation.setAutoDraw(True)
             if fixation.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -1330,6 +1412,9 @@ for runs in runhalf:
 
         routineTimer.reset()
 
+        # Replace above with showFixation(t=jitter1, medmap_prefixation)
+
+
         """ 
         13. Heat-Trial Fixation Cross
         """
@@ -1337,6 +1422,8 @@ for runs in runhalf:
         # Trigger Thermal Program
         if thermode_exists == 1:
             sendCommand('trigger') # Trigger the thermode
+
+        # Replace below with showFixation(t=stimtrialTime, BiopacChannel)
 
         continueRoutine = True
 
@@ -1414,21 +1501,35 @@ for runs in runhalf:
         thisExp.addData('fixation.started', fixation.tStartRefresh)
         thisExp.addData('fixation.stopped', fixation.tStopRefresh)
 
-        medmap1_bids_trial = []
+        medmap_bids_trial = []
 
-        medmap1_bids_trial.extend((onset, t, None, bodySites[runs], temperature, ConditionName, jitter1))
+        medmap_bids_trial.extend((onset, t, None, bodySites[runs], temperature, ConditionName, jitter1))
 
-        medmap1_bids.append(medmap1_bids_trial)
+        medmap_bids.append(medmap_bids_trial)
 
         routineTimer.reset()
+
+        # BIDS Dictionaries should be updated something like this way:
+        # iterate through showFixation(), attaching the values to keys in medmap_bids_trial.
+
+        # medmap_bids_trial['rating']=
+        # medmap_bids_trial['bodysite']=
+        # medmap_bids_trial['temperature']=
+        # medmap_bids.append(list(medmap_bids_trial.values())
 
         """
         14. Post-Heat Fixation Cross
         """
+
+        
+
         # ------Prepare to start Routine "Fixation"-------
         continueRoutine = True
         jitter2 = random.choice([3,5,7])
         routineTimer.add(jitter2)
+
+        # Replace below with showFixation(t=jitter2, medmap_postfixation)
+
 
         # update component parameters for each repeat
         # keep track of which components have finished
@@ -1508,6 +1609,7 @@ for runs in runhalf:
         """
         8f. Begin post-trial self-report questions
         """        
+
         ############ ASK PAIN BINARY Question #######################################
         # ------Prepare to start Routine "PainBinary"-------
         continueRoutine = True
@@ -1680,12 +1782,16 @@ for runs in runhalf:
         thisExp.addData('PainBinary.stopped', PainBinary.tStop)
         painRating=sliderValue
 
-        medmap1_bids_trial = []
-        medmap1_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, painRating, bodySites[runs], temperature, 'Pain Rating', jitter2))
-        medmap1_bids.append(medmap1_bids_trial)
+        medmap_bids_trial = []
+        medmap_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, painRating, bodySites[runs], temperature, 'Pain Rating', jitter2))
+        medmap_bids.append(medmap_bids_trial)
 
         # the Routine "PainBinary" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
+
+        # replace above with showBinaryScale("PainBinary", PainPrompt.text, ratingTime, biopacCode)
+
+        
 
         ############ ASK PAIN INTENSITY #######################################
         # ------Prepare to start Routine "IntensityRating"-------
@@ -1868,15 +1974,15 @@ for runs in runhalf:
         thisExp.addData('IntensityRating.started', IntensityRating.tStart)
         thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
 
-        medmap1_bids_trial = []
-        medmap1_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, sliderValue, bodySites[runs], temperature, 'Intensity Rating', None))
-        medmap1_bids.append(medmap1_bids_trial)
+        medmap_bids_trial = []
+        medmap_bids_trial.extend((onset, globalClock.getTime() - fmriStart - onset, sliderValue, bodySites[runs], temperature, 'Intensity Rating', None))
+        medmap_bids.append(medmap_bids_trial)
 
         # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
 
         ########################## END SELF REPORT #######################################################
-
+    rating_sound.stop() # I think a stop needs to be introduced in order to play again.
     rating_sound.play()
 
     """
@@ -2065,7 +2171,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('ComfortRating.started', ComfortRating.tStart)
     thisExp.addData('ComfortRating.stopped', ComfortRating.tStop)
-    medmap1_bids.append(["Comfort Rating:", sliderValue])
+    medmap_bids.append(["Comfort Rating:", sliderValue])
     # the Routine "ComfortRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -2248,7 +2354,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('ValenceRating.started', ValenceRating.tStart)
     thisExp.addData('ValenceRating.stopped', ValenceRating.tStop)
-    medmap1_bids.append(["Valence Rating:", sliderValue])
+    medmap_bids.append(["Valence Rating:", sliderValue])
     # the Routine "ValenceRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -2446,7 +2552,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('IntensityRating.started', IntensityRating.tStart)
     thisExp.addData('IntensityRating.stopped', IntensityRating.tStop)
-    medmap1_bids.append(["Intensity Rating:", sliderValue])
+    medmap_bids.append(["Intensity Rating:", sliderValue])
     # the Routine "IntensityRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -2629,7 +2735,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('AvoidRating.started', AvoidRating.tStart)
     thisExp.addData('AvoidRating.stopped', AvoidRating.tStop)
-    medmap1_bids.append(["Pain Avoidance Rating:", sliderValue])
+    medmap_bids.append(["Pain Avoidance Rating:", sliderValue])
     # the Routine "AvoidRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -2812,7 +2918,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('RelaxRating.started', RelaxRating.tStart)
     thisExp.addData('RelaxRating.stopped', RelaxRating.tStop)
-    medmap1_bids.append(["Body Relaxation Rating:", sliderValue])
+    medmap_bids.append(["Body Relaxation Rating:", sliderValue])
     # the Routine "RelaxRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -2995,7 +3101,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('TaskAttentionRating.started', TaskAttentionRating.tStart)
     thisExp.addData('TaskAttentionRating.stopped', TaskAttentionRating.tStop)
-    medmap1_bids.append(["TaskAttention Rating:", sliderValue])
+    medmap_bids.append(["TaskAttention Rating:", sliderValue])
     # the Routine "TaskAttentionRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -3178,7 +3284,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('BoredomRating.started', BoredomRating.tStart)
     thisExp.addData('BoredomRating.stopped', BoredomRating.tStop)
-    medmap1_bids.append(["Boredom Rating:", sliderValue])
+    medmap_bids.append(["Boredom Rating:", sliderValue])
     # the Routine "BoredomRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -3359,7 +3465,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('AlertnessRating.started', AlertnessRating.tStart)
     thisExp.addData('AlertnessRating.stopped', AlertnessRating.tStop)
-    medmap1_bids.append(["Pain Alertnessance Rating:", sliderValue])
+    medmap_bids.append(["Alertness Rating:", sliderValue])
     # the Routine "AlertnessRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -3540,7 +3646,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('PosThxRating.started', PosThxRating.tStart)
     thisExp.addData('PosThxRating.stopped', PosThxRating.tStop)
-    medmap1_bids.append(["Positive Thoughts Rating:", sliderValue])
+    medmap_bids.append(["Positive Thoughts Rating:", sliderValue])
     # the Routine "PosThxRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -3722,7 +3828,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('NegThxRating.started', NegThxRating.tStart)
     thisExp.addData('NegThxRating.stopped', NegThxRating.tStop)
-    medmap1_bids.append(["Negative Thoughts Rating:", sliderValue])
+    medmap_bids.append(["Negative Thoughts Rating:", sliderValue])
     # the Routine "NegThxRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -3903,7 +4009,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('SelfRating.started', SelfRating.tStart)
     thisExp.addData('SelfRating.stopped', SelfRating.tStop)
-    medmap1_bids.append(["Self-Thoughts Rating:", sliderValue])
+    medmap_bids.append(["Self-Thoughts Rating:", sliderValue])
     # the Routine "SelfRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -4084,7 +4190,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('OtherRating.started', OtherRating.tStart)
     thisExp.addData('OtherRating.stopped', OtherRating.tStop)
-    medmap1_bids.append(["Other People Thoughts Rating:", sliderValue])
+    medmap_bids.append(["Other People Thoughts Rating:", sliderValue])
     # the Routine "OtherRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -4265,7 +4371,7 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('ImageryRating.started', ImageryRating.tStart)
     thisExp.addData('ImageryRating.stopped', ImageryRating.tStop)
-    medmap1_bids.append(["Clear and Vivid Imagery Rating:", sliderValue])
+    medmap_bids.append(["Clear and Vivid Imagery Rating:", sliderValue])
     # the Routine "ImageryRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
@@ -4446,17 +4552,28 @@ for runs in runhalf:
     thisExp.nextEntry()
     thisExp.addData('PresentRating.started', PresentRating.tStart)
     thisExp.addData('PresentRating.stopped', PresentRating.tStop)
-    medmap1_bids.append(["Presentness Thoughts Rating:", sliderValue])
+    medmap_bids.append(["Presentness Thoughts Rating:", sliderValue])
     # the Routine "PresentRating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
+
+    rating_sound.stop() # Stop the sound so it can be played again.
     ########################## END SELF REPORT RUNS #######################################################
+
+    # After the last Placebo Run, run the Hyperalignment and PinelLocalizer Scans 
+    if runs==6: 
+        if biopac_exists:
+            WASABI_hyperalignment.run(movielist, biopac, biopac_info)
+            WASABI_pinelLocalizer.run(biopac, biopac_info)
+        else:
+            WASABI_hyperalignment.run(movielist)
+            WASABI_pinelLocalizer.run()
 
     """
     17. Save data into .TSV formats and Tying up Loose Ends
     """ 
-    medmap1_bids_data = pd.DataFrame(medmap1_bids, columns = ['onset', 'duration', 'intensity', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'])
-    medmap1_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
-    medmap1_bids_data.to_csv(medmap1_bids_filename, sep="\t")
+    medmap_bids_data = pd.DataFrame(medmap_bids, columns = ['onset', 'duration', 'intensity', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'])
+    medmap_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    medmap_bids_data.to_csv(medmap_bids_filename, sep="\t")
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run
