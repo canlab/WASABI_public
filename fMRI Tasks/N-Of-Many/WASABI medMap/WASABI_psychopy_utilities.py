@@ -49,12 +49,16 @@ from datetime import datetime
 
 
 # Some good defaults
-frameTolerance = 0.001  # how close to onset before 'same' frame
-
-start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
-s_text='[s]-press confirmed.'
-in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
-end_msg = 'Please wait for instructions from the experimenter'
+if not frameTolerance:
+    frameTolerance = 0.001  # how close to onset before 'same' frame
+if not start_msg:
+    start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
+if not s_text:
+    s_text='[s]-press confirmed.'
+if not in_between_run_msg:
+    in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
+if not end_msg:
+    end_msg = 'Please wait for instructions from the experimenter'
 
 
 # All functions should write to a key-value dictionary that will later be output as a bids_dataset
@@ -76,8 +80,7 @@ def subjectInfoBox(name, expInfo):
             'gender': '',
             'session': '',
             'handedness': '', 
-            'scanner': '',
-            'run': '' 
+            'scanner': ''
         }
     dlg = gui.DlgFromDict(title=name, dictionary=expInfo, sortKeys=False)
 
@@ -159,7 +162,7 @@ def showText(name, str, fontSize=.05, t=5, advanceKey='space'):
             continueRoutine = False
     return
 
-def showText(name, str, fontSize=.05, t=5, biopacCode):
+def showText(name, str, fontSize=.05, t=5, advanceKey='space', biopacCode):
     """
     Requires win, biopac_exists, fmriStart
 
@@ -188,10 +191,14 @@ def showText(name, str, fontSize=.05, t=5, biopacCode):
         biopac.setData(biopac, biopacCode)
         onset = globalClock.getTime() - fmriStart
     win.flip()
+    continueRoutine=True
     timer = core.CountdownTimer()
-    timer.add(t)
-    while timer.getTime() > 0:
-        continue
+    timer.add(t)   
+    while continueRoutine == True or timer.getTime() > 0:
+        if advanceKey in event.getKeys(keyList = advanceKey):
+            continueRoutine = False
+        else:
+            continue
     
     routineTimer.reset()
     return (onset, globalClock.getTime() - fmriStart - onset, None, bodySites[runs], temperature, InstructionCondition, None) # a list to extend the trialdata, 
@@ -200,7 +207,7 @@ def showText(name, str, fontSize=.05, t=5, biopacCode):
 def showImg(name, imgPath, position=[0,0]):
     return
 
-def showFixation(name, ['big', 'small'], size=0.05, pos=(0, 0), col='white', time=5, biopacCode):
+def showFixation(name, ['big', 'small'], size=0.05, pos=(0, 0), col='white', t=5, biopacCode):
     """
     Requires win, 
     
@@ -495,7 +502,6 @@ def confirmRunStart(TR=0.46):
 def endScan():
     return
 
-
 # Initialize components for each Rating
 TIME_INTERVAL = 0.005   # Speed at which slider ratings udpate
 ratingScaleWidth=1.5
@@ -509,7 +515,15 @@ unipolar_verts = [(sliderMin, .2), # left point
             (sliderMax, .2),     # right point
             (sliderMin, -.2)]   # bottom-point, # bottom-point
 
-def showUnipolarScale(name, questionText, imgPath):
+def showUnipolarScale(name, questionText, imgPath, ratingTime=5):
+    """_summary_
+
+    Args:
+        name (string): _description_
+        questionText (string): _description_
+        imgPath (string): _description_
+        ratingTime (int, optional): _description_. Defaults to 5 seconds.
+    """
     # Initialize components for Routine "IntensityRating"
     IntensityRatingClock = core.Clock()
     IntensityMouse = event.Mouse(win=win)
