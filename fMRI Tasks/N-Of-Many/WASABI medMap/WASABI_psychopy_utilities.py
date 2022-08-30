@@ -743,7 +743,188 @@ def showUnipolarScale(name, questionText, imgPath, ratingTime=5):
 
     return
 
-def showBipolarScale():
+def showBipolarScale(name, questionText, imgPath, ratingTime=5):
+    # Initialize components for Routine "ComfortRating"
+    ComfortText = "How comfortable do you feel right now?" # (Bipolar)
+    ComfortRatingClock = core.Clock()
+    ComfortMouse = event.Mouse(win=win, visible=False)
+    ComfortMouse.mouseClock = core.Clock()
+    ComfortRating = visual.Rect(win, height=ratingScaleHeight, width=abs(sliderMin), pos= [sliderMin/2, -.1], fillColor='red', lineColor='black')
+    ComfortBlackTriangle = visual.ShapeStim(
+        win, 
+        vertices=bipolar_verts,
+        fillColor='black', lineColor='black')
+    ComfortAnchors = visual.ImageStim(
+        win=win,
+        image= os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]),
+        name='ComfortAnchors', 
+        mask=None,
+        ori=0, pos=(0, -0.09), size=(1.5, .4),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=512, interpolate=True, depth=0.0)
+    ComfortPrompt = visual.TextStim(win, name='ComfortPrompt', 
+        text=ComfortText,
+        font = 'Arial',
+        pos=(0, 0.3), height=0.05, wrapWidth=None, ori=0, 
+        color='white', colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0,
+        anchorHoriz='center')
+
+     # -------Run Routine "ComfortRating"-------
+    while continueRoutine:
+        # get current time
+        t = ComfortRatingClock.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=ComfortRatingClock)
+        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+        # update/draw components on each frame
+
+        timeNow = globalClock.getTime()
+        if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+            mouseRel=ComfortMouse.getRel()
+            mouseX=oldMouseX + mouseRel[0]
+        ComfortRating.pos = (mouseX/2,0)
+        ComfortRating.width = abs(mouseX)
+        if mouseX > sliderMax:
+            mouseX = sliderMax
+        if mouseX < sliderMin:
+            mouseX = sliderMin
+        timeAtLastInterval = timeNow
+        oldMouseX=mouseX
+        sliderValue = ((mouseX - sliderMin) / (sliderMax - sliderMin) * 200)-100
+
+        # *ComfortMouse* updates
+        if ComfortMouse.status == NOT_STARTED and t >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            ComfortMouse.frameNStart = frameN  # exact frame index
+            ComfortMouse.tStart = t  # local t and not account for scr refresh
+            ComfortMouse.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(ComfortMouse, 'tStartRefresh')  # time at next scr refresh
+            ComfortMouse.status = STARTED
+            ComfortMouse.mouseClock.reset()
+            prevButtonState = ComfortMouse.getPressed()  # if button is down already this ISN'T a new click
+        if ComfortMouse.status == STARTED:  # only update if started and not finished!
+            if tThisFlipGlobal > ComfortMouse.tStartRefresh + ratingTime-frameTolerance:
+                # keep track of stop time/frame for later
+                ComfortMouse.tStop = t  # not accounting for scr refresh
+                ComfortMouse.frameNStop = frameN  # exact frame index
+                ComfortMouse.status = FINISHED
+            buttons = ComfortMouse.getPressed()
+            if buttons != prevButtonState:  # button state changed?
+                prevButtonState = buttons
+                if sum(buttons) > 0:  # state changed to a new click
+                    # abort routine on response
+                    continueRoutine = False
+
+        # *ComfortRating* updates
+        if ComfortRating.status == NOT_STARTED and t >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            ComfortRating.frameNStart = frameN  # exact frame index
+            ComfortRating.tStart = t  # local t and not account for scr refresh
+            ComfortRating.tStartRefresh = tThisFlipGlobal  # on global time
+            win.callOnFlip(print, "Show Comfort Rating")
+            if biopac_exists == 1:
+                win.callOnFlip(biopac.setData, biopac, 0)
+                win.callOnFlip(biopac.setData, biopac, comfort_rating)
+            win.timeOnFlip(ComfortRating, 'tStartRefresh')  # time at next scr refresh
+            ComfortRating.setAutoDraw(True)
+        if ComfortRating.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > ComfortRating.tStartRefresh + ratingTime-frameTolerance:
+                # keep track of stop time/frame for later
+                ComfortRating.tStop = t  # not accounting for scr refresh
+                ComfortRating.frameNStop = frameN  # exact frame index
+                win.timeOnFlip(ComfortRating, 'tStopRefresh')  # time at next scr refresh
+                ComfortRating.setAutoDraw(False)
+        
+        # *ComfortBlackTriangle* updates
+        if ComfortBlackTriangle.status == NOT_STARTED and t >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            ComfortBlackTriangle.frameNStart = frameN  # exact frame index
+            ComfortBlackTriangle.tStart = t  # local t and not account for scr refresh
+            ComfortBlackTriangle.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(ComfortBlackTriangle, 'tStartRefresh')  # time at next scr refresh
+            ComfortBlackTriangle.setAutoDraw(True)
+        if ComfortBlackTriangle.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > ComfortBlackTriangle.tStartRefresh + ratingTime-frameTolerance:
+                # keep track of stop time/frame for later
+                ComfortBlackTriangle.tStop = t  # not accounting for scr refresh
+                ComfortBlackTriangle.frameNStop = frameN  # exact frame index
+                win.timeOnFlip(ComfortBlackTriangle, 'tStopRefresh')  # time at next scr refresh
+                ComfortBlackTriangle.setAutoDraw(False)
+
+        # *ComfortAnchors* updates
+        if ComfortAnchors.status == NOT_STARTED and t >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            ComfortAnchors.frameNStart = frameN  # exact frame index
+            ComfortAnchors.tStart = t  # local t and not account for scr refresh
+            ComfortAnchors.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(ComfortAnchors, 'tStartRefresh')  # time at next scr refresh
+            ComfortAnchors.setAutoDraw(True)
+        if ComfortAnchors.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > ComfortAnchors.tStartRefresh + ratingTime-frameTolerance:
+                # keep track of stop time/frame for later
+                ComfortAnchors.tStop = t  # not accounting for scr refresh
+                ComfortAnchors.frameNStop = frameN  # exact frame index
+                win.timeOnFlip(ComfortAnchors, 'tStopRefresh')  # time at next scr refresh
+                ComfortAnchors.setAutoDraw(False)
+        
+        # *ComfortPrompt* updates
+        if ComfortPrompt.status == NOT_STARTED and t >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            ComfortPrompt.frameNStart = frameN  # exact frame index
+            ComfortPrompt.tStart = t  # local t and not account for scr refresh
+            ComfortPrompt.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(ComfortPrompt, 'tStartRefresh')  # time at next scr refresh
+            ComfortPrompt.setAutoDraw(True)
+        if ComfortPrompt.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > ComfortPrompt.tStartRefresh + ratingTime-frameTolerance:
+                # keep track of stop time/frame for later
+                ComfortPrompt.tStop = t  # not accounting for scr refresh
+                ComfortPrompt.frameNStop = frameN  # exact frame index
+                win.timeOnFlip(ComfortPrompt, 'tStopRefresh')  # time at next scr refresh
+                ComfortPrompt.setAutoDraw(False)
+        # Autoresponder
+        if t >= thisSimKey.rt and autorespond == 1:
+            sliderValue = random.randint(-100,100)
+            continueRoutine = False
+
+        # check for quit (typically the Esc key)
+        if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+            core.quit()
+        
+        # check if all components have finished
+        if not continueRoutine:  # a component has requested a forced-end of Routine
+            break
+        continueRoutine = False  # will revert to True if at least one component still running
+        for thisComponent in ComfortRatingComponents:
+            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                continueRoutine = True
+                break  # at least one component has not yet finished
+        
+        # refresh the screen
+        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+            win.flip()
+
+    # -------Ending Routine "ComfortRating"-------
+    print("CueOff Channel " + str(comfort_rating))
+    for thisComponent in ComfortRatingComponents:
+        if hasattr(thisComponent, "setAutoDraw"):
+            thisComponent.setAutoDraw(False)
+    # store data for thisExp (ExperimentHandler)
+    thisExp.addData('ComfortRating.response', sliderValue)
+    thisExp.addData('ComfortRating.rt', timeNow - ComfortRating.tStart)
+    thisExp.nextEntry()
+    thisExp.addData('ComfortRating.started', ComfortRating.tStart)
+    thisExp.addData('ComfortRating.stopped', ComfortRating.tStop)
+    medmap_bids.append(["Comfort Rating:", sliderValue])
+    # the Routine "ComfortRating" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset()   
 
     return
 
