@@ -149,7 +149,6 @@ main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
 video_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'WASABI hyperalignment', 'stimuli', 'videos')
 
-
 """
 If there's an input argument
 """
@@ -166,7 +165,6 @@ If there's an input argument
 
 # #make sure and update the path to the data file
 # filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
-
 
 
 

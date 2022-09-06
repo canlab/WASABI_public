@@ -275,32 +275,36 @@ if biopac_exists == 1:
 # args = parser.parse_args()
 
 # CREATE DIALOGUE SCREEN - enter subject ID
-config_dialog = gui.Dlg(title="Experiment Info")
-# config_dialog = psy.gui.Dlg(title="Experiment Info")
-config_dialog.addField("Subject ID: ")
-config_dialog.addField("Session: ")
-config_dialog.addField("Test? 1=yes; 0=no: ")
-config_dialog.show()
+# config_dialog = gui.Dlg(title="Experiment Info")
+# # config_dialog = psy.gui.Dlg(title="Experiment Info")
+# config_dialog.addField("Subject ID: ")
+# config_dialog.addField("Session: ")
+# config_dialog.addField("Test? 1=yes; 0=no: ")
+# config_dialog.show()
 
-# create dialogue screen that will show if file already exists- must choose to manually overwrite
-# exists_dialog= psy.gui.Dlg(title="File Already Exists", labelButtonOK=u'Yes/overwrite', labelButtonCancel=u'Quit Program!',)
-exists_dialog = gui.Dlg(title="File Already Exists", labelButtonOK=u'Yes/overwrite', labelButtonCancel=u'Quit Program!')
-exists_dialog.addText('File name already exists. Are you sure you want to overwrite?')
+# # create dialogue screen that will show if file already exists- must choose to manually overwrite
+# # exists_dialog= psy.gui.Dlg(title="File Already Exists", labelButtonOK=u'Yes/overwrite', labelButtonCancel=u'Quit Program!',)
+# exists_dialog = gui.Dlg(title="File Already Exists", labelButtonOK=u'Yes/overwrite', labelButtonCancel=u'Quit Program!')
+# exists_dialog.addText('File name already exists. Are you sure you want to overwrite?')
 
-# if user enters both subID and run number save these, otherwise exit system
-if config_dialog.OK:
-    subID = config_dialog.data[0]
-    session = config_dialog.data[1]
-    test = int(config_dialog.data[2])  # make sure this is int
-else:
-    sys.exit("Canceled at configuration dialog.")
+# # if user enters both subID and run number save these, otherwise exit system
+# if config_dialog.OK:
+#     subID = config_dialog.data[0]
+#     session = config_dialog.data[1]
+#     test = int(config_dialog.data[2])  # make sure this is int
+# else:
+#     sys.exit("Canceled at configuration dialog.")
 
 # create file w/subId in name
 # change this so that filename is from teh gui- and needs extension. so if not . in
-if test == int(1):
-    fName = 'sub-%05d_task-pinel_ses-%02d_TEST.tsv' % (int(subID),int(session))
-elif test == int(0):
-    fName = 'sub-%05d_task-pinel_ses-%02d.tsv' % (int(subID),int(session))
+# if test == int(1):
+#     fName = 'sub-%05d_task-pinel_ses-%02d_TEST.tsv' % (int(subID),int(session))
+# elif test == int(0):
+    
+subID = expInfo['DBIC Number']
+
+
+fName = 'sub-SID%06d_task-pinel_ses-%02d.tsv' % (int(subID),int(session))
 
 # SET EXPERIMENT GLOBALS
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -846,5 +850,5 @@ data_file.close()
 
 
 
-window.close()
-core.quit()
+# window.close()
+# core.quit()

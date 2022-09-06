@@ -1226,18 +1226,21 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
         return
 
 
-def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
+def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
     """
     """
     nback_fixation=187
     nback_trial_start=188
-
     nback_hit=190
     nback_comiss=191
-
     nback_feedback_pos=194
     nback_feedback_miss=195
     nback_feedback_neg=196
+
+    correct=0
+    incorrect_text = "Incorrect!"
+    noresponse_text = "No Response!"
+    correct_text = "Correct!"
     
     # Initialize components for Routine "Nback_trial"
     Nback_TrialClock = core.Clock()
@@ -1266,32 +1269,16 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
     response = event.Mouse(win=win)
     response.mouseClock = core.Clock()
 
-    incorrect_text = "Incorrect!"
-    noresponse_text = "No Response!"
-    correct_text = "Correct!"
-
     Feedback = visual.TextStim(win=win, name='Feedback',
         text="",
         font='Arial',
         pos=(0, -0.35), units='height', height=0.05, 
         color='white', colorSpace='rgb', opacity=1)
 
-    # Initialize components for Routine "ScoreReport"
-    ScoreReportClock = core.Clock()
-    ScoreReportText = visual.TextStim(win=win, name='ScoreReportText',
-        text='This text is for reporting your score performance.',
-        font='Arial', wrapWidth=1.75,
-        pos=(0, 0.0), units='height', height=0.05, 
-        color='white', colorSpace='rgb', opacity=1)
-    ScoreReportResponse = keyboard.Keyboard()
-
-    # Initialize components for Routine "Fixation"
-    FixationClock = core.Clock()
-
     nback_bids=pd.DataFrame()
 
     # Pre-Fixation Cross
-    nback_bids=nback_bids.append(showFixation(win, time=1, biopacCode=nback_fixation))
+    nback_bids=nback_bids.append(showFixation(win, "pretrialfixation", time=1, biopacCode=nback_fixation, noRecord=nofMRI), ignore_index=True)
 
     """ 
     8ii. N-back Start
@@ -1306,24 +1293,14 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
 
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
-    # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
-    if thisTrial != None:
-        for paramName in thisTrial:
-            exec('{} = thisTrial[paramName]'.format(paramName))
-
     for thisTrial in trials:
-        currentLoop = trials
-        # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
-        if thisTrial != None:
-            for paramName in thisTrial:
-                exec('{} = thisTrial[paramName]'.format(paramName))
-        
         # ------Prepare to start Routine "Nback_Trial"-------
         continueRoutine = True
         routineTimer.add(2.000000)          # Each trial is 2 seconds
         feedbacktype = "none"
         # update component parameters for each repeat
-        target_square.setPos(location)
+        # target_square.setPos(location)
+        target_square.setPos(thisTrial['location'])
         response.rt = []
 
         gotValidClick = False  # until a click is received
@@ -1443,7 +1420,7 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
                     prevButtonState = response.click
                     if (response.click_left == 1 or response.click_right == 1) and gotValidClick == False:
                         print(str(response.click), str(response.rt))
-                        if (corrAns == 1 and response.click_left == 1) or (corrAns == 0 and response.click_right == 1):
+                        if (thisTrial['corrAns'] == 1 and response.click_left == 1) or (thisTrial['corrAns'] == 0 and response.click_right == 1):
                             response.corr = 1
                             correct = correct + 1
                             Feedback.setText(correct_text)
@@ -1468,7 +1445,7 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
                 elif response.click_left == 0 and response.click_right == 0 and gotValidClick==False:  # No response was made
                     mouse_response = None
                     mouse_response_rt = None
-                    if str(corrAns).lower() != 'none':
+                    if str(thisTrial['corrAns']).lower() != 'none':
                         Feedback.setText(noresponse_text)
                         feedbacktype = "miss"
                     else:
@@ -1485,7 +1462,6 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
                     win.timeOnFlip(Feedback, 'tStartRefresh')  # time at next scr refresh
                     Feedback.status = STARTED
                     Feedback.setAutoDraw(False)
-
 
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -1525,8 +1501,8 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
                 thisComponent.setAutoDraw(False)
         
         if gotValidClick==False:  # No response was made
-            response_2.rt = None
-            if str(corrAns).lower() == 'none':
+            response.rt = None
+            if str(thisTrial['corrAns']).lower() == 'none':
                 response.corr=1
                 correct = correct + 1
             else:
@@ -1535,10 +1511,9 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
 
         thisExp.nextEntry()
 
-        if noRecord==False:
-            # bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
-            bids_trial={'onset': grid_lines.tStartRefresh, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, "condition": name} 
-            nback_bids=nback_bids.append(bids_trial)
+        # bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
+        bids_trial={'onset': grid_lines.tStartRefresh, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, "condition": name} 
+        nback_bids=nback_bids.append(bids_trial, ignore_index=True)
 
     """ 
     8iii. Nback Score Report
@@ -1548,12 +1523,18 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
     else:
         score = correct*100/trials.nTotal
 
-    # Score Feedback Text
-    ScoreText = "Your score was " + str(score)
+    if nofMRI==True:
+        # Score Feedback Text
+        ScoreText = "Your score was " + str(score)
+        TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+        PassedText = "Okay! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+        PerfectText = "Perfect! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
+    else:
+        ScoreText = "Your score was " + str(score)
+        TryAgainText = ScoreText + "\n\nLet's try that again...\n\nBeat your score." 
+        PassedText = ScoreText + "\n\nOkay! Not bad.\n\nTry to beat this score." 
+        PerfectText = ScoreText + "\n\nPerfect!\n\nKeep it up." 
 
-    TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
-    PassedText = "Okay! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
-    PerfectText = "Perfect! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
 
     if (score <= 70):
         ScoreReportText=TryAgainText
@@ -1565,7 +1546,16 @@ def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
         ScoreReportText=PerfectText
         nback_feedback = nback_feedback_pos
 
-    nback_bids=nback_bids.append(showText(win, "ScoreReport", text=ScoreReportText, advanceKey='space', biopacCode=nback_feedback))
+    if nofMRI==True:
+        nback_bids=nback_bids.append(showText(win, "ScoreReport", text=ScoreReportText, advanceKey='space', biopacCode=nback_feedback, noRecord=nofMRI), ignore_index=True)
+    else:
+        if debug==1:
+            timeOut=1
+        else:
+            timeOut=5
+
+        nback_bids=nback_bids.append(showText(win, "ScoreReport", text=ScoreReportText, time=timeOut, biopacCode=nback_feedback, noRecord=nofMRI), ignore_index=True)
+
     nback_bids["score"]= score
 
     return nback_bids
