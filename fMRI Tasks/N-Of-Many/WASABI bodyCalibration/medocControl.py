@@ -14,7 +14,7 @@ class ThermodeConfig():
     """
     address: hostName (IP), port: portNum (int), named_program: commandID (string?), other_parameters (optional depending on command) 
     """
-#    address = '129.170.31.22' # Michael Office Computer
+#    address = '172.22.32.1' # Michael Office Computer
 #    address = '172.17.96.1'
 #    address = '172.18.168.185'
     address = '10.64.1.10' # DBIC

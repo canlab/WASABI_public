@@ -54,7 +54,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
 s_text='[s]-press confirmed.'
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
-end_msg = 'Please wait for instructions from the experimenter. \n\nExperimenter press [e] to continue.'
+end_msg = 'Please wait for instructions from the experimenter.\n\nExperimenter press [e] to continue.'
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
@@ -128,10 +128,12 @@ if thermode_exists == 1:
     from medocControl import *
 
 """
-5. Prepare Experimental Dictionaries for Biopac and Medoc Temperature Programs
+5. Prepare Experimental Codes for Biopac Acqknowledge  
+and Dictionaries for Medoc Temperature Programs
 
-EDIT BELOW FOR YOUR STUDY (if you use the Medoc Thermode)
+EDIT BELOW FOR YOUR STUDY (if you use Biopac or the Medoc Thermode)
 """
+
 # Biopac parameters _________________________________________________
 # Relevant Biopac commands: 
 #     To send a Biopac marker code to Acqknowledge, replace the FIO number with a value between 0-255(dec), or an 8-bit word(bin) 
@@ -139,7 +141,7 @@ EDIT BELOW FOR YOUR STUDY (if you use the Medoc Thermode)
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 #     Another command that may work: biopac.setData(byte)
 
-task_ID=2
+task_ID=1
 task_start=7
 
 instructions=15
@@ -163,27 +165,7 @@ instruction_code=198
 
 pain_binary=42
 intensity_rating=43
-
-valence_rating=39
-trialIntensity_rating=40
-comfort_rating=41
-
-avoid_rating = 200
-relax_rating = 201
-taskattention_rating = 202
-boredom_rating = 203
-alertness_rating = 204
-posthx_rating = 205
-negthx_rating = 206
-self_rating = 207
-other_rating = 208
-imagery_rating = 209
-present_rating = 210
-intensity_rating=211
-
-# Hyperalignment movie
-kungfury1=215
-kungfury2=216
+tolerance_binary=44
 
 between_run_msg=45
 end_task = 197

@@ -125,16 +125,13 @@ def round_to_halfdegree(n):
 1. Experimental Parameters
 Clocks, folder paths, etc.
 """
-# Clocks
-globalClock = core.Clock()  # to track the time since experiment started
-routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
 # Paths
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 main_dir = _thisDir
 stimuli_dir = main_dir + os.sep + "stimuli"
-video_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'WASABI hyperalignment', 'stimuli', 'videos')
+video_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stimuli', 'videos')
 
 # Brings up the Calibration/Data folder to load the appropriate calibration data right away.
 calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI bodyCalibration', 'data')
@@ -199,16 +196,12 @@ if debug!=1:
                 'run': 1, # If re-inserting participant midday
                 'body sites': '' # If inputting a list of body sites, make sure to delimit them with ', ' with the trailing space.
                 }
-
-                dlg2 = gui.DlgFromDict(title="WASABI MedMap", dictionary=expInfo2, sortKeys=False) 
                 expInfo2=subjectInfoBox("MedMap Scan", expInfo2)
                 expInfo['session'] = expInfo2['session']
                 expInfo['first(1) or second(2) day'] = expInfo2['first(1) or second(2) day']
                 expInfo['scanner'] = expInfo2['scanner']
                 expInfo['run'] = expInfo2['run']
                 expInfo['body sites'] = expInfo2['body sites']
-                if dlg2.OK == False:
-                    core.quit()  # user pressed cancel
             else:
                 errorDlg1 = gui.Dlg(title="Error - invalid file")
                 errorDlg1.addText("Selected file is not a valid calibration file. Data is incorrectly formatted. (Wrong dimensions)")
@@ -284,7 +277,6 @@ expInfo['body_site_order'] = str(bodySites)
 
 """ 
 4. Setup the Window
-fullscr = False for testing, True for running participants
 """
 
 win=setupWindow()
@@ -317,7 +309,13 @@ bodysite_word2img = {"Left Face": os.sep.join([stimuli_dir,"cue","LeftFace.png"]
                           "Abdomen": os.sep.join([stimuli_dir,"cue","Abdomen.png"]) 
                         }
 bodysite_word2heatcode = {"Left Face": leftface_heat, 
-                        "Right Leg": rightleg_heat
+                        "Right Face": rightface_heat, 
+                        "Left Arm": leftarm_heat, 
+                        "Right Arm": rightarm_heat, 
+                        "Left Leg": leftleg_heat, 
+                        "Right Leg": rightleg_heat, 
+                        "Chest": chest_heat,
+                        "Abdomen": abdomen_heat 
                         }
 
 """
@@ -327,8 +325,8 @@ sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Numb
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-varNames = ['onset', 'duration', 'value', 'bodySite', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopacCode']
-medmap_bids=pd.DataFrame(columns=varNames)
+# varNames = ['onset', 'duration', 'value', 'bodySite', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopacCode']
+medmap_bids=pd.DataFrame()
 
 """
 5. Initialize Trial-level Components
@@ -379,7 +377,14 @@ ImageryText = "The thoughts I experienced during the last scan were experienced 
 PresentText = "The thoughts I experienced during the last scan pertained to the immediate PRESENT (the here and now)" # Strongly disagree - Neither - Strongly agree (bipolar)
 
 # Preload Movie for Hyperalignment
-movie=preloadMovie(win, "inscapes-movie", os.path.join(video_dir,'01_Inscapes_NoScannerSound_h264.wmv'))
+# movie=preloadMovie(win, "inscapes-movie", os.path.join(video_dir,'01_Inscapes_NoScannerSound_h264.wmv'))
+
+if expInfo['first(1) or second(2) day']=='1':
+    movie=preloadMovie(win, "kungfury1", os.path.join(video_dir,'kungfury1.mp4'))
+    movieCode=kungfury1
+if expInfo['first(1) or second(2) day']=='2':
+    movie=preloadMovie(win, "kungfury2", os.path.join(video_dir,'kungfury2.mp4'))
+    movieCode=kungfury2
 
 if biopac_exists:
     biopac.setData(biopac, 0)
@@ -467,13 +472,13 @@ for runs in runRange:
             sendCommand('select_tp', thermodeCommand)
 
         """
-        11. Show Heat Cue
+        12. Show Heat Cue
         """
         # Need a biopac code
-        medmap_bids=medmap_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue, ignore_index=True))
+        medmap_bids=medmap_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
 
         """ 
-        12. Pre-Heat Fixation Cross
+        13. Pre-Heat Fixation Cross
         """
         jitter1 = random.choice([4, 6, 8])
         if debug==1:
@@ -482,14 +487,14 @@ for runs in runRange:
         medmap_bids=medmap_bids.append(showFixation(win, "Pre-Jitter", time=jitter1, biopacCode=prefixation), ignore_index=True)
 
         """ 
-        13. Heat-Trial Fixation Cross
+        14. Heat-Trial Fixation Cross
         """
         if thermode_exists == 1:
             sendCommand('trigger') # Trigger the thermode
         medmap_bids=medmap_bids.append(showFixation(win, ConditionName+" Heat ", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
 
         """
-        14. Post-Heat Fixation Cross
+        15. Post-Heat Fixation Cross
         """
         if debug==1:
             jitter2=1
@@ -498,14 +503,14 @@ for runs in runRange:
         medmap_bids=medmap_bids.append(showFixation(win, "Mid-Jitter", time=jitter2, biopacCode=midfixation), ignore_index=True)
 
         """
-        15. Begin post-trial self-report questions
+        16. Begin post-trial self-report questions
         """        
         rating_sound.play()
         medmap_bids=medmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
         medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
 
         """
-        16. Post-Question jitter
+        17. Post-Question jitter
         """
         if debug==1:
             jitter3=1
@@ -514,7 +519,7 @@ for runs in runRange:
         medmap_bids=medmap_bids.append(showFixation(win, "Post-Q-Jitter", time=jitter2, biopacCode=postfixation), ignore_index=True)
 
     """
-    16. Begin post-run self-report questions
+    18. Begin post-run self-report questions
     """        
     rating_sound.stop() # I think a stop needs to be introduced in order to play again.
     rating_sound.play()
@@ -537,10 +542,10 @@ for runs in runRange:
     rating_sound.stop() # Stop the sound so it can be played again.
 
     """
-    17. Save data into .TSV formats and Tying up Loose Ends
+    19. Save data into .TSV formats and Tying up Loose Ends
     """ 
     # Append constants to the entire run
-    medmap_bids['bodySite']=bodySites[runs]
+    medmap_bids['body_site']=bodySites[runs]
     medmap_bids['phase']=ConditionName
     medmap_bids['temperature']=temperature
 
@@ -549,18 +554,19 @@ for runs in runRange:
     medmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
 
     """
-    18. End of Run, Wait for Experimenter instructions to begin next run
+    20. End of Run, Wait for Experimenter instructions to begin next run
     """   
     nextRun(win)
     
     """
-    19. After the last Placebo Run, run the Hyperalignment and PinelLocalizer Scans 
+    21. After the last Placebo Run, run the Hyperalignment Scan 
     """
     if runs==5:
         fmriStart=confirmRunStart(win)
-        hyperalignment_bids=showMovie(win, movie, movie.name, inscapes)
+        hyperalignment_bids=showMovie(win, movie, movie.name, movieCode)
+
         """
-        20. Save hyperalignment data into its own .TSV
+        22. Save hyperalignment data into its own .TSV
         """ 
         hyperalignment_bids_data = pd.DataFrame([hyperalignment_bids])
         hyperalignment_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%d_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, 'hyperalignment', runs+2)
@@ -568,7 +574,7 @@ for runs in runRange:
         continue
         
 """
-21. Wrap up
+23. Wrap up
 """
 endScan(win)
 win.close()  # close the window
