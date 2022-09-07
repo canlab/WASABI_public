@@ -303,7 +303,7 @@ while turns <= turnLimit and score <= 70:
     
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
 
-    score = Practice_0back.tail(2)['score']
+    score = Practice_0back['score'].iloc(-2)
     turns = turns + 1
 
 while turns > turnLimit and score <= 70:
@@ -318,7 +318,7 @@ while turns > turnLimit and score <= 70:
     Practice_0back['handedness']=expInfo['handedness'] 
     Practice_0back['scanner']=expInfo['scanner']
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
-    score = Practice_0back.tail(2)['score']
+    score = Practice_0back['score'].iloc(-2)
     turns = turns+1
 
 """
@@ -429,7 +429,7 @@ while turns <= turnLimit and score <= 70:
 
     Practice_2back.to_csv(Practice_2back_bids_name, sep="\t")
 
-    score = Practice_2back.tail(2)['score']
+    score = Practice_2back['score'].iloc(-2)
     turns = turns + 1
 
 while turns > turnLimit and score <= 70:
@@ -445,7 +445,7 @@ while turns > turnLimit and score <= 70:
     Practice_2back['scanner']=expInfo['scanner']
     
     Practice_2back.to_csv(Practice_2back_bids_name, sep="\t")
-    score = Practice_2back.tail(2)['score']
+    score = Practice_2back['score'].iloc(-2)
     turns = turns + 1
 
 message = visual.TextStim(win, text=end_msg, height=0.05, units='height')
