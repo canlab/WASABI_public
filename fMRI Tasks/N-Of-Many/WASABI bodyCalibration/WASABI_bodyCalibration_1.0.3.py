@@ -232,12 +232,10 @@ if not os.path.exists(sub_dir):
 # varNames = ['onset', 'duration', 'value', 'bodySite', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopacCode']
 varNames = ['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
 bodyCalibration_bids=pd.DataFrame(columns=varNames)
-# bodyCalibration_bids=pd.DataFrame()
 
 # Create python lists to later concatenate or convert into pandas dataframes
 bodyCalibration_bids_total = []
 bodyCalibration_bids_trial = []
-bodyCalibration_bids = []
 
 averaged_data = []
 
@@ -425,7 +423,7 @@ for runs in runRange:
 
     bodyCalibration_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
     bodyCalibration_bids.to_csv(bodyCalibration_bids_filename, sep="\t")
-    bodyCalibration_bids = pd.DataFrame()
+    bodyCalibration_bids = pd.DataFrame(columns=varNames) # Reset collection
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run
