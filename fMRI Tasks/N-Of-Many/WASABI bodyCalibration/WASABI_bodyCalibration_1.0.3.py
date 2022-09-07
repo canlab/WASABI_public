@@ -398,8 +398,8 @@ for runs in runRange:
             wait(time=10)
         else:
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+            intensityRating=bodyCalibration_bids['value'].iloc[-1]
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
-
             toleranceRating=bodyCalibration_bids['value'].iloc[-1]
             bodyCalibration_total_trial =[]
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
