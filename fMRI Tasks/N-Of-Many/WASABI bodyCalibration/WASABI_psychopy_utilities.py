@@ -184,7 +184,7 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
         biopac.close()  # Close the labjack U3 device to end communication with the Biopac MP150
     win.close()  # close the window
     core.quit()
-
+    
 def wait(time=None, advanceKey=None):
     continueRoutine=True
     while continueRoutine == True:
@@ -195,8 +195,6 @@ def wait(time=None, advanceKey=None):
                 break
             continue
         continueRoutine = False
-
-
 
 def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), time=None, advanceKey='space', biopacCode=None, noRecord=False):
     """Show some text, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
@@ -372,7 +370,7 @@ def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), tim
     else:
         return
 
-def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, advanceKey=None, biopacCode=None, noRecord=False):
+def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.5, .5), time=None, advanceKey=None, biopacCode=None, noRecord=False):
     """Show an image, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
         
        Warning: Either 'time' or 'advanceKey' should be initialized, or you will be stuck and you need to press ['esc'].
@@ -420,7 +418,10 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
     # Update instructions and cues based on current run's body-sites:
   
     # keep track of which components have finished
-    ImageComponents = [Img, ImageKB]
+    if advanceKey is None:
+        ImageComponents = [Img]
+    else:
+        ImageComponents = [Img, ImageKB]
 
     for thisComponent in ImageComponents:
         thisComponent.tStart = None
@@ -457,7 +458,12 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
             Img.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(Img, 'tStartRefresh')  # time at next scr refresh
             Img.setAutoDraw(True)
-        
+            win.callOnFlip(print, "Showing "+name)
+            if biopac_exists == 1 and biopacCode is not None:
+                win.callOnFlip(print, "Cueing Off All Biopac Channels")   
+                win.callOnFlip(biopac.setData, biopac, 0)
+                win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
+                win.callOnFlip(biopac.setData, biopac, biopacCode)
         if Img.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
             if time is not None and tThisFlipGlobal > Img.tStartRefresh + time-frameTolerance:
@@ -467,34 +473,27 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
                 win.timeOnFlip(Img, 'tStopRefresh')  # time at next scr refresh
                 Img.setAutoDraw(False)
         
-        # *ImageKB* updates
-        waitOnFlip = False
-        if ImageKB.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            ImageKB.frameNStart = frameN  # exact frame index
-            ImageKB.tStart = t  # local t and not account for scr refresh
-            ImageKB.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(ImageKB, 'tStartRefresh')  # time at next scr refresh
-            ImageKB.status == STARTED
-            # is it time to stop? (based on global clock, using actual start)
-            if time is not None and tThisFlipGlobal > ImageKB.tStartRefresh + time-frameTolerance:
-                # keep track of stop time/frame for later
-                ImageKB.tStop = t  # not accounting for scr refresh
-                ImageKB.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
-                continueRoutine = False
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
-            win.callOnFlip(print, "Showing "+name)
-            if biopac_exists == 1 and biopacCode is not None:
-                win.callOnFlip(biopac.setData, biopac, 0)
-                win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
-                win.callOnFlip(biopac.setData, biopac, biopacCode)
-            win.callOnFlip(ImageKB.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(ImageKB.clearEvents, eventType='keyboard')  # clear events on next screen flip
-        if ImageKB.status == STARTED and not waitOnFlip:
-            if advanceKey is not None:            
+        if advanceKey is not None:
+            # *ImageKB* updates
+            waitOnFlip = False
+            if ImageKB.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                ImageKB.frameNStart = frameN  # exact frame index
+                ImageKB.tStart = t  # local t and not account for scr refresh
+                ImageKB.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(ImageKB, 'tStartRefresh')  # time at next scr refresh
+            if ImageKB.status == STARTED and not waitOnFlip:
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(ImageKB.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(ImageKB.clearEvents, eventType='keyboard')  # clear events on next screen flip
+                # is it time to stop? (based on global clock, using actual start)
+                if time is not None and tThisFlipGlobal > ImageKB.tStartRefresh + time-frameTolerance:
+                    # keep track of stop time/frame for later
+                    ImageKB.tStop = t  # not accounting for scr refresh
+                    ImageKB.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
+                    continueRoutine = False         
                 theseKeys = ImageKB.getKeys(keyList=advanceKey, waitRelease=False)
                 _ImageKB_allKeys.extend(theseKeys)
                 if len(_ImageKB_allKeys):
@@ -502,13 +501,6 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
                     ImageKB.rt = _ImageKB_allKeys[-1].rt
                     # a response ends the routine
                     continueRoutine = False
-            # is it time to stop? (based on global clock, using actual start)
-            if time is not None and tThisFlipGlobal > ImageKB.tStartRefresh + time-frameTolerance:
-                # keep track of stop time/frame for later
-                ImageKB.tStop = t  # not accounting for scr refresh
-                ImageKB.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
-                continueRoutine = False
         
         # Autoresponder
         if t >= thisSimKey.rt and autorespond == 1:
@@ -698,7 +690,6 @@ def showMovie(win, movie, name=None, biopacCode=None, noRecord=False):
         return bids_trial
     else:
         return
-
 
 def showFixation(win, name, type='big', size=None, pos=(0, 0), col='white', time=5, biopacCode=None, noRecord=False):
     """Wrapper function for creating a fixation cross for a a set period. Set the position, size, color, and time to offset. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional.
@@ -976,6 +967,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     RatingMouse.mouseClock = core.Clock()
     Rating = visual.Rect(win, height=ratingScaleHeight, width=abs(sliderMin), pos= [sliderMin/2, -.1], fillColor='red', lineColor='black')
     
+    rt = None
+
     if type is not "binary":
         BlackTriangle = visual.ShapeStim(
             win,
@@ -1023,6 +1016,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     if type=="unipolar":
         Rating.width = abs(sliderMin)
         Rating.pos = [sliderMin/2, -.1]
+    Rating.fillColor='red'
+    obtainedRating=0
 
     if type is not 'binary':
         RatingComponents = [RatingMouse, BlackTriangle, Rating, RatingAnchors, RatingPrompt]
@@ -1049,43 +1044,43 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
         onset = globalClock.getTime() - fmriStart
 
     while continueRoutine:
+        if obtainedRating==0:
+            timeNow = globalClock.getTime()
+            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                mouseRel=RatingMouse.getRel()
+                mouseX=oldMouseX + mouseRel[0]
 
-        timeNow = globalClock.getTime()
-        if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-            mouseRel=RatingMouse.getRel()
-            mouseX=oldMouseX + mouseRel[0]
+            if type == "binary":
+                if mouseX==0:
+                    sliderValue=0
+                    Rating.width = 0
+                else:
+                    if mouseX>0:
+                        Rating.pos = (.28,0)
+                        sliderValue=1
+                    elif mouseX<0:
+                        Rating.pos = (-.4,0)
+                        sliderValue=-1
+                    Rating.width = .5
+            if type == "unipolar":
+                Rating.pos = ((sliderMin + mouseX)/2,0)
+                Rating.width = abs((mouseX-sliderMin))
+            if type == "bipolar":
+                Rating.pos = (mouseX/2,0)
+                Rating.width = abs(mouseX)
+            if type in ["unipolar", "bipolar"]:
+                if mouseX > sliderMax:
+                    mouseX = sliderMax
+                if mouseX < sliderMin:
+                    mouseX = sliderMin
 
-        if type == "binary":
-            if mouseX==0:
-                sliderValue=0
-                Rating.width = 0
-            else:
-                if mouseX>0:
-                    Rating.pos = (.28,0)
-                    sliderValue=1
-                elif mouseX<0:
-                    Rating.pos = (-.4,0)
-                    sliderValue=-1
-                Rating.width = .5
-        if type == "unipolar":
-            Rating.pos = ((sliderMin + mouseX)/2,0)
-            Rating.width = abs((mouseX-sliderMin))
-        if type == "bipolar":
-            Rating.pos = (mouseX/2,0)
-            Rating.width = abs(mouseX)
-        if type in ["unipolar", "bipolar"]:
-            if mouseX > sliderMax:
-                mouseX = sliderMax
-            if mouseX < sliderMin:
-                mouseX = sliderMin
+            timeAtLastInterval = timeNow
+            oldMouseX=mouseX
 
-        timeAtLastInterval = timeNow
-        oldMouseX=mouseX
-
-        if type=="unipolar":
-            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
-        if type=="bipolar":
-            sliderValue = ((mouseX - sliderMin) / (sliderMax - sliderMin) * 200)-100
+            if type=="unipolar":
+                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            if type=="bipolar":
+                sliderValue = ((mouseX - sliderMin) / (sliderMax - sliderMin) * 200)-100
 
         # get current time
         t = RatingClock.getTime()
@@ -1103,6 +1098,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             win.timeOnFlip(RatingMouse, 'tStartRefresh')  # time at next scr refresh
             RatingMouse.status = STARTED
             RatingMouse.mouseClock.reset()
+            win.callOnFlip(RatingMouse.mouseClock.reset) # t=0 on next screen flip
+            win.callOnFlip(RatingMouse.clickReset) # t=0 on next screen flip
             prevButtonState = RatingMouse.getPressed()  # if button is down already this ISN'T a new click
         if RatingMouse.status == STARTED:  # only update if started and not finished!
             if tThisFlipGlobal > RatingMouse.tStartRefresh + time-frameTolerance:
@@ -1110,12 +1107,18 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
                 RatingMouse.tStop = t  # not accounting for scr refresh
                 RatingMouse.frameNStop = frameN  # exact frame index
                 RatingMouse.status = FINISHED
-            buttons = RatingMouse.getPressed()
+            buttons, rtNow = RatingMouse.getPressed(getTime=True)
+            rtNow=rtNow[0]
             if buttons != prevButtonState:  # button state changed?
                 prevButtonState = buttons
                 if sum(buttons) > 0:  # state changed to a new click
-                    # abort routine on response
-                    continueRoutine = False
+                    obtainedRating = 1
+                    rt=rtNow
+                    if time is not None:
+                        Rating.fillColor='white'
+                    else:
+                        # abort routine on response
+                        continueRoutine = False
         
         # *Rating* updates
         if Rating.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -1232,353 +1235,9 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     # the Routine "Rating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
+
     if noRecord==False:
-        bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
+        bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': rt, 'biopac_channel': biopacCode} 
         return bids_trial
     else:
         return
-
-
-def nback(win, name, answers, feedback=False, cheat=False, noRecord=False):
-    """
-    """
-    nback_fixation=187
-    nback_trial_start=188
-
-    nback_hit=190
-    nback_comiss=191
-
-    nback_feedback_pos=194
-    nback_feedback_miss=195
-    nback_feedback_neg=196
-    
-    # Initialize components for Routine "Nback_trial"
-    Nback_TrialClock = core.Clock()
-    grid_lines = visual.ImageStim(
-        win=win,
-        name='grid_lines', 
-        image='grid.png', mask=None,
-        ori=0, pos=(0, 0), size=(0.6, 0.6),
-        color=[1,1,1], colorSpace='rgb', opacity=1,
-        flipHoriz=False, flipVert=False,
-        texRes=128, interpolate=True, depth=0.0)
-    target_square = visual.Rect(
-        win=win, name='target_square',
-        width=(0.15, 0.15)[0], height=(0.15, 0.15)[1],
-        ori=0, pos=[0,0],
-        lineWidth=1, lineColor=None, lineColorSpace='rgb',
-        fillColor=[1.000,1.000,1.000], fillColorSpace='rgb',
-        opacity=1, depth=-1.0, interpolate=True)
-    fixation = visual.TextStim(win=win, name='fixation_1',
-        text='+',
-        font='Arial',
-        pos=(0, 0), height=0.05, wrapWidth=None, ori=0, 
-        color='white', colorSpace='rgb', opacity=1, 
-        languageStyle='LTR',
-        depth=-2.0)
-    response = event.Mouse(win=win)
-    response.mouseClock = core.Clock()
-
-    incorrect_text = "Incorrect!"
-    noresponse_text = "No Response!"
-    correct_text = "Correct!"
-
-    Feedback = visual.TextStim(win=win, name='Feedback',
-        text="",
-        font='Arial',
-        pos=(0, -0.35), units='height', height=0.05, 
-        color='white', colorSpace='rgb', opacity=1)
-
-    # Initialize components for Routine "ScoreReport"
-    ScoreReportClock = core.Clock()
-    ScoreReportText = visual.TextStim(win=win, name='ScoreReportText',
-        text='This text is for reporting your score performance.',
-        font='Arial', wrapWidth=1.75,
-        pos=(0, 0.0), units='height', height=0.05, 
-        color='white', colorSpace='rgb', opacity=1)
-    ScoreReportResponse = keyboard.Keyboard()
-
-    # Initialize components for Routine "Fixation"
-    FixationClock = core.Clock()
-
-    nback_bids=pd.DataFrame()
-
-    # Pre-Fixation Cross
-    nback_bids=nback_bids.append(showFixation(win, time=1, biopacCode=nback_fixation))
-
-    """ 
-    8ii. N-back Start
-    """
-    thisExp = data.ExperimentHandler(name=name, 
-        runtimeInfo=None,
-        savePickle=True, saveWideText=True)
-
-    trials = data.TrialHandler(nReps=1, method='sequential', originPath=-1,
-        trialList=data.importConditions(answers),
-        seed=None, name='trials')
-
-    thisExp.addLoop(trials)  # add the loop to the experiment
-    thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
-    # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
-    if thisTrial != None:
-        for paramName in thisTrial:
-            exec('{} = thisTrial[paramName]'.format(paramName))
-
-    for thisTrial in trials:
-        currentLoop = trials
-        # abbreviate parameter names if possible (e.g. rgb = thisTrial.rgb)
-        if thisTrial != None:
-            for paramName in thisTrial:
-                exec('{} = thisTrial[paramName]'.format(paramName))
-        
-        # ------Prepare to start Routine "Nback_Trial"-------
-        continueRoutine = True
-        routineTimer.add(2.000000)          # Each trial is 2 seconds
-        feedbacktype = "none"
-        # update component parameters for each repeat
-        target_square.setPos(location)
-        response.rt = []
-
-        gotValidClick = False  # until a click is received
-
-        # keep track of which components have finished
-        if feedback is True:
-            Nback_TrialComponents = [grid_lines, target_square, fixation, response, Feedback]
-        else:
-            Nback_TrialComponents = [grid_lines, target_square, fixation, response]
-
-        for thisComponent in Nback_TrialComponents:
-            thisComponent.tStart = None
-            thisComponent.tStop = None
-            thisComponent.tStartRefresh = None
-            thisComponent.tStopRefresh = None
-            if hasattr(thisComponent, 'status'):
-                thisComponent.status = NOT_STARTED
-        # reset timers
-        t = 0
-        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        Nback_TrialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-        frameN = -1
-        
-        # -------Run Routine "Nback_Trial"-------
-        while continueRoutine and routineTimer.getTime() > 0:
-            # gotValidClick = False
-            # get current time
-            t = Nback_TrialClock.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=Nback_TrialClock)
-            tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-            # update/draw components on each frame
-            
-            # *grid_lines* updates
-            if grid_lines.status == NOT_STARTED and tThisFlip >= 0-frameTolerance:
-                # keep track of start time/frame for later
-                grid_lines.frameNStart = frameN  # exact frame index
-                grid_lines.tStart = t  # local t and not account for scr refresh
-                grid_lines.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(grid_lines, 'tStartRefresh')  # time at next scr refresh
-                if biopac_exists == 1:
-                    win.callOnFlip(biopac.setData, biopac, 0)
-                    win.callOnFlip(biopac.setData, biopac, nback_trial_start)
-                grid_lines.setAutoDraw(True)
-            if grid_lines.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > grid_lines.tStartRefresh + 2-frameTolerance:
-                    # keep track of stop time/frame for later
-                    grid_lines.tStop = t  # not accounting for scr refresh
-                    grid_lines.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(grid_lines, 'tStopRefresh')  # time at next scr refresh
-                    grid_lines.setAutoDraw(False)
-            
-            # *target_square* updates
-            if target_square.status == NOT_STARTED and tThisFlip >= 0-frameTolerance:
-                # keep track of start time/frame for later
-                target_square.frameNStart = frameN  # exact frame index
-                target_square.tStart = t  # local t and not account for scr refresh
-                target_square.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(target_square, 'tStartRefresh')  # time at next scr refresh
-                target_square.setAutoDraw(True)
-            if target_square.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > target_square.tStartRefresh + 1-frameTolerance:
-                    # keep track of stop time/frame for later
-                    target_square.tStop = t  # not accounting for scr refresh
-                    target_square.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(target_square, 'tStopRefresh')  # time at next scr refresh
-                    target_square.setAutoDraw(False)
-            
-            # *fixation* updates
-            if fixation.status == NOT_STARTED and tThisFlip >= 1-frameTolerance:
-                # keep track of start time/frame for later
-                fixation.frameNStart = frameN  # exact frame index
-                fixation.tStart = t  # local t and not account for scr refresh
-                fixation.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(fixation, 'tStartRefresh')  # time at next scr refresh
-                fixation.setAutoDraw(True)
-            if fixation.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > fixation.tStartRefresh + 1.0-frameTolerance:
-                    # keep track of stop time/frame for later
-                    fixation.tStop = t  # not accounting for scr refresh
-                    fixation.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(fixation, 'tStopRefresh')  # time at next scr refresh
-                    fixation.setAutoDraw(False)
-            
-            # *response* updates
-            waitOnFlip = False
-            if response.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                response.frameNStart = frameN  # exact frame index
-                response.tStart = t  # local t and not account for scr refresh
-                response.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(response, 'tStartRefresh')  # time at next scr refresh
-                response.status = STARTED
-                # keyboard checking is just starting
-                waitOnFlip = True
-                win.callOnFlip(response.mouseClock.reset) # t=0 on next screen flip
-                win.callOnFlip(response.clickReset) # t=0 on next screen flip
-                prevButtonState = response.getPressed()  # if button is down already this ISN'T a new click
-            if response.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > response.tStartRefresh + 2-frameTolerance:
-                    # keep track of stop time/frame for later
-                    response.tStop = t  # not accounting for scr refresh
-                    response.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(response, 'tStopRefresh')  # time at next scr refresh
-                    response.status = FINISHED
-            if response.status == STARTED and not waitOnFlip:
-                response.click, response.rt = response.getPressed(getTime = True)
-                response.click_left = response.click[0]
-                response.click_right = response.click[2]
-                response.rt_left = response.rt[0]
-                response.rt_right = response.rt[2]
-                if response.click_left != prevButtonState[0] or response.click_right != prevButtonState[2]:  # button state changed?
-                    prevButtonState = response.click
-                    if (response.click_left == 1 or response.click_right == 1) and gotValidClick == False:
-                        print(str(response.click), str(response.rt))
-                        if (corrAns == 1 and response.click_left == 1) or (corrAns == 0 and response.click_right == 1):
-                            response.corr = 1
-                            correct = correct + 1
-                            Feedback.setText(correct_text)
-                            feedbacktype = "pos"
-                            if biopac_exists:
-                                biopac.setData(biopac, 0)
-                                biopac.setData(biopac, nback_hit)
-                        else:
-                            response.corr = 0
-                            Feedback.setText(incorrect_text)
-                            feedbacktype = "neg"
-                            if biopac_exists:
-                                biopac.setData(biopac, 0)
-                                biopac.setData(biopac, nback_comiss) # mark comission error
-                        if response.click_left == 1: 
-                            mouse_response = 0; 
-                            mouse_response_rt = response.rt_left
-                        elif response.click_right == 1: 
-                            mouse_response = 2 
-                            mouse_response_rt = response.rt_right
-                        gotValidClick = True
-                elif response.click_left == 0 and response.click_right == 0 and gotValidClick==False:  # No response was made
-                    mouse_response = None
-                    mouse_response_rt = None
-                    if str(corrAns).lower() != 'none':
-                        Feedback.setText(noresponse_text)
-                        feedbacktype = "miss"
-                    else:
-                        Feedback.setText("")
-            
-            if feedback is True:
-                # *Feedback* updates
-                waitOnFlip = False
-                if Feedback.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                    # keep track of start time/frame for later
-                    Feedback.frameNStart = frameN  # exact frame index
-                    Feedback.tStart = t  # local t and not account for scr refresh
-                    Feedback.tStartRefresh = tThisFlipGlobal  # on global time
-                    win.timeOnFlip(Feedback, 'tStartRefresh')  # time at next scr refresh
-                    Feedback.status = STARTED
-                    Feedback.setAutoDraw(False)
-
-
-            # check for quit (typically the Esc key)
-            if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-                core.quit()
-            
-            # check if all components have finished
-            if not continueRoutine:  # a component has requested a forced-end of Routine
-                break
-            continueRoutine = False  # will revert to True if at least one component still running
-            for thisComponent in Nback_TrialComponents:
-                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                    continueRoutine = True
-                    break  # at least one component has not yet finished
-            
-            # refresh the screen
-            if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-                if feedback is True:
-                    if 1 < Nback_TrialClock.getTime() < 1.75:
-                        Feedback.draw()
-                        if biopac_exists:
-                            if feedbacktype == "pos":
-                                biopac.setData(biopac, nback_feedback_pos)
-                            if feedbacktype == "neg":
-                                biopac.setData(biopac, nback_feedback_neg)
-                            if feedbacktype == "miss":
-                                biopac.setData(biopac, nback_feedback_miss)
-                else:
-                    if biopac_exists:
-                        biopac.setData(biopac, 0)
-                win.flip()
-        
-        # -------Ending Routine "Nback_Trial"-------
-        if biopac_exists:
-            biopac.setData(biopac, 0)
-        for thisComponent in Nback_TrialComponents:
-            if hasattr(thisComponent, "setAutoDraw"):
-                thisComponent.setAutoDraw(False)
-        
-        if gotValidClick==False:  # No response was made
-            response_2.rt = None
-            if str(corrAns).lower() == 'none':
-                response.corr=1
-                correct = correct + 1
-            else:
-                response.corr = 0;  # failed to respond (incorrectly)
-                Feedback.setText(noresponse_text)
-
-        thisExp.nextEntry()
-
-        if noRecord==False:
-            # bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
-            bids_trial={'onset': grid_lines.tStartRefresh, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, "condition": name} 
-            nback_bids=nback_bids.append(bids_trial)
-
-    """ 
-    8iii. Nback Score Report
-    """
-    if cheat == 1:
-        score = 100
-    else:
-        score = correct*100/trials.nTotal
-
-    # Score Feedback Text
-    ScoreText = "Your score was " + str(score)
-
-    TryAgainText = "Let's try that again...\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
-    PassedText = "Okay! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
-    PerfectText = "Perfect! Let's move on.\n\n\n" + ScoreText + "\n\n\n\nExperimenter press [Space] to continue."
-
-    if (score <= 70):
-        ScoreReportText=TryAgainText
-        nback_feedback = nback_feedback_neg
-    if (score > 70):
-        ScoreReportText=PassedText
-        nback_feedback = nback_feedback_pos
-    if (score == 100):
-        ScoreReportText=PerfectText
-        nback_feedback = nback_feedback_pos
-
-    nback_bids=nback_bids.append(showText(win, "ScoreReport", text=ScoreReportText, advanceKey='space', biopacCode=nback_feedback))
-    nback_bids["score"]= score
-
-    return nback_bids
