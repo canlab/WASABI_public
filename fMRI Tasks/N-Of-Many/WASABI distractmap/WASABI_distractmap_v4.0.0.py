@@ -25,11 +25,27 @@ The paradigm will generate these files of name:
 
 x16 trials per file with the following
 headers:
-'onset','duration','rt','response','correct','attempt','condition'
 
-'onset', 'duration', 'rt', 'response', 'correct', 'bodySite', 'temperature', 'condition', 'pretrial-jitter', 'posttrial-jitter'
+'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt'	'mouseclick'	'correct'	'condition'	'score' 'biopac_channel'
 
-'onset', 'duration', 'bodySite', 'intensity', 'temperature', 'condition', 'posttrial-jitter'
+SID: DBIC Subject ID
+date: the mm/dd/yyyy date
+gender
+session
+handedness
+scanner: Initials of the scan operator of the day. 
+onset: seconds
+duration: seconds
+temperature
+body_site
+condition: string
+rt: seconds
+mouseclick: 
+    0: left click, 1: middle click, 2: right click
+correct:
+    0: False, 1: True
+score: float
+biopac_channel
 
 Design 4.0.0 of the Distractmap was generated because, we wanted to randomly switch between 0-back and 2-back conditions, but also have participants have these skills practiced before they enter the scanner.
 The 0-back condition is supposed to control for visual stimulation and motor movement relative to the 2-back condition.
@@ -233,10 +249,10 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
-
 """
 4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
+cueImg = os.sep.join([stimuli_dir, "cue", "thermode.png"])
 ## Check gender for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
 if expInfo['gender'] in {"M", "m", "Male", "male"}:
@@ -262,14 +278,15 @@ bodysite_word2heatcode = {"Left Face": leftface_heat,
                         "Abdomen": abdomen_heat 
                         }
 
-
 """
 5. Prepare files to write
 """
 sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-nback_bids=pd.DataFrame()
+
+varNames=['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt', 'mouseclick', 'correct', 'condition', 'score', 'biopac_channel']
+nback_bids=pd.DataFrame(columns=varNames)
 
 """
 5. Initialize Custom Components
@@ -279,13 +296,14 @@ start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
 end_msg = 'Please wait for instructions from the experimenter'
 
-InstructionText = "Welcome to N-back testing. \n\nRemember your practice, \nLeft Click for \"yes\" and Right Click for \"no\"\n\nPlease wait for the experimenter to press [Space]."
+InstructionText = "Welcome to N-back testing. \n\nRemember your practice, \nLeft Click for \"yes\" and Right Click for \"no\"\n\nWe will add some difficulty by periodically sending painful thermal stimulations to a designated body-site. \nDuring the task it is very important that you respond as fast and as accurately as possible.\n\n\nYou should try to respond shortly after the square is presented. This might be difficult, so it is important that you concentrate!\n\nExperimenter press [Space] to continue."
 
 # Rating question text
 painText="Was that painful?"
 trialIntensityText="How intense was the heat stimulation?"
+distractText="Was the pain distracting?"
 
-stimtrialTime = 20 # This becomes very unreliable with the use of poll_for_change().
+stimtrialTime = 15 # This becomes very unreliable with the use of poll_for_change().
 
 if debug==1:
     ratingTime = 1 # Rating Time limit in seconds during the inter-stimulus-interval
@@ -297,7 +315,7 @@ defaultKeyboard = keyboard.Keyboard()
 
 # 06/29/2022: Tor suggested we impose mini-blocks of each condition
 # Number of trials per mini-block of each of 4 conditions.
-trials_per_block=2
+trials_per_block=3
 
 # 06/29/2022: Tor suggested we add an audio ding
 rating_sound=mySound=sound.Sound('B', octave=5, stereo=1, secs=.5)  
@@ -514,9 +532,9 @@ ClickToStartText = "Click to start practice"
 
 # 6/29/2022: Tor's suggestion: Mini-blocks of 3 trials each.
 # 1. 1x 0-back Task - no-stimulation                       [3 trials]
-# 2. 2x 0-back Task - high-heat stimulation (~49 degrees)  [6 trials]
+# 2. 2x 0-back Task - Cue + high-heat stimulation (~49 degrees)  [6 trials]
 # 3. 1x 2-back Task - No Stimulation                       [3 trials]
-# 4. 2x 2-back Task - high-heat stimulation (~49 degrees)  [6 trials]
+# 4. 2x 2-back Task - Cue + high-heat stimulation (~49 degrees)  [6 trials]
 # There should be no back-to-back repetitions of blocks of the same condition
 
 BigTrialList = [[4, 1, 2, 3, 4, 2], 
@@ -602,6 +620,10 @@ for runs in range(len(bodySites)):
                 Nback = os.sep.join([nback_dir, ZerobackFiles.pop()])
                 
                 if r==2:
+                    # Show Heat Cue
+                    # Need a biopac code
+                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue, ignore_index=True))
+
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
@@ -620,6 +642,7 @@ for runs in range(len(bodySites)):
                     rating_sound.play() # Play a sound to ensure the participant is awake.
                     nback_bids=nback_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
                     nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+                    nback_bids=nback_bids.append(showRatingScale(win, "DistractBinary", distractText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=distract_binary), ignore_index=True)
                     rating_sound.stop()
 
                     """
@@ -692,6 +715,7 @@ for runs in range(len(bodySites)):
                     rating_sound.play() # Play a sound to ensure the participant is awake.
                     nback_bids=nback_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
                     nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+                    nback_bids=nback_bids.append(showRatingScale(win, "DistractBinary", distractText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=distract_binary), ignore_index=True)
                     rating_sound.stop()
                     
                     """
@@ -730,12 +754,18 @@ for runs in range(len(bodySites)):
     17. Save data into .TSV formats and Tying up Loose Ends
     """ 
     # Append constants to the entire run
-    nback_bids['bodySite']=bodySites[runs]
-
+    nback_bids['SID']=expInfo['DBIC Number']
+    nback_bids['date']=expInfo['date']
+    nback_bids['gender']=expInfo['gender']
+    nback_bids['session']=expInfo['session']
+    nback_bids['handedness']=expInfo['handedness']
+    nback_bids['scanner']=expInfo['scanner']
+    nback_bids['body_site']=bodySites[runs]
+    
     nback_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    
     nback_bids.to_csv(nback_bidsfilename, sep="\t")
-    # nback_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
-    nback_bids=pd.DataFrame()
+    nback_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run
@@ -746,8 +776,6 @@ for runs in range(len(bodySites)):
 19. Wrap up
 """
 endScan(win)
-win.close()  # close the window
-core.quit()
 
 """
 End of Experiment

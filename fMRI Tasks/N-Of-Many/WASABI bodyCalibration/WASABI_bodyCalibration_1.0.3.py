@@ -34,9 +34,9 @@ The paradigm will generate 8x of these files of name:
 sub-SIDXXXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
 
 Trials per file are defined by the following headers:
-'onset', 'duration', 'repetition', 'rating', 'bodySite', 'temperature', 'condition', 'pretrial-jitter'
+'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
 
-With version 1.02, the stimulation duration was extended to 20 seconds.
+With version 1.03, the stimulation duration was reduced to 15 seconds at peak time. Edits were made to the bids dataframe. 
 
 0a. Import Libraries
 """
@@ -196,6 +196,7 @@ else:
 """
 4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
+cueImg = os.sep.join([stimuli_dir, "cue", "thermode.png"])
 ## Check gender for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
 if expInfo['gender'] in {"M", "m", "Male", "male"}:
@@ -229,8 +230,9 @@ if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
 # varNames = ['onset', 'duration', 'value', 'bodySite', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopacCode']
-# bodyCalibration_bids=pd.DataFrame(columns=varNames)
-bodyCalibration_bids=pd.DataFrame()
+varNames = ['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
+bodyCalibration_bids=pd.DataFrame(columns=varNames)
+# bodyCalibration_bids=pd.DataFrame()
 
 # Create python lists to later concatenate or convert into pandas dataframes
 bodyCalibration_bids_total = []
@@ -414,6 +416,13 @@ for runs in runRange:
     """
     17. Save data into .TSV formats and Tying up Loose Ends
     """ 
+    bodyCalibration_bids['SID']=expInfo['DBIC Number']
+    bodyCalibration_bids['date']=expInfo['date']
+    bodyCalibration_bids['gender']=expInfo['gender']
+    bodyCalibration_bids['session']=expInfo['session']
+    bodyCalibration_bids['handedness']=expInfo['handedness']
+    bodyCalibration_bids['scanner']=expInfo['scanner']
+
     bodyCalibration_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
     bodyCalibration_bids.to_csv(bodyCalibration_bids_filename, sep="\t")
     bodyCalibration_bids = pd.DataFrame()

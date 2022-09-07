@@ -185,6 +185,17 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
     win.close()  # close the window
     core.quit()
 
+def wait(time=None, advanceKey=None):
+    continueRoutine=True
+    while continueRoutine == True:
+        timer = core.CountdownTimer()
+        timer.add(time)
+        while timer.getTime() > 0:
+            if advanceKey in event.getKeys(keyList = advanceKey):         # experimenter start key - safe key before fMRI trigger
+                break
+            continue
+        continueRoutine = False
+
 def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), time=None, advanceKey='space', biopacCode=None, noRecord=False):
     """Show some text, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
         You're responsible for your own word-wrapping! Use \n or something.
@@ -359,7 +370,7 @@ def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), tim
     else:
         return
 
-def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, advanceKey=None, biopacCode=None, noRecord=False):
+def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.5, .5), time=None, advanceKey=None, biopacCode=None, noRecord=False):
     """Show an image, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
         
        Warning: Either 'time' or 'advanceKey' should be initialized, or you will be stuck and you need to press ['esc'].
@@ -407,7 +418,10 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
     # Update instructions and cues based on current run's body-sites:
   
     # keep track of which components have finished
-    ImageComponents = [Img, ImageKB]
+    if advanceKey is None:
+        ImageComponents = [Img]
+    else:
+        ImageComponents = [Img, ImageKB]
 
     for thisComponent in ImageComponents:
         thisComponent.tStart = None
@@ -444,7 +458,12 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
             Img.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(Img, 'tStartRefresh')  # time at next scr refresh
             Img.setAutoDraw(True)
-        
+            win.callOnFlip(print, "Showing "+name)
+            if biopac_exists == 1 and biopacCode is not None:
+                win.callOnFlip(print, "Cueing Off All Biopac Channels")   
+                win.callOnFlip(biopac.setData, biopac, 0)
+                win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
+                win.callOnFlip(biopac.setData, biopac, biopacCode)
         if Img.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
             if time is not None and tThisFlipGlobal > Img.tStartRefresh + time-frameTolerance:
@@ -454,34 +473,27 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
                 win.timeOnFlip(Img, 'tStopRefresh')  # time at next scr refresh
                 Img.setAutoDraw(False)
         
-        # *ImageKB* updates
-        waitOnFlip = False
-        if ImageKB.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            ImageKB.frameNStart = frameN  # exact frame index
-            ImageKB.tStart = t  # local t and not account for scr refresh
-            ImageKB.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(ImageKB, 'tStartRefresh')  # time at next scr refresh
-            ImageKB.status == STARTED
-            # is it time to stop? (based on global clock, using actual start)
-            if time is not None and tThisFlipGlobal > ImageKB.tStartRefresh + time-frameTolerance:
-                # keep track of stop time/frame for later
-                ImageKB.tStop = t  # not accounting for scr refresh
-                ImageKB.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
-                continueRoutine = False
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
-            win.callOnFlip(print, "Showing "+name)
-            if biopac_exists == 1 and biopacCode is not None:
-                win.callOnFlip(biopac.setData, biopac, 0)
-                win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
-                win.callOnFlip(biopac.setData, biopac, biopacCode)
-            win.callOnFlip(ImageKB.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(ImageKB.clearEvents, eventType='keyboard')  # clear events on next screen flip
-        if ImageKB.status == STARTED and not waitOnFlip:
-            if advanceKey is not None:            
+        if advanceKey is not None:
+            # *ImageKB* updates
+            waitOnFlip = False
+            if ImageKB.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                ImageKB.frameNStart = frameN  # exact frame index
+                ImageKB.tStart = t  # local t and not account for scr refresh
+                ImageKB.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(ImageKB, 'tStartRefresh')  # time at next scr refresh
+            if ImageKB.status == STARTED and not waitOnFlip:
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(ImageKB.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(ImageKB.clearEvents, eventType='keyboard')  # clear events on next screen flip
+                # is it time to stop? (based on global clock, using actual start)
+                if time is not None and tThisFlipGlobal > ImageKB.tStartRefresh + time-frameTolerance:
+                    # keep track of stop time/frame for later
+                    ImageKB.tStop = t  # not accounting for scr refresh
+                    ImageKB.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
+                    continueRoutine = False         
                 theseKeys = ImageKB.getKeys(keyList=advanceKey, waitRelease=False)
                 _ImageKB_allKeys.extend(theseKeys)
                 if len(_ImageKB_allKeys):
@@ -489,13 +501,6 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
                     ImageKB.rt = _ImageKB_allKeys[-1].rt
                     # a response ends the routine
                     continueRoutine = False
-            # is it time to stop? (based on global clock, using actual start)
-            if time is not None and tThisFlipGlobal > ImageKB.tStartRefresh + time-frameTolerance:
-                # keep track of stop time/frame for later
-                ImageKB.tStop = t  # not accounting for scr refresh
-                ImageKB.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
-                continueRoutine = False
         
         # Autoresponder
         if t >= thisSimKey.rt and autorespond == 1:
@@ -963,6 +968,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     RatingMouse.mouseClock = core.Clock()
     Rating = visual.Rect(win, height=ratingScaleHeight, width=abs(sliderMin), pos= [sliderMin/2, -.1], fillColor='red', lineColor='black')
     
+    rt = None
+
     if type is not "binary":
         BlackTriangle = visual.ShapeStim(
             win,
@@ -1010,6 +1017,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     if type=="unipolar":
         Rating.width = abs(sliderMin)
         Rating.pos = [sliderMin/2, -.1]
+    Rating.fillColor='red'
+    obtainedRating=0
 
     if type is not 'binary':
         RatingComponents = [RatingMouse, BlackTriangle, Rating, RatingAnchors, RatingPrompt]
@@ -1036,43 +1045,43 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
         onset = globalClock.getTime() - fmriStart
 
     while continueRoutine:
+        if obtainedRating==0:
+            timeNow = globalClock.getTime()
+            if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
+                mouseRel=RatingMouse.getRel()
+                mouseX=oldMouseX + mouseRel[0]
 
-        timeNow = globalClock.getTime()
-        if (timeNow - timeAtLastInterval) > TIME_INTERVAL:
-            mouseRel=RatingMouse.getRel()
-            mouseX=oldMouseX + mouseRel[0]
+            if type == "binary":
+                if mouseX==0:
+                    sliderValue=0
+                    Rating.width = 0
+                else:
+                    if mouseX>0:
+                        Rating.pos = (.28,0)
+                        sliderValue=1
+                    elif mouseX<0:
+                        Rating.pos = (-.4,0)
+                        sliderValue=-1
+                    Rating.width = .5
+            if type == "unipolar":
+                Rating.pos = ((sliderMin + mouseX)/2,0)
+                Rating.width = abs((mouseX-sliderMin))
+            if type == "bipolar":
+                Rating.pos = (mouseX/2,0)
+                Rating.width = abs(mouseX)
+            if type in ["unipolar", "bipolar"]:
+                if mouseX > sliderMax:
+                    mouseX = sliderMax
+                if mouseX < sliderMin:
+                    mouseX = sliderMin
 
-        if type == "binary":
-            if mouseX==0:
-                sliderValue=0
-                Rating.width = 0
-            else:
-                if mouseX>0:
-                    Rating.pos = (.28,0)
-                    sliderValue=1
-                elif mouseX<0:
-                    Rating.pos = (-.4,0)
-                    sliderValue=-1
-                Rating.width = .5
-        if type == "unipolar":
-            Rating.pos = ((sliderMin + mouseX)/2,0)
-            Rating.width = abs((mouseX-sliderMin))
-        if type == "bipolar":
-            Rating.pos = (mouseX/2,0)
-            Rating.width = abs(mouseX)
-        if type in ["unipolar", "bipolar"]:
-            if mouseX > sliderMax:
-                mouseX = sliderMax
-            if mouseX < sliderMin:
-                mouseX = sliderMin
+            timeAtLastInterval = timeNow
+            oldMouseX=mouseX
 
-        timeAtLastInterval = timeNow
-        oldMouseX=mouseX
-
-        if type=="unipolar":
-            sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
-        if type=="bipolar":
-            sliderValue = ((mouseX - sliderMin) / (sliderMax - sliderMin) * 200)-100
+            if type=="unipolar":
+                sliderValue = (mouseX - sliderMin) / (sliderMax - sliderMin) * 100
+            if type=="bipolar":
+                sliderValue = ((mouseX - sliderMin) / (sliderMax - sliderMin) * 200)-100
 
         # get current time
         t = RatingClock.getTime()
@@ -1090,6 +1099,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             win.timeOnFlip(RatingMouse, 'tStartRefresh')  # time at next scr refresh
             RatingMouse.status = STARTED
             RatingMouse.mouseClock.reset()
+            win.callOnFlip(RatingMouse.mouseClock.reset) # t=0 on next screen flip
+            win.callOnFlip(RatingMouse.clickReset) # t=0 on next screen flip
             prevButtonState = RatingMouse.getPressed()  # if button is down already this ISN'T a new click
         if RatingMouse.status == STARTED:  # only update if started and not finished!
             if tThisFlipGlobal > RatingMouse.tStartRefresh + time-frameTolerance:
@@ -1097,12 +1108,18 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
                 RatingMouse.tStop = t  # not accounting for scr refresh
                 RatingMouse.frameNStop = frameN  # exact frame index
                 RatingMouse.status = FINISHED
-            buttons = RatingMouse.getPressed()
+            buttons, rtNow = RatingMouse.getPressed(getTime=True)
+            rtNow=rtNow[0]
             if buttons != prevButtonState:  # button state changed?
                 prevButtonState = buttons
                 if sum(buttons) > 0:  # state changed to a new click
-                    # abort routine on response
-                    continueRoutine = False
+                    obtainedRating = 1
+                    rt=rtNow
+                    if time is not None:
+                        Rating.fillColor='white'
+                    else:
+                        # abort routine on response
+                        continueRoutine = False
         
         # *Rating* updates
         if Rating.status == NOT_STARTED and t >= 0.0-frameTolerance:
@@ -1219,15 +1236,30 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     # the Routine "Rating" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 
+
     if noRecord==False:
-        bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
+        bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': rt, 'biopac_channel': biopacCode} 
         return bids_trial
     else:
         return
 
 
 def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
-    """
+    """Start a spatial n-back task.
+
+    Args:
+        win (visual.Window): Pass in the Window to draw text to. 
+        name (str): String name of the type of nback task being shown. e.g., "2-back".
+        answers (str): filepath of the excel file containing the answers of the nback, dictating the trial sequence.
+        feedback (bool, optional): Boolean determining whether participant receives trial-by-trial feedback. Defaults to False.
+        cheat (bool, optional): Boolean determining whether participants should always get 100%. Defaults to False.
+        nofMRI (bool, optional): Time to display the rating scale on screen in seconds. Defaults to False.
+
+    Raises:
+        Exception: Type exception if string type specified is not 'binary', 'unipolar', or 'bipolar'.
+
+    Returns:
+        dict: The Dictionary of onset, duration, and condition to be concatenated into your BIDS datafile.
     """
     nback_fixation=187
     nback_trial_start=188
@@ -1508,21 +1540,17 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
             else:
                 response.corr = 0;  # failed to respond (incorrectly)
                 Feedback.setText(noresponse_text)
-
+        if cheat == 1:
+            score = 100
+        else:
+            score = correct*100/trials.nTotal
         thisExp.nextEntry()
-
-        # bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
-        bids_trial={'onset': grid_lines.tStartRefresh, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, "condition": name} 
+        bids_trial={'onset': grid_lines.tStartRefresh, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, 'condition': name, 'score': score} 
         nback_bids=nback_bids.append(bids_trial, ignore_index=True)
 
     """ 
     8iii. Nback Score Report
     """
-    if cheat == 1:
-        score = 100
-    else:
-        score = correct*100/trials.nTotal
-
     if nofMRI==True:
         # Score Feedback Text
         ScoreText = "Your score was " + str(score)
@@ -1534,7 +1562,6 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
         TryAgainText = ScoreText + "\n\nLet's try that again...\n\nBeat your score." 
         PassedText = ScoreText + "\n\nOkay! Not bad.\n\nTry to beat this score." 
         PerfectText = ScoreText + "\n\nPerfect!\n\nKeep it up." 
-
 
     if (score <= 70):
         ScoreReportText=TryAgainText
@@ -1555,7 +1582,5 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
             timeOut=5
 
         nback_bids=nback_bids.append(showText(win, "ScoreReport", text=ScoreReportText, time=timeOut, biopacCode=nback_feedback, noRecord=nofMRI), ignore_index=True)
-
-    nback_bids["score"]= score
 
     return nback_bids

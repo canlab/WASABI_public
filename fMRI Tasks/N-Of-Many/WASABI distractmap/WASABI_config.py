@@ -168,6 +168,7 @@ instruction_code=198
 
 pain_binary=42
 intensity_rating=43
+distract_binary=44
 
 valence_rating=39
 trialIntensity_rating=40

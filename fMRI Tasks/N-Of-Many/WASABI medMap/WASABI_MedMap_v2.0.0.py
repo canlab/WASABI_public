@@ -26,7 +26,7 @@ As a consequence, in one day, correct running of these paradigms will generate 8
 sub-SIDXXXXX_ses-XX_task-medmap_acq-[bodySite]_run-X_events.tsv
 
 Each file will consist of the following headers:
-onset   duration    intensity   bodySite    temperature condition   pretrial-jitter
+'SID', 'day', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel'
 
 Troubleshooting Tips:
 If you get window-related errors, make sure to downgrade pyglet to 1.4.1:
@@ -325,8 +325,8 @@ sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Numb
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-# varNames = ['onset', 'duration', 'value', 'bodySite', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopacCode']
-medmap_bids=pd.DataFrame()
+varNames = ['SID', 'day', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel']
+medmap_bids=pd.DataFrame(columns=varNames)
 
 """
 5. Initialize Trial-level Components
@@ -545,6 +545,12 @@ for runs in runRange:
     19. Save data into .TSV formats and Tying up Loose Ends
     """ 
     # Append constants to the entire run
+    medmap_bids['SID']=expInfo['DBIC Number']
+    medmap_bids['day']=expInfo['first(1) or second(2) day']
+    medmap_bids['gender']=expInfo['gender']
+    medmap_bids['session']=expInfo['session']
+    medmap_bids['handedness']=expInfo['handedness'] 
+    medmap_bids['scanner']=expInfo['scanner']
     medmap_bids['body_site']=bodySites[runs]
     medmap_bids['phase']=ConditionName
     medmap_bids['temperature']=temperature

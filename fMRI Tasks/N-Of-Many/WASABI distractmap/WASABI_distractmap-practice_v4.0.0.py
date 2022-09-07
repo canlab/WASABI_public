@@ -20,8 +20,14 @@ The paradigm will generate these files of name:
 1x sub-SIDXXXXXX_ses-XX_task-distractmap-Practice0back_acq-turn-X_events.tsv
 
 with the following headers:
-'onset'	'duration'	'rt'	'mouseclick'	'correct'	'condition'	'score'
+'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'condition', 'rt'	'mouseclick'	'correct'	'condition'	'score' 'biopac_channel'
 
+SID: DBIC Subject ID
+day: First or second day of Distract Maps
+gender
+session
+handedness
+scanner: Initials of the scan operator of the day. 
 onset: seconds
 duration: seconds
 rt: seconds
@@ -31,6 +37,8 @@ correct:
     0: False, 1: True
 condition: string
 score: float
+biopac_channel
+
 
 Design 4.0.0 of the Distractmap was generated because, we wanted to randomly switch between 0-back and 2-back conditions, but also have participants have these skills practiced before they enter the scanner.
 The 0-back condition is supposed to control for visual stimulation and motor movement relative to the 2-back condition.
@@ -107,7 +115,6 @@ else:
     }
     subjectInfoBox("NbackMap Practice", expInfo)
 
-
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
 expName = 'distractmap-Practice'
@@ -130,7 +137,9 @@ else:
 sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-nback_bids=pd.DataFrame()
+varNames=['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'condition', 'rt',	'mouseclick',	'correct',	'condition',	'score', 'biopac_channel']
+Practice_0back_bids=pd.DataFrame(columns=varNames)
+Practice_2back_bids=pd.DataFrame(columns=varNames)
 
 """
 5. Initialize Custom Components
@@ -285,9 +294,16 @@ while turns <= turnLimit and score <= 70:
     # each _%s refers to the respective field in the parentheses
     Practice_0back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"0back", "turn-"+str(turns))
     Practice_0back = nback(win, "Practice 0-back", answers=Nback0, feedback=True, nofMRI=True)
+    Practice_0back['SID']=expInfo['DBIC Number']
+    Practice_0back['date']=expInfo['date']
+    Practice_0back['gender']=expInfo['gender']
+    Practice_0back['session']=expInfo['session']
+    Practice_0back['handedness']=expInfo['handedness'] 
+    Practice_0back['scanner']=expInfo['scanner']
+    
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
 
-    score = Practice_0back['score'][0]
+    score = Practice_0back.tail(2)['score']
     turns = turns + 1
 
 while turns > turnLimit and score <= 70:
@@ -295,8 +311,14 @@ while turns > turnLimit and score <= 70:
     showText(win, "TurnLimitReached", text=PleaseWaitText, advanceKey='space', noRecord=True)
     Practice_0back = nback(win, "Practice 0-back", answers=Nback0, feedback=True, nofMRI=True)
     Practice_0back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"0back", "turn-"+str(turns))
+    Practice_0back['SID']=expInfo['DBIC Number']
+    Practice_0back['date']=expInfo['date']
+    Practice_0back['gender']=expInfo['gender']
+    Practice_0back['session']=expInfo['session']
+    Practice_0back['handedness']=expInfo['handedness'] 
+    Practice_0back['scanner']=expInfo['scanner']
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
-    score = Practice_0back['score'][0]
+    score = Practice_0back.tail(2)['score']
     turns = turns+1
 
 """
@@ -398,9 +420,16 @@ while turns <= turnLimit and score <= 70:
     # each _%s refers to the respective field in the parentheses
     Practice_2back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"2back", "turn-"+str(turns))
     Practice_2back = nback(win, "Practice 2-back", answers=Nback2, feedback=True, nofMRI=True)
+    Practice_2back['SID']=expInfo['DBIC Number']
+    Practice_2back['date']=expInfo['date']
+    Practice_2back['gender']=expInfo['gender']
+    Practice_2back['session']=expInfo['session']
+    Practice_2back['handedness']=expInfo['handedness'] 
+    Practice_2back['scanner']=expInfo['scanner']
+
     Practice_2back.to_csv(Practice_2back_bids_name, sep="\t")
 
-    score = Practice_2back['score'][1]
+    score = Practice_2back.tail(2)['score']
     turns = turns + 1
 
 while turns > turnLimit and score <= 70:
@@ -408,8 +437,15 @@ while turns > turnLimit and score <= 70:
     showText(win, "TurnLimitReached", text=PleaseWaitText, advanceKey='space', noRecord=True)
     Practice_2back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"2back", "turn-"+str(turns))
     Practice_2back = nback(win, "Practice 0-back", answers=Nback2, feedback=True, nofMRI=True)
+    Practice_2back['SID']=expInfo['DBIC Number']
+    Practice_2back['date']=expInfo['date']
+    Practice_2back['gender']=expInfo['gender']
+    Practice_2back['session']=expInfo['session']
+    Practice_2back['handedness']=expInfo['handedness'] 
+    Practice_2back['scanner']=expInfo['scanner']
+    
     Practice_2back.to_csv(Practice_2back_bids_name, sep="\t")
-    score = Practice_2back['score'][1]
+    score = Practice_2back.tail(2)['score']
     turns = turns + 1
 
 message = visual.TextStim(win, text=end_msg, height=0.05, units='height')
