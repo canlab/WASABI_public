@@ -369,7 +369,7 @@ for runs in runRange:
         rating_sound.play()
         bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
         
-        painRating=bodyCalibration_bids['value'].iloc(-1)
+        painRating=bodyCalibration_bids['value'].iloc[-1]
 
         if painRating < 0:
             bodyCalibration_total_trial = []
@@ -385,7 +385,7 @@ for runs in runRange:
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
 
-            toleranceRating=bodyCalibration_bids['value'].iloc(-1)
+            toleranceRating=bodyCalibration_bids['value'].iloc[-1]
             bodyCalibration_total_trial =[]
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
             bodyCalibration_bids_total.append(bodyCalibration_total_trial)
