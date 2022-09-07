@@ -351,7 +351,7 @@ for runs in runRange:
         """
         if thermode_exists == 1:
             sendCommand('trigger') # Trigger the thermode
-        bodyCalibration_bids=bodyCalibration_bids.append(showFixation(win, ConditionName+" Heat ", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
+        bodyCalibration_bids=bodyCalibration_bids.append(showFixation(win, "Heat-Stimulation", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
         bodyCalibration_bids.tail(1)['temperature']=currentTemp
         bodyCalibration_bids.tail(1)['body_site']=bodySites[runs]
         """
