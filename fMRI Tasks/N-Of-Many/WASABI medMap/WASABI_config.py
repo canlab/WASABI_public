@@ -162,12 +162,11 @@ abdomen_heat=24
 instruction_code=198
 
 pain_binary=42
-intensity_rating=43
+trialIntensity_rating=40
 
 valence_rating=39
-trialIntensity_rating=40
+intensity_rating=43
 comfort_rating=41
-
 avoid_rating = 200
 relax_rating = 201
 taskattention_rating = 202
@@ -179,7 +178,6 @@ self_rating = 207
 other_rating = 208
 imagery_rating = 209
 present_rating = 210
-intensity_rating=211
 
 # Hyperalignment movie
 kungfury1=215

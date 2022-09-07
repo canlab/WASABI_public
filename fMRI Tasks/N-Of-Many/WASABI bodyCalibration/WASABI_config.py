@@ -164,8 +164,22 @@ abdomen_heat=24
 instruction_code=198
 
 pain_binary=42
+trialIntensity_rating=40
+
+valence_rating=39
 intensity_rating=43
-tolerance_binary=44
+comfort_rating=41
+avoid_rating = 200
+relax_rating = 201
+taskattention_rating = 202
+boredom_rating = 203
+alertness_rating = 204
+posthx_rating = 205
+negthx_rating = 206
+self_rating = 207
+other_rating = 208
+imagery_rating = 209
+present_rating = 210
 
 between_run_msg=45
 end_task = 197

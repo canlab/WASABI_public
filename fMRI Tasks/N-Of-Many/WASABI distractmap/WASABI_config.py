@@ -187,9 +187,6 @@ imagery_rating = 209
 present_rating = 210
 intensity_rating=211
 
-# Hyperalignment movie
-inscapes=214
-
 # Distractmap
 zeroback_instructions=215
 twoback_instructions=216
