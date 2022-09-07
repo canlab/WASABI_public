@@ -287,7 +287,6 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
-
 """
 5. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
@@ -348,7 +347,7 @@ painText="Was that painful?"
 trialIntensityText="How intense was the heat stimulation?"
 
 totalTrials = 6 # Figure out how many trials would be equated to 5 minutes
-stimtrialTime = 20 # This becomes very unreliable with the use of poll_for_change().
+stimtrialTime = 15 # This becomes very unreliable with the use of poll_for_change().
 
 ratingTime = 5 # Rating Time limit in seconds during the inter-stimulus-interval
 

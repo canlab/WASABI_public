@@ -335,7 +335,7 @@ for runs in runRange:
         12. Show Heat Cue
         """
         # Need a biopac code
-        bodyCalibration_bids=bodyCalibration_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue, ignore_index=True))
+        bodyCalibration_bids=bodyCalibration_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
 
         """ 
         13. Pre-Heat Fixation Cross
@@ -352,8 +352,8 @@ for runs in runRange:
         if thermode_exists == 1:
             sendCommand('trigger') # Trigger the thermode
         bodyCalibration_bids=bodyCalibration_bids.append(showFixation(win, ConditionName+" Heat ", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
-        bodyCalibration_bids['temperature'].iloc[-1]=currentTemp
-        bodyCalibration_bids['body_site'].iloc[-1]=bodySites[runs]
+        bodyCalibration_bids.tail(1)['temperature']=currentTemp
+        bodyCalibration_bids.tail(1)['body_site']=bodySites[runs]
         """
         15. Post-Heat Fixation Cross
         """
@@ -369,7 +369,7 @@ for runs in runRange:
         rating_sound.play()
         bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
         
-        painRating=bodyCalibration_bids['value'].iloc[-1]
+        painRating=bodyCalibration_bids.tail(1)['value']
 
         if painRating < 0:
             bodyCalibration_total_trial = []
@@ -385,7 +385,7 @@ for runs in runRange:
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
 
-            toleranceRating=bodyCalibration_bids['value'].iloc[-1]
+            toleranceRating=bodyCalibration_bids.tail(1)['value']
             bodyCalibration_total_trial =[]
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
             bodyCalibration_bids_total.append(bodyCalibration_total_trial)
