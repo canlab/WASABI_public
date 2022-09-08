@@ -513,7 +513,7 @@ if bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) 
 """
 20. Wrap up
 """
-endScan(win, str=end_msg)
+endScan(win, text=end_msg)
 
 """
 End of Experiment

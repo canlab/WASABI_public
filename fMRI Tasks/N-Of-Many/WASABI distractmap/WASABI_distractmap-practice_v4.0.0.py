@@ -20,13 +20,12 @@ The paradigm will generate these files of name:
 1x sub-SIDXXXXXX_ses-XX_task-distractmap-Practice0back_acq-turn-X_events.tsv
 
 with the following headers:
-'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'condition', 'rt'	'mouseclick'	'correct'	'condition'	'score' 'biopac_channel'
+'SID', 'date', 'gender', 'session', 'scanner', 'onset', 'duration', 'condition', 'rt'	'mouseclick'	'correct'	'condition'	'score' 'biopac_channel'
 
 SID: DBIC Subject ID
 day: First or second day of Distract Maps
 gender
 session
-handedness
 scanner: Initials of the scan operator of the day. 
 onset: seconds
 duration: seconds
@@ -137,7 +136,7 @@ else:
 sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
-varNames=['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'condition', 'rt',	'mouseclick',	'correct',	'condition',	'score', 'biopac_channel']
+varNames=['SID', 'date', 'gender', 'session', 'onset', 'duration', 'condition', 'rt',	'mouseclick',	'correct',	'condition',	'score', 'biopac_channel']
 Practice_0back_bids=pd.DataFrame(columns=varNames)
 Practice_2back_bids=pd.DataFrame(columns=varNames)
 
@@ -293,13 +292,11 @@ while turns <= turnLimit and score <= 70:
     """
     # each _%s refers to the respective field in the parentheses
     Practice_0back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"0back", "turn-"+str(turns))
-    Practice_0back = nback(win, "Practice 0-back", answers=Nback0, feedback=True, nofMRI=True)
+    Practice_0back = nback(win, "Practice 0-back", answers=Nback0, cheat=cheat, feedback=True, nofMRI=True)
     Practice_0back['SID']=expInfo['DBIC Number']
     Practice_0back['date']=expInfo['date']
     Practice_0back['gender']=expInfo['gender']
     Practice_0back['session']=expInfo['session']
-    Practice_0back['handedness']=expInfo['handedness'] 
-    Practice_0back['scanner']=expInfo['scanner']
     
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
 
@@ -309,14 +306,11 @@ while turns <= turnLimit and score <= 70:
 while turns > turnLimit and score <= 70:
     PleaseWaitText = "Please wait for the experimenter ..."
     showText(win, "TurnLimitReached", text=PleaseWaitText, advanceKey='space', noRecord=True)
-    Practice_0back = nback(win, "Practice 0-back", answers=Nback0, feedback=True, nofMRI=True)
+    Practice_0back = nback(win, "Practice 0-back", answers=Nback0, cheat=cheat, feedback=True, nofMRI=True)
     Practice_0back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"0back", "turn-"+str(turns))
     Practice_0back['SID']=expInfo['DBIC Number']
     Practice_0back['date']=expInfo['date']
     Practice_0back['gender']=expInfo['gender']
-    Practice_0back['session']=expInfo['session']
-    Practice_0back['handedness']=expInfo['handedness'] 
-    Practice_0back['scanner']=expInfo['scanner']
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
     score = Practice_0back['score'].iloc[-2]
     turns = turns+1
@@ -419,14 +413,11 @@ while turns <= turnLimit and score <= 70:
     """
     # each _%s refers to the respective field in the parentheses
     Practice_2back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"2back", "turn-"+str(turns))
-    Practice_2back = nback(win, "Practice 2-back", answers=Nback2, feedback=True, nofMRI=True)
+    Practice_2back = nback(win, "Practice 2-back", answers=Nback2, feedback=True, cheat=cheat, nofMRI=True)
     Practice_2back['SID']=expInfo['DBIC Number']
     Practice_2back['date']=expInfo['date']
     Practice_2back['gender']=expInfo['gender']
     Practice_2back['session']=expInfo['session']
-    Practice_2back['handedness']=expInfo['handedness'] 
-    Practice_2back['scanner']=expInfo['scanner']
-
     Practice_2back.to_csv(Practice_2back_bids_name, sep="\t")
 
     score = Practice_2back['score'].iloc[-2]
@@ -436,7 +427,7 @@ while turns > turnLimit and score <= 70:
     PleaseWaitText = "Your score was " + str(score) + "\n\n\nPlease wait for the experimenter ..."
     showText(win, "TurnLimitReached", text=PleaseWaitText, advanceKey='space', noRecord=True)
     Practice_2back_bids_name = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName+"2back", "turn-"+str(turns))
-    Practice_2back = nback(win, "Practice 0-back", answers=Nback2, feedback=True, nofMRI=True)
+    Practice_2back = nback(win, "Practice 0-back", answers=Nback2, feedback=True, cheat=cheat, nofMRI=True)
     Practice_2back['SID']=expInfo['DBIC Number']
     Practice_2back['date']=expInfo['date']
     Practice_2back['gender']=expInfo['gender']

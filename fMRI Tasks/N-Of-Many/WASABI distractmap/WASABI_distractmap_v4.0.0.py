@@ -103,7 +103,7 @@ instructions_dir = main_dir + os.sep + 'instruction_stim'
 nback_dir = main_dir + os.sep + "nbackorder"
 
 # Brings up the Calibration/Data folder to load the appropriate calibration data right away.
-calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, os.path.pardir, 'Calibration', 'data')
+calibration_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'WASABI bodyCalibration', 'data')
 
 """
 2. Start Experimental Dialog Boxes
@@ -152,7 +152,7 @@ else:
             if a.shape == (1,23):
                 participant_settingsHeat = {}
                 p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
-                expInfo['DBIC Number'] = p_info['participant_id']
+                expInfo['DBIC Number'] = p_info['DBIC_id']
                 expInfo['gender'] = p_info['gender']
                 expInfo['handedness'] = p_info['handedness']
 
@@ -167,7 +167,7 @@ else:
                 participant_settingsHeat['Abdomen'] = p_info['abdomen_ht']
 
                 expInfo2 = {
-                'session': ses_num,
+                'session': '',
                 'scanner': '',
                 'run': '',
                 'body sites': ''
@@ -285,7 +285,7 @@ sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Numb
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-varNames=['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt', 'mouseclick', 'correct', 'condition', 'score', 'biopac_channel']
+varNames=['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt', 'mouseclick', 'correct', 'score', 'biopac_channel']
 nback_bids=pd.DataFrame(columns=varNames)
 
 """
@@ -550,8 +550,15 @@ BigTrialList = [[4, 1, 2, 3, 4, 2],
 for runs in range(len(bodySites)):
 
     # Reset the trial possibilities for every run.
-    ZerobackFiles = ["N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", "N-back-0_5.xlsx", "N-back-0_6.xlsx", "N-back-0_7.xlsx", "N-back-0_8.xlsx"]
-    TwobackFiles = ["N-back-2_1.xlsx", "N-back-2_2.xlsx", "N-back-2_3.xlsx", "N-back-2_4.xlsx", "N-back-2_5.xlsx", "N-back-2_6.xlsx", "N-back-2_7.xlsx", "N-back-2_8.xlsx"]
+    ZerobackFiles = ["N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", 
+                    "N-back-0_5.xlsx", "N-back-0_6.xlsx", "N-back-0_7.xlsx", "N-back-0_8.xlsx",
+                    "N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", 
+                    "N-back-0_5.xlsx", "N-back-0_6.xlsx", "N-back-0_7.xlsx", "N-back-0_8.xlsx"
+                    ]
+    TwobackFiles = ["N-back-2_1.xlsx", "N-back-2_2.xlsx", "N-back-2_3.xlsx", "N-back-2_4.xlsx", 
+                    "N-back-2_5.xlsx", "N-back-2_6.xlsx", "N-back-2_7.xlsx", "N-back-2_8.xlsx",
+                    "N-back-2_1.xlsx", "N-back-2_2.xlsx", "N-back-2_3.xlsx", "N-back-2_4.xlsx", 
+                    "N-back-2_5.xlsx", "N-back-2_6.xlsx", "N-back-2_7.xlsx", "N-back-2_8.xlsx"]
 
     random.shuffle(ZerobackFiles)
     random.shuffle(TwobackFiles)
@@ -612,7 +619,7 @@ for runs in range(len(bodySites)):
                 if debug==1:
                     jitter1=1
 
-                nback_bids=nback_bids.append(showFixation(win, "Pre-trial Fixation", type='small', time=jitter1), ignore_index=True)
+                nback_bids=nback_bids.append(showFixation(win, "Pre-trial Fixation", type='big', time=jitter1), ignore_index=True)
              
                 """ 
                 14iv. 0-back Task
@@ -622,12 +629,12 @@ for runs in range(len(bodySites)):
                 if r==2:
                     # Show Heat Cue
                     # Need a biopac code
-                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue, ignore_index=True))
+                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
 
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                nback_bids = nback(win, "0-back", answers=Nback, feedback=False)
+                nback_bids = nback(win, "0-back", answers=Nback, cheat=cheat, feedback=False)
                 
                 if debug==1:
                     jitter2=1
@@ -652,7 +659,7 @@ for runs in range(len(bodySites)):
                         jitter3=1
                     else:
                         jitter3 = random.choice([5,7,9])
-                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='small', time=jitter2, biopacCode=postQfixation), ignore_index=True)
+                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postQfixation), ignore_index=True)
 
         if r==3 or r==4:
             for trial_in_mini_block in range(trials_per_block):
@@ -670,7 +677,7 @@ for runs in range(len(bodySites)):
                 """
                 15i. Select Medoc Thermal Program
                 """
-                if r==3 and thermode_exists == 1:
+                if r==4 and thermode_exists == 1:
                     sendCommand('select_tp', thermodeCommand)
 
                 """ 
@@ -689,7 +696,7 @@ for runs in range(len(bodySites)):
                 if debug==1:
                     jitter1=1
 
-                nback_bids=nback_bids.append(showFixation(win, "Pre-trial Jitter", type='small', time=jitter1, biopacCode=prefixation), ignore_index=True)
+                nback_bids=nback_bids.append(showFixation(win, "Pre-trial Jitter", type='big', time=jitter1, biopacCode=prefixation), ignore_index=True)
              
                 """ 
                 15iv. 2-back Task
@@ -697,16 +704,20 @@ for runs in range(len(bodySites)):
                 Nback = os.sep.join([nback_dir, TwobackFiles.pop()])
                 
                 if r==4:
+                    # Show Heat Cue
+                    # Need a biopac code
+                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
+
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                nback_bids = nback(win, "2-back", answers=Nback, feedback=False)
+                nback_bids = nback(win, "2-back", answers=Nback, cheat=cheat, feedback=False)
                 
                 if debug==1:
                     jitter2=1
                 else:
                     jitter2 = random.choice([5,7,9])
-                nback_bids=nback_bids.append(showFixation(win, "Post-trial Jitter", type='small', time=jitter2, biopacCode=postfixation), ignore_index=True)
+                nback_bids=nback_bids.append(showFixation(win, "Post-trial Jitter", type='big', time=jitter2, biopacCode=postfixation), ignore_index=True)
 
                 if r==4:
                     """
@@ -725,7 +736,7 @@ for runs in range(len(bodySites)):
                         jitter3=1
                     else:
                         jitter3 = random.choice([5,7,9])
-                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='small', time=jitter2, biopacCode=postQfixation), ignore_index=True)
+                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postQfixation), ignore_index=True)
 
     """
     16. Begin post-run self-report questions

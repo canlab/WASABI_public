@@ -43,7 +43,7 @@ from datetime import datetime
 """
 
 debug = 0
-autorespond = 0
+autorespond = 1
 # Device togglers
 biopac_exists = 0
 thermode_exists = 0

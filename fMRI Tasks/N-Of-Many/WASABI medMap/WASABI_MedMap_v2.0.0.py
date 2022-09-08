@@ -582,8 +582,6 @@ for runs in runRange:
 23. Wrap up
 """
 endScan(win)
-win.close()  # close the window
-core.quit()
 
 """
 End of Experiment
