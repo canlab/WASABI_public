@@ -1262,13 +1262,13 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
     Returns:
         dict: The Dictionary of onset, duration, and condition to be concatenated into your BIDS datafile.
     """
-    nback_fixation=187
-    nback_trial_start=188
-    nback_hit=190
-    nback_comiss=191
-    nback_feedback_pos=194
-    nback_feedback_miss=195
-    nback_feedback_neg=196
+    nback_fixation=44
+    nback_trial_start=45
+    nback_hit=46
+    nback_comiss=47
+    nback_feedback_pos=48
+    nback_feedback_miss=49
+    nback_feedback_neg=50
 
     correct=0
     incorrect_text = "Incorrect!"

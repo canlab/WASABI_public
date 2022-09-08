@@ -119,7 +119,7 @@ expInfo = {
 'session': '',
 'handedness': '', 
 'scanner': '',
-'run': ''
+'run': '10'
 }
 
 # Load the subject's calibration file and ensure that it is valid
@@ -130,7 +130,7 @@ if debug==1:
         'session': '99',
         'handedness': 'r', 
         'scanner': 'TEST',
-        'run': '',
+        'run': '10',
         'body sites': ''
     }
     participant_settingsHeat = {
@@ -549,13 +549,13 @@ BigTrialList = [[4, 1, 2, 3, 4, 2],
                 [4, 2, 4, 1, 2, 3],
                 [4, 3, 2, 1, 4, 2]]
 
-if expInfo['run']>1:
-    runRange=range(expInfo['run']-1, 8)
-else:
-    runRange=range(len(bodySites)) # +1 for hyperalignment
+# if expInfo['run']>1:
+#     runRange=range(expInfo['run'], expInfo['run']+4)
+# else:
+#     runRange=range(10, 10+len(bodySites)) # +1 for hyperalignment
 
-for runs in runRange:
-
+# for runs in runRange:
+for runs in range(len(bodySites)):
     # Reset the trial possibilities for every run.
     ZerobackFiles = ["N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", 
                     "N-back-0_5.xlsx", "N-back-0_6.xlsx", "N-back-0_7.xlsx", "N-back-0_8.xlsx",
@@ -609,6 +609,10 @@ for runs in runRange:
                 """
                 if r==2 and thermode_exists == 1:
                     sendCommand('select_tp', thermodeCommand)
+                    # Show Heat Cue
+                    # Need a biopac code
+                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
+
 
                 """ 
                 14ii. Pre-Trial Fixation Cross
@@ -626,7 +630,7 @@ for runs in runRange:
                 if debug==1:
                     jitter1=1
 
-                nback_bids=nback_bids.append(showFixation(win, "Pre-trial Fixation", type='big', time=jitter1), ignore_index=True)
+                nback_bids=nback_bids.append(showFixation(win, "Pre-trial Fixation", type='big', time=jitter1, biopacCode=prefixation), ignore_index=True)
              
                 """ 
                 14iv. 0-back Task
@@ -634,10 +638,6 @@ for runs in runRange:
                 Nback = os.sep.join([nback_dir, ZerobackFiles.pop()])
                 
                 if r==2:
-                    # Show Heat Cue
-                    # Need a biopac code
-                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
-
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
@@ -647,7 +647,7 @@ for runs in runRange:
                     jitter2=1
                 else:
                     jitter2 = random.choice([5,7,9])
-                nback_bids=nback_bids.append(showFixation(win, "Post-trial Fixation", type='small', time=jitter2, biopacCode=postfixation), ignore_index=True)
+                nback_bids=nback_bids.append(showFixation(win, "Post-trial Fixation", type='small', time=jitter2, biopacCode=midfixation), ignore_index=True)
 
                 if r==2:
                     """
@@ -666,7 +666,7 @@ for runs in runRange:
                         jitter3=1
                     else:
                         jitter3 = random.choice([5,7,9])
-                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postQfixation), ignore_index=True)
+                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postfixation), ignore_index=True)
 
         if r==3 or r==4:
             for trial_in_mini_block in range(trials_per_block):
@@ -685,6 +685,10 @@ for runs in runRange:
                 15i. Select Medoc Thermal Program
                 """
                 if r==4 and thermode_exists == 1:
+                    # Show Heat Cue
+                    # Need a biopac code
+                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
+
                     sendCommand('select_tp', thermodeCommand)
 
                 """ 
@@ -711,10 +715,6 @@ for runs in runRange:
                 Nback = os.sep.join([nback_dir, TwobackFiles.pop()])
                 
                 if r==4:
-                    # Show Heat Cue
-                    # Need a biopac code
-                    nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
-
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
@@ -724,7 +724,7 @@ for runs in runRange:
                     jitter2=1
                 else:
                     jitter2 = random.choice([5,7,9])
-                nback_bids=nback_bids.append(showFixation(win, "Post-trial Jitter", type='big', time=jitter2, biopacCode=postfixation), ignore_index=True)
+                nback_bids=nback_bids.append(showFixation(win, "Post-trial Jitter", type='big', time=jitter2, biopacCode=midfixation), ignore_index=True)
 
                 if r==4:
                     """
@@ -743,7 +743,7 @@ for runs in runRange:
                         jitter3=1
                     else:
                         jitter3 = random.choice([5,7,9])
-                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postQfixation), ignore_index=True)
+                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postfixation), ignore_index=True)
 
     """
     16. Begin post-run self-report questions
@@ -751,20 +751,20 @@ for runs in runRange:
     rating_sound.stop() # I think a stop needs to be introduced in order to play again.
     rating_sound.play()
 
-    nback_bids=nback_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=ratingTime, biopacCode=comfort_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="bipolar", time=ratingTime, biopacCode=valence_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=comfort_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=ratingTime, biopacCode=avoid_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="bipolar", time=ratingTime, biopacCode=relax_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="bipolar", time=ratingTime, biopacCode=taskattention_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="bipolar", time=ratingTime, biopacCode=boredom_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=ratingTime, biopacCode=alertness_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=ratingTime, biopacCode=posthx_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=ratingTime, biopacCode=negthx_rating), ignore_index=True)  
-    nback_bids=nback_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=ratingTime, biopacCode=self_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=ratingTime, biopacCode=other_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=ratingTime, biopacCode=posthx_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=ratingTime, biopacCode=present_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", biopacCode=comfort_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="bipolar", biopacCode=valence_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", biopacCode=comfort_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", biopacCode=avoid_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="bipolar", biopacCode=relax_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="bipolar", biopacCode=taskattention_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="bipolar", biopacCode=boredom_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", biopacCode=alertness_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", biopacCode=posthx_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", biopacCode=negthx_rating), ignore_index=True)  
+    nback_bids=nback_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", biopacCode=self_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", biopacCode=other_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", biopacCode=posthx_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", biopacCode=present_rating), ignore_index=True)
 
     rating_sound.stop() # Stop the sound so it can be played again.
 
@@ -780,7 +780,7 @@ for runs in runRange:
     nback_bids['scanner']=expInfo['scanner']
     nback_bids['body_site']=bodySites[runs]
     
-    nback_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    nback_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
     
     nback_bids.to_csv(nback_bidsfilename, sep="\t")
     nback_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.

@@ -144,55 +144,58 @@ EDIT BELOW FOR YOUR STUDY (if you use the Medoc Thermode)
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 #     Another command that may work: biopac.setData(byte)
 
-task_ID=2
-task_start=7
+task_ID=3
+task_start=4
 
-instructions=15
+instructions=5
 
-cue=8
-prefixation=9
-midfixation=10
-postfixation=11
-postQfixation=12
+cue=6
+prefixation=7
+midfixation=8
+postfixation=9
 
-leftface_heat=17
-rightface_heat=18
-leftarm_heat=19
-rightarm_heat=20
-leftleg_heat=21
-rightleg_heat=22
-chest_heat=23
-abdomen_heat=24
+bodymapping_instruction=10
+leftface_heat=11
+rightface_heat=12
+leftarm_heat=13
+rightarm_heat=14
+leftleg_heat=15
+rightleg_heat=16
+chest_heat=17
+abdomen_heat=18
 
-instruction_code=198
+instruction_code=19
 
-pain_binary=42
-intensity_rating=43
-distract_binary=44
+pain_binary=20
+trialIntensity_rating=21
+tolerance_binary=22
+distract_binary=23
 
-valence_rating=39
-trialIntensity_rating=40
-comfort_rating=41
+valence_rating=24
+intensity_rating=25
+comfort_rating=26
+avoid_rating = 27
+relax_rating = 28
+taskattention_rating = 29
+boredom_rating = 30
+alertness_rating = 31
+posthx_rating = 32
+negthx_rating = 33
+self_rating = 34
+other_rating = 35
+imagery_rating = 36
+present_rating = 37
 
-avoid_rating = 200
-relax_rating = 201
-taskattention_rating = 202
-boredom_rating = 203
-alertness_rating = 204
-posthx_rating = 205
-negthx_rating = 206
-self_rating = 207
-other_rating = 208
-imagery_rating = 209
-present_rating = 210
-intensity_rating=211
+between_run_msg=38
+end_task = 39
+
+# Hyperalignment movie
+kungfury1=40
+kungfury2=41
 
 # Distractmap
-zeroback_instructions=215
-twoback_instructions=216
-
-between_run_msg=45
-end_task = 197
+zeroback_instructions=42
+twoback_instructions=43
 
 # Medoc parameters _________________________________________________
 # Set up a dictionary for all the configured Medoc programs for the main thermode
