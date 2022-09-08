@@ -148,7 +148,7 @@ if debug == 1:
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS',
-    'run': 1,
+    'run': '1',
     'body sites': ''
     }
 else:
@@ -193,7 +193,7 @@ if debug!=1:
                 'session': ses_num,
                 'first(1) or second(2) day': '',
                 'scanner': '',
-                'run': 1, # If re-inserting participant midday
+                'run': '1', # If re-inserting participant midday
                 'body sites': '' # If inputting a list of body sites, make sure to delimit them with ', ' with the trailing space.
                 }
                 expInfo2=subjectInfoBox("MedMap Scan", expInfo2)
@@ -234,14 +234,14 @@ if debug!=1:
             core.quit()
 else:
     participant_settingsHeat = {
-        'Left Face': 48.5,
-        'Right Face': 48.5,
-        'Left Arm': 48.5,
-        'Right Arm': 48.5,
-        'Left Leg': 48.5,
-        'Right Leg': 48.5,
-        'Chest': 48.5,
-        'Abdomen': 48.5
+        'Left Face': '48.5',
+        'Right Face': '48.5',
+        'Left Arm': '48.5',
+        'Right Arm': '48.5',
+        'Left Leg': '48.5',
+        'Right Leg': '48.5',
+        'Chest': '48.5',
+        'Abdomen': '48.5'
     }
 
 if expInfo['first(1) or second(2) day']=='1':
@@ -249,6 +249,7 @@ if expInfo['first(1) or second(2) day']=='1':
 elif expInfo['first(1) or second(2) day']=='2':
     expName = 'MedMap2-test'  
 
+expInfo['run']=int(expInfo['run'])
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
 expInfo['expName'] = expName
@@ -257,11 +258,13 @@ expInfo['expName'] = expName
 3. Configure the Stimuli Arrays
 """
 if expInfo['body sites']=="":
-    ## Based on our discussion with Tor, these body sites will likely have to change to Right Leg and Chest.
-    bodySites1 = ['Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Hyperalignment', 'Right Leg', 'Left Face']
-    bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Hyperalignment', 'Left Face', 'Right Leg'] 
-
+    ## Based on our discussion with Tor, these body sites will likely have to change to Left Leg and Chest.
+    # bodySites1 = ['Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Hyperalignment', 'Right Leg', 'Left Face']
+    # bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Left Face', 'Right Leg', 'Hyperalignment', 'Left Face', 'Right Leg'] 
     # bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
+
+    bodySites1 = ['Left Leg', 'Chest', 'Left Leg', 'Chest', 'Left Leg', 'Chest', 'Hyperalignment', 'Left Leg', 'Chest']
+    bodySites2 = ['Chest', 'Left Leg', 'Chest', 'Left Leg', 'Chest', 'Left Leg', 'Hyperalignment', 'Chest', 'Left Leg'] 
 
     if int(expInfo['DBIC Number'])%2==0:
         bodySites=bodySites1
@@ -375,9 +378,6 @@ OtherText = "The thoughts I experienced during the last scan concerned other peo
 ImageryText = "The thoughts I experienced during the last scan were experienced with clear and vivid mental imagery" # Strongly disagree - Neither - Strongly agree (bipolar)
 PresentText = "The thoughts I experienced during the last scan pertained to the immediate PRESENT (the here and now)" # Strongly disagree - Neither - Strongly agree (bipolar)
 
-# Preload Movie for Hyperalignment
-# movie=preloadMovie(win, "inscapes-movie", os.path.join(video_dir,'01_Inscapes_NoScannerSound_h264.wmv'))
-
 if expInfo['first(1) or second(2) day']=='1':
     movie=preloadMovie(win, "kungfury1", os.path.join(video_dir,'kungfury1.mp4'))
     movieCode=kungfury1
@@ -402,182 +402,179 @@ else:
     runRange=range(len(bodySites)) # +1 for hyperalignment
 
 for runs in runRange:
+    """
+    7. Check if you should run the Hyperalignment Scan 
+    """
     if runs==6:
-        # Hyperalignment run. Skip everything.
-        continue
-    """
-    7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run 
-    """
-    # Update instructions and cues based on current run's body-sites:
-    if runs in [0, 1, 7, 8]:
-        bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Prepare the site for stimulation"
-    else:
-        bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Apply the Lidoderm analgesic cream"
-    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=instructions, noRecord=True)
-
-    ## Conditioning parameters; Ideally this should be read from the participant's file 
-    if expInfo['first(1) or second(2) day']=='1':
-        if runs==0 or runs==1:
-            temperature = participant_settingsHeat[bodySites[runs]]
-            thermodeCommand=thermode_temp2program[temperature]
-            ConditionName="Control"
-            # Highest tolerable temperature
-        if runs==2 or runs==3:
-            temperature = 44
-            thermodeCommand=thermode_temp2program[temperature]
-            ConditionName="Placebo"
-            # Warm and not hot temperature
-        if runs==4 or runs==5 or runs==6 or runs==7:
-            temperature=round_to_halfdegree(participant_settingsHeat[bodySites[runs]]-((participant_settingsHeat[bodySites[runs]]-44)/2))
-            thermodeCommand=thermode_temp2program[temperature] # midway between max and 44 warm
-            if runs==4 or runs==5:
-                ConditionName="Placebo"
-            if runs==6 or runs==7:
-                ConditionName="Control"
-
-    elif expInfo['first(1) or second(2) day']=='2':
-        if runs in [0, 1, 6, 7]:
-            ConditionName="Control"
-        if runs in [2, 3, 4 ,5]:
-            ConditionName="Placebo"
-        temperature = participant_settingsHeat[bodySites[runs]]
-        thermodeCommand=thermode_temp2program[temperature]
-
-    """
-    8. Start Scanner
-    """
-    fmriStart=confirmRunStart(win)
-
-    """
-    9. Set Trial parameters
-    """
-    jitter2 = None  # Reset Jitter2
-    BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    routineTimer.reset()
-    
-    """
-    10. Start Trial Loop
-    """
-    for r in range(totalTrials): # 16 repetitions
-        """
-        11. Show the Instructions prior to the First Trial
-        """
-        if r == 0:      # First trial
-            medmap_bids=medmap_bids.append(showText(win, "Instructions", ExperienceInstruction, time=5, advanceKey=None, biopacCode=instructioncode), ignore_index=True)
-            routineTimer.reset()
-
-        # Select Medoc Thermal Program
-        if thermode_exists == 1:
-            sendCommand('select_tp', thermodeCommand)
-
-        """
-        12. Show Heat Cue
-        """
-        # Need a biopac code
-        medmap_bids=medmap_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
-
-        """ 
-        13. Pre-Heat Fixation Cross
-        """
-        jitter1 = random.choice([4, 6, 8])
-        if debug==1:
-            jitter1=1
-
-        medmap_bids=medmap_bids.append(showFixation(win, "Pre-Jitter", time=jitter1, biopacCode=prefixation), ignore_index=True)
-
-        """ 
-        14. Heat-Trial Fixation Cross
-        """
-        if thermode_exists == 1:
-            sendCommand('trigger') # Trigger the thermode
-        medmap_bids=medmap_bids.append(showFixation(win, ConditionName+" Heat ", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
-
-        """
-        15. Post-Heat Fixation Cross
-        """
-        if debug==1:
-            jitter2=1
-        else:
-            jitter2 = random.choice([5,7,9])
-        medmap_bids=medmap_bids.append(showFixation(win, "Mid-Jitter", time=jitter2, biopacCode=midfixation), ignore_index=True)
-
-        """
-        16. Begin post-trial self-report questions
-        """        
-        rating_sound.play()
-        medmap_bids=medmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
-        medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
-
-        """
-        17. Post-Question jitter
-        """
-        if debug==1:
-            jitter3=1
-        else:
-            jitter3 = random.choice([5,7,9])
-        medmap_bids=medmap_bids.append(showFixation(win, "Post-Q-Jitter", time=jitter2, biopacCode=postfixation), ignore_index=True)
-
-    """
-    18. Begin post-run self-report questions
-    """        
-    rating_sound.stop() # I think a stop needs to be introduced in order to play again.
-    rating_sound.play()
-
-    medmap_bids=medmap_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=ratingTime, biopacCode=comfort_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="bipolar", time=ratingTime, biopacCode=valence_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=comfort_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=ratingTime, biopacCode=avoid_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="bipolar", time=ratingTime, biopacCode=relax_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="bipolar", time=ratingTime, biopacCode=taskattention_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="bipolar", time=ratingTime, biopacCode=boredom_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=ratingTime, biopacCode=alertness_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=ratingTime, biopacCode=posthx_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=ratingTime, biopacCode=negthx_rating), ignore_index=True)  
-    medmap_bids=medmap_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=ratingTime, biopacCode=self_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=ratingTime, biopacCode=other_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=ratingTime, biopacCode=posthx_rating), ignore_index=True)
-    medmap_bids=medmap_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=ratingTime, biopacCode=present_rating), ignore_index=True)
-
-    rating_sound.stop() # Stop the sound so it can be played again.
-
-    """
-    19. Save data into .TSV formats and Tying up Loose Ends
-    """ 
-    # Append constants to the entire run
-    medmap_bids['SID']=expInfo['DBIC Number']
-    medmap_bids['day']=expInfo['first(1) or second(2) day']
-    medmap_bids['gender']=expInfo['gender']
-    medmap_bids['session']=expInfo['session']
-    medmap_bids['handedness']=expInfo['handedness'] 
-    medmap_bids['scanner']=expInfo['scanner']
-    medmap_bids['body_site']=bodySites[runs]
-    medmap_bids['phase']=ConditionName
-    medmap_bids['temperature']=temperature
-
-    medmap_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
-    medmap_bids.to_csv(medmap_bids_filename, sep="\t")
-    medmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
-
-    """
-    20. End of Run, Wait for Experimenter instructions to begin next run
-    """   
-    nextRun(win)
-    
-    """
-    21. After the last Placebo Run, run the Hyperalignment Scan 
-    """
-    if runs==5:
         fmriStart=confirmRunStart(win)
         hyperalignment_bids=showMovie(win, movie, movie.name, movieCode)
 
         """
-        22. Save hyperalignment data into its own .TSV
+        8. Save hyperalignment data into its own .TSV
         """ 
         hyperalignment_bids_data = pd.DataFrame([hyperalignment_bids])
-        hyperalignment_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%d_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, 'hyperalignment', runs+2)
+        hyperalignment_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%d_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, 'hyperalignment', runs+1)
         hyperalignment_bids_data.to_csv(hyperalignment_bids_filename, sep="\t")
         continue
+    else:
+        """
+        7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run 
+        """
+        # Update instructions and cues based on current run's body-sites:
+        if runs in [0, 1, 7, 8]:
+            bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Prepare the site for stimulation"
+        else:
+            bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Apply the Lidoderm analgesic cream"
+        showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=instructions, noRecord=True)
+
+        ## Conditioning parameters; Ideally this should be read from the participant's file 
+        if expInfo['first(1) or second(2) day']=='1':
+            if runs==0 or runs==1:
+                temperature = participant_settingsHeat[bodySites[runs]]
+                thermodeCommand=thermode_temp2program[temperature]
+                ConditionName="Control"
+                # Highest tolerable temperature
+            if runs==2 or runs==3:
+                temperature = 44
+                thermodeCommand=thermode_temp2program[temperature]
+                ConditionName="Placebo"
+                # Warm and not hot temperature
+            if runs==4 or runs==5 or runs==6 or runs==7:
+                temperature=round_to_halfdegree(participant_settingsHeat[bodySites[runs]]-((participant_settingsHeat[bodySites[runs]]-44)/2))
+                thermodeCommand=thermode_temp2program[temperature] # midway between max and 44 warm
+                if runs==4 or runs==5:
+                    ConditionName="Placebo"
+                if runs==6 or runs==7:
+                    ConditionName="Control"
+
+        elif expInfo['first(1) or second(2) day']=='2':
+            if runs in [0, 1, 6, 7]:
+                ConditionName="Control"
+            if runs in [2, 3, 4 ,5]:
+                ConditionName="Placebo"
+            temperature = participant_settingsHeat[bodySites[runs]]
+            thermodeCommand=thermode_temp2program[temperature]
+
+        """
+        8. Start Scanner
+        """
+        fmriStart=confirmRunStart(win)
+
+        """
+        9. Set Trial parameters
+        """
+        jitter2 = None  # Reset Jitter2
+        BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
+        routineTimer.reset()
         
+        """
+        10. Start Trial Loop
+        """
+        for r in range(totalTrials): # 16 repetitions
+            """
+            11. Show the Instructions prior to the First Trial
+            """
+            if r == 0:      # First trial
+                medmap_bids=medmap_bids.append(showText(win, "Instructions", ExperienceInstruction, time=5, advanceKey=None, biopacCode=instructioncode), ignore_index=True)
+                routineTimer.reset()
+
+            # Select Medoc Thermal Program
+            if thermode_exists == 1:
+                sendCommand('select_tp', thermodeCommand)
+
+            """
+            12. Show Heat Cue
+            """
+            # Need a biopac code
+            medmap_bids=medmap_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
+
+            """ 
+            13. Pre-Heat Fixation Cross
+            """
+            jitter1 = random.choice([4, 6, 8])
+            if debug==1:
+                jitter1=1
+
+            medmap_bids=medmap_bids.append(showFixation(win, "Pre-Jitter", time=jitter1, biopacCode=prefixation), ignore_index=True)
+
+            """ 
+            14. Heat-Trial Fixation Cross
+            """
+            if thermode_exists == 1:
+                sendCommand('trigger') # Trigger the thermode
+            medmap_bids=medmap_bids.append(showFixation(win, ConditionName+" Heat ", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
+
+            """
+            15. Post-Heat Fixation Cross
+            """
+            if debug==1:
+                jitter2=1
+            else:
+                jitter2 = random.choice([5,7,9])
+            medmap_bids=medmap_bids.append(showFixation(win, "Mid-Jitter", time=jitter2, biopacCode=midfixation), ignore_index=True)
+
+            """
+            16. Begin post-trial self-report questions
+            """        
+            rating_sound.play()
+            medmap_bids=medmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+
+            """
+            17. Post-Question jitter
+            """
+            if debug==1:
+                jitter3=1
+            else:
+                jitter3 = random.choice([5,7,9])
+            medmap_bids=medmap_bids.append(showFixation(win, "Post-Q-Jitter", time=jitter2, biopacCode=postfixation), ignore_index=True)
+
+        """
+        18. Begin post-run self-report questions
+        """        
+        rating_sound.stop() # I think a stop needs to be introduced in order to play again.
+        rating_sound.play()
+
+        medmap_bids=medmap_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=ratingTime, biopacCode=comfort_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="bipolar", time=ratingTime, biopacCode=valence_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=comfort_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=ratingTime, biopacCode=avoid_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="bipolar", time=ratingTime, biopacCode=relax_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="bipolar", time=ratingTime, biopacCode=taskattention_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="bipolar", time=ratingTime, biopacCode=boredom_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=ratingTime, biopacCode=alertness_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=ratingTime, biopacCode=posthx_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=ratingTime, biopacCode=negthx_rating), ignore_index=True)  
+        medmap_bids=medmap_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=ratingTime, biopacCode=self_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=ratingTime, biopacCode=other_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=ratingTime, biopacCode=posthx_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=ratingTime, biopacCode=present_rating), ignore_index=True)
+
+        rating_sound.stop() # Stop the sound so it can be played again.
+
+        """
+        19. Save data into .TSV formats and Tying up Loose Ends
+        """ 
+        # Append constants to the entire run
+        medmap_bids['SID']=expInfo['DBIC Number']
+        medmap_bids['day']=expInfo['first(1) or second(2) day']
+        medmap_bids['gender']=expInfo['gender']
+        medmap_bids['session']=expInfo['session']
+        medmap_bids['handedness']=expInfo['handedness'] 
+        medmap_bids['scanner']=expInfo['scanner']
+        medmap_bids['body_site']=bodySites[runs]
+        medmap_bids['phase']=ConditionName
+        medmap_bids['temperature']=temperature
+
+        medmap_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+        medmap_bids.to_csv(medmap_bids_filename, sep="\t")
+        medmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
+
+        """
+        20. End of Run, Wait for Experimenter instructions to begin next run
+        """   
+        nextRun(win)
+    
 """
 23. Wrap up
 """

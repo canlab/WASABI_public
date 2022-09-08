@@ -213,6 +213,8 @@ expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
 expName = 'distractmap'
 expInfo['expName'] = expName
+expInfo['run']=int(expInfo['run'])
+
 
 """
 3. Configure the Stimuli Arrays
@@ -547,7 +549,12 @@ BigTrialList = [[4, 1, 2, 3, 4, 2],
                 [4, 2, 4, 1, 2, 3],
                 [4, 3, 2, 1, 4, 2]]
 
-for runs in range(len(bodySites)):
+if expInfo['run']>1:
+    runRange=range(expInfo['run']-1, 8)
+else:
+    runRange=range(len(bodySites)) # +1 for hyperalignment
+
+for runs in runRange:
 
     # Reset the trial possibilities for every run.
     ZerobackFiles = ["N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", 
@@ -592,9 +599,9 @@ for runs in range(len(bodySites)):
             nback_bids=nback_bids.append(showText(win, "0-back Instruction", "ready...\n0-back", fontSize=0.15, time=5, biopacCode=zeroback_instructions), ignore_index=True)
 
             if r==1:
-                nback_bids.tail(1)['temperature']=32
+                nback_bids['temperature'].iloc[-1]=32
             else:
-                nback_bids.tail(1)['temperature']=temperature
+                nback_bids['temperature'].iloc[-1]=temperature
 
             for trial_in_mini_block in range(trials_per_block):
                 """
@@ -634,7 +641,7 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                nback_bids = nback(win, "0-back", answers=Nback, cheat=cheat, feedback=False)
+                nback_bids = nback_bids.append(nback(win, "0-back", answers=Nback, cheat=cheat, feedback=False), ignore_index=True)
                 
                 if debug==1:
                     jitter2=1
@@ -669,10 +676,10 @@ for runs in range(len(bodySites)):
                 rating_sound.play()
                 nback_bids=nback_bids.append(showText(win, "2-back Instruction", "ready...\n2-back", fontSize=0.15, time=5, biopacCode=twoback_instructions), ignore_index=True)
 
-                if r==3:
-                    nback_bids.tail(1)['temperature']=32
+                if r==1:
+                    nback_bids['temperature'].iloc[-1]=32
                 else:
-                    nback_bids.tail(1)['temperature']=temperature
+                    nback_bids['temperature'].iloc[-1]=temperature
 
                 """
                 15i. Select Medoc Thermal Program
@@ -711,7 +718,7 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                nback_bids = nback(win, "2-back", answers=Nback, cheat=cheat, feedback=False)
+                nback_bids = nback_bids.append(nback(win, "2-back", answers=Nback, cheat=cheat, feedback=False), ignore_index=True)
                 
                 if debug==1:
                     jitter2=1

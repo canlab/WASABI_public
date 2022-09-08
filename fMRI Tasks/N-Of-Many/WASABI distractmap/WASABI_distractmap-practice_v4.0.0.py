@@ -297,9 +297,7 @@ while turns <= turnLimit and score <= 70:
     Practice_0back['date']=expInfo['date']
     Practice_0back['gender']=expInfo['gender']
     Practice_0back['session']=expInfo['session']
-    
     Practice_0back.to_csv(Practice_0back_bids_name, sep="\t")
-
     score = Practice_0back['score'].iloc[-2]
     turns = turns + 1
 

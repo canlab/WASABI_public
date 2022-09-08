@@ -42,8 +42,8 @@ from datetime import datetime
 2. Global Variable Configurations
 """
 
-debug = 0
-autorespond = 0
+debug = 1
+autorespond = 1
 # Device togglers
 biopac_exists = 0
 thermode_exists = 0
@@ -165,6 +165,7 @@ instruction_code=198
 
 pain_binary=42
 trialIntensity_rating=40
+tolerance_binary=44
 
 valence_rating=39
 intensity_rating=43

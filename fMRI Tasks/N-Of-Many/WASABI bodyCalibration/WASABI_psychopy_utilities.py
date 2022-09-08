@@ -185,7 +185,11 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
     win.close()  # close the window
     core.quit()
     
-def wait(time=None, advanceKey=None):
+def wait(name, time=None, advanceKey=None, noRecord=False):
+    if noRecord==False:
+        global fmriStart
+        onset = globalClock.getTime() - fmriStart 
+    
     continueRoutine=True
     while continueRoutine == True:
         timer = core.CountdownTimer()
@@ -195,6 +199,11 @@ def wait(time=None, advanceKey=None):
                 break
             continue
         continueRoutine = False
+    if noRecord==False:
+        bids_trial={'onset': onset, 'duration': globalClock.getTime()-(onset+fmriStart), 'condition': name}
+        return bids_trial    
+    else:
+        return
 
 def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), time=None, advanceKey='space', biopacCode=None, noRecord=False):
     """Show some text, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 

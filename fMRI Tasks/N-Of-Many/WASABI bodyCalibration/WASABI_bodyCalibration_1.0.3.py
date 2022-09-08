@@ -367,8 +367,10 @@ for runs in runRange:
         if thermode_exists == 1:
             sendCommand('trigger') # Trigger the thermode
         bodyCalibration_bids=bodyCalibration_bids.append(showFixation(win, "Heat-Stimulation", time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
-        bodyCalibration_bids.tail(1)['temperature']=currentTemp
-        bodyCalibration_bids.tail(1)['body_site']=bodySites[runs]
+        # bodyCalibration_bids.tail(1)['temperature']=currentTemp
+        # bodyCalibration_bids.tail(1)['body_site']=bodySites[runs]
+        bodyCalibration_bids['temperature'].iloc[-1]=currentTemp
+        bodyCalibration_bids['body_site'].iloc[-1]=bodySites[runs]
         """
         15. Post-Heat Fixation Cross
         """
@@ -395,11 +397,11 @@ for runs in runRange:
             if currentTemp < maxTemp:
                 currentTemp=currentTemp+.5
 
-            wait(time=10)
+            bodyCalibration_bids_total.append(wait("WaitPeriod", time=10))
         else:
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
             intensityRating=bodyCalibration_bids['value'].iloc[-1]
-            bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+            bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", tolerance_binary, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=tolerance_binary), ignore_index=True)
             toleranceRating=bodyCalibration_bids['value'].iloc[-1]
             bodyCalibration_total_trial =[]
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
@@ -504,10 +506,10 @@ if biopac_exists:
 win.flip()
 
 # If there are no left face or right leg trials other than the first that are painful yet tolerable, then calibration has failed. 
-if bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
+if bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
 
-if bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
+if bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
 
 """
