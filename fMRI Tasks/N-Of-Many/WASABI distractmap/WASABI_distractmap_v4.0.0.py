@@ -130,7 +130,7 @@ if debug==1:
         'session': '99',
         'handedness': 'r', 
         'scanner': 'TEST',
-        'run': '10',
+        'run': '1',
         'body sites': ''
     }
     participant_settingsHeat = {
