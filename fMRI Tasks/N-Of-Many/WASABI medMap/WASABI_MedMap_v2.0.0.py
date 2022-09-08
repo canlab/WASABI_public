@@ -394,7 +394,7 @@ win.mouseVisible = False
 """
 6. Welcome Instructions
 """
-showText(win, "Instructions", InstructionText, noRecord=True)
+showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord=True)
 
 if expInfo['run']>1:
     runRange=range(expInfo['run']-1, 9)
@@ -425,7 +425,7 @@ for runs in runRange:
             bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Prepare the site for stimulation"
         else:
             bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Apply the Lidoderm analgesic cream"
-        showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=instructions, noRecord=True)
+        showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
 
         ## Conditioning parameters; Ideally this should be read from the participant's file 
         if expInfo['first(1) or second(2) day']=='1':

@@ -399,7 +399,7 @@ win.mouseVisible = False
 """
 7. Welcome and Button Test
 """
-showText(win, "Instructions", InstructionText, noRecord=True)
+showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord=True)
 # ------Prepare to start Routine "trial"-------
 continueRoutine = True
 # update component parameters for each repeat
@@ -576,7 +576,7 @@ for runs in range(len(bodySites)):
     random.shuffle(BigTrialList)
     BlockTrials=BigTrialList.pop()
     bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower()
-    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=instructions, noRecord=True)
+    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
     routineTimer.reset()
 
     """
@@ -598,11 +598,6 @@ for runs in range(len(bodySites)):
             rating_sound.play()
             nback_bids=nback_bids.append(showText(win, "0-back Instruction", "ready...\n0-back", fontSize=0.15, time=5, biopacCode=zeroback_instructions), ignore_index=True)
 
-            if r==1:
-                nback_bids['temperature'].iloc[-1]=32
-            else:
-                nback_bids['temperature'].iloc[-1]=temperature
-
             for trial_in_mini_block in range(trials_per_block):
                 """
                 14i. Select Medoc Thermal Program
@@ -612,7 +607,6 @@ for runs in range(len(bodySites)):
                     # Show Heat Cue
                     # Need a biopac code
                     nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
-
 
                 """ 
                 14ii. Pre-Trial Fixation Cross
@@ -641,8 +635,11 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
+                    nback_bids['temperature'].iloc[-1]=temperature
+                else:
+                    nback_bids['temperature'].iloc[-1]=32    
                 nback_bids = nback_bids.append(nback(win, "0-back", answers=Nback, cheat=cheat, feedback=False), ignore_index=True)
-                
+
                 if debug==1:
                     jitter2=1
                 else:
@@ -675,11 +672,6 @@ for runs in range(len(bodySites)):
                 """
                 rating_sound.play()
                 nback_bids=nback_bids.append(showText(win, "2-back Instruction", "ready...\n2-back", fontSize=0.15, time=5, biopacCode=twoback_instructions), ignore_index=True)
-
-                if r==1:
-                    nback_bids['temperature'].iloc[-1]=32
-                else:
-                    nback_bids['temperature'].iloc[-1]=temperature
 
                 """
                 15i. Select Medoc Thermal Program
@@ -718,6 +710,9 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
+                    nback_bids['temperature'].iloc[-1]=temperature
+                else:
+                    nback_bids['temperature'].iloc[-1]=32    
                 nback_bids = nback_bids.append(nback(win, "2-back", answers=Nback, cheat=cheat, feedback=False), ignore_index=True)
                 
                 if debug==1:

@@ -299,7 +299,7 @@ if biopac_exists:
 """
 6. Welcome Instructions
 """
-showText(win, "Instructions", InstructionText, noRecord=True)
+showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord=True)
 
 if expInfo['run']>1:
     runRange=range(expInfo['run']-1, 8)
@@ -311,7 +311,7 @@ for runs in runRange:
     7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run 
     """
     bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower()
-    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=instructions, noRecord=True)
+    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
 
     """
     8. Start Scanner
