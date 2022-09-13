@@ -26,7 +26,7 @@ The paradigm will generate these files of name:
 x16 trials per file with the following
 headers:
 
-'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt'	'mouseclick'	'correct'	'condition'	'score' 'biopac_channel'
+'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt'	'mouseclick' 'correct'	'condition'	'score' 'biopac_channel'
 
 SID: DBIC Subject ID
 date: the mm/dd/yyyy date
@@ -640,10 +640,14 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                    nback_bids['temperature'].iloc[-1]=temperature
-                else:
-                    nback_bids['temperature'].iloc[-1]=32    
                 nback_bids = nback_bids.append(nback(win, "0-back", answers=Nback, cheat=cheat, feedback=False), ignore_index=True)
+                
+                if r==2:
+                    nback_bids['temperature'].iloc[-9:-1]=temperature
+                else:
+                    nback_bids['temperature'].iloc[-9:-1]=32    
+
+
 
                 if debug==1:
                     jitter2=1
@@ -715,10 +719,13 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                    nback_bids['temperature'].iloc[-1]=temperature
-                else:
-                    nback_bids['temperature'].iloc[-1]=32    
                 nback_bids = nback_bids.append(nback(win, "2-back", answers=Nback, cheat=cheat, feedback=False), ignore_index=True)
+                
+                if r==2:
+                    nback_bids['temperature'].iloc[-9:-1]=temperature
+                else:
+                    nback_bids['temperature'].iloc[-9:-1]=32    
+
                 
                 if debug==1:
                     jitter2=1
