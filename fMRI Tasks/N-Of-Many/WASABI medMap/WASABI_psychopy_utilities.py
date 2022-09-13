@@ -1002,7 +1002,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
 
     # ------Prepare to start Routine "Rating"-------
     continueRoutine = True
-    routineTimer.add(time)
+    if time is not None:
+        routineTimer.add(time)
     # update component parameters for each repeat
     # keep track of which components have finished
     RatingMouse = event.Mouse(win=win, visible=False) # Re-initialize RatingMouse

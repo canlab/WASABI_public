@@ -26,11 +26,11 @@ The paradigm will generate these files of name:
 x16 trials per file with the following
 headers:
 
-'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt'	'mouseclick' 'correct'	'condition'	'score' 'biopac_channel'
+'SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt'	'mouseclick' 'correct'	'condition'	'score' 'biopac_channel'
 
 SID: DBIC Subject ID
 date: the mm/dd/yyyy date
-gender
+sex
 session
 handedness
 scanner: Initials of the scan operator of the day. 
@@ -115,7 +115,7 @@ expName = 'distractmap'  # from the Builder filename that created this script
 
 expInfo = {
 'DBIC Number': '', 
-'gender': '',
+'sex': '',
 'session': '',
 'handedness': '', 
 'scanner': '',
@@ -126,7 +126,7 @@ expInfo = {
 if debug==1:
     expInfo = {
         'DBIC Number': '999', 
-        'gender': 'm',
+        'sex': 'm',
         'session': '99',
         'handedness': 'r', 
         'scanner': 'TEST',
@@ -153,7 +153,7 @@ else:
                 participant_settingsHeat = {}
                 p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
                 expInfo['DBIC Number'] = p_info['DBIC_id']
-                expInfo['gender'] = p_info['gender']
+                expInfo['sex'] = p_info['sex']
                 expInfo['handedness'] = p_info['handedness']
 
                 # Heat Settings
@@ -260,11 +260,11 @@ else:
 4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
 cueImg = os.sep.join([stimuli_dir, "cue", "thermode.png"])
-## Check gender for Chest cue
+## Check sex for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
-if expInfo['gender'] in {"M", "m", "Male", "male"}:
+if expInfo['sex'] in {"M", "m", "Male", "male"}:
     Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestM.png"])
-elif expInfo['gender'] in {"F", "f", "Female", "female"}:
+elif expInfo['sex'] in {"F", "f", "Female", "female"}:
     Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
 bodysite_word2img = {"Left Face": os.sep.join([stimuli_dir,"cue","LeftFace.png"]), 
                           "Right Face": os.sep.join([stimuli_dir,"cue","RightFace.png"]), 
@@ -292,7 +292,7 @@ sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Numb
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-varNames=['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt', 'mouseclick', 'correct', 'score', 'biopac_channel']
+varNames=['SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt', 'mouseclick', 'correct', 'score', 'biopac_channel']
 nback_bids=pd.DataFrame(columns=varNames)
 
 """
@@ -322,7 +322,7 @@ defaultKeyboard = keyboard.Keyboard()
 
 # 06/29/2022: Tor suggested we impose mini-blocks of each condition
 # Number of trials per mini-block of each of 4 conditions.
-trials_per_block=3
+trials_per_block=2
 
 # 06/29/2022: Tor suggested we add an audio ding
 rating_sound=mySound=sound.Sound('B', octave=5, stereo=1, secs=.5)  
@@ -544,6 +544,12 @@ ClickToStartText = "Click to start practice"
 # 4. 2x 2-back Task - Cue + high-heat stimulation (~49 degrees)  [6 trials]
 # There should be no back-to-back repetitions of blocks of the same condition
 
+# 1. 1x 0-back Task - no-stimulation                       [2 trials]
+# 2. 2x 0-back Task - Cue + high-heat stimulation (~49 degrees)  [4 trials]
+# 3. 1x 2-back Task - No Stimulation                       [2 trials]
+# 4. 2x 2-back Task - Cue + high-heat stimulation (~49 degrees)  [4 trials]
+# There should be no back-to-back repetitions of blocks of the same condition
+
 BigTrialList = [[4, 1, 2, 3, 4, 2], 
                 [2, 3, 4, 2, 1, 4],
                 [3, 4, 1, 2, 4, 2],
@@ -758,20 +764,20 @@ for runs in range(len(bodySites)):
     rating_sound.stop() # I think a stop needs to be introduced in order to play again.
     rating_sound.play()
 
-    nback_bids=nback_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", biopacCode=comfort_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="unipolar", biopacCode=valence_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", biopacCode=comfort_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", biopacCode=avoid_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="unipolar", biopacCode=relax_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="unipolar", biopacCode=taskattention_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="unipolar", biopacCode=boredom_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", biopacCode=alertness_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", biopacCode=posthx_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", biopacCode=negthx_rating), ignore_index=True)  
-    nback_bids=nback_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", biopacCode=self_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", biopacCode=other_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", biopacCode=posthx_rating), ignore_index=True)
-    nback_bids=nback_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", biopacCode=present_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="unipolar", time=None, biopacCode=valence_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=None, biopacCode=avoid_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="unipolar", time=None, biopacCode=relax_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="unipolar", time=None, biopacCode=taskattention_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="unipolar", time=None, biopacCode=boredom_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=None, biopacCode=alertness_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=None, biopacCode=negthx_rating), ignore_index=True)  
+    nback_bids=nback_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=None, biopacCode=self_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=None, biopacCode=other_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
+    nback_bids=nback_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=None, biopacCode=present_rating), ignore_index=True)
 
     rating_sound.stop() # Stop the sound so it can be played again.
 
@@ -781,7 +787,7 @@ for runs in range(len(bodySites)):
     # Append constants to the entire run
     nback_bids['SID']=expInfo['DBIC Number']
     nback_bids['date']=expInfo['date']
-    nback_bids['gender']=expInfo['gender']
+    nback_bids['sex']=expInfo['sex']
     nback_bids['session']=expInfo['session']
     nback_bids['handedness']=expInfo['handedness']
     nback_bids['scanner']=expInfo['scanner']

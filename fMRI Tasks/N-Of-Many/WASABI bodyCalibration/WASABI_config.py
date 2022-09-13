@@ -42,11 +42,11 @@ from datetime import datetime
 2. Global Variable Configurations
 """
 
-debug = 1
-autorespond = 1
+debug = 0
+autorespond = 0
 # Device togglers
-biopac_exists = 0
-thermode_exists = 0
+biopac_exists = 1
+thermode_exists = 1
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame

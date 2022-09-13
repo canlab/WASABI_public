@@ -34,7 +34,7 @@ The paradigm will generate 8x of these files of name:
 sub-SIDXXXXX_task-bodyCalibration_acq-[bodysite]_run-XX_events.tsv
 
 Trials per file are defined by the following headers:
-'SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
+'SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
 
 With version 1.03, the stimulation duration was reduced to 15 seconds at peak time. Edits were made to the bids dataframe. 
 
@@ -141,7 +141,7 @@ if debug == 1:
     expInfo = {
     'DBIC Number': '99',
     'dob (mm/dd/yyyy)': '06/20/1988',
-    'gender': 'm',
+    'sex': 'm',
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS',
@@ -152,7 +152,7 @@ else:
     expInfo = {
     'DBIC Number': '',
     'dob (mm/dd/yyyy)': '', 
-    'gender': '',
+    'sex': '',
     'session': '',
     'handedness': '', 
     'scanner': '',
@@ -197,11 +197,11 @@ else:
 4. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
 cueImg = os.sep.join([stimuli_dir, "cue", "thermode.png"])
-## Check gender for Chest cue
+## Check sex for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
-if expInfo['gender'] in {"M", "m", "Male", "male"}:
+if expInfo['sex'] in {"M", "m", "Male", "male"}:
     Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestM.png"])
-elif expInfo['gender'] in {"F", "f", "Female", "female"}:
+elif expInfo['sex'] in {"F", "f", "Female", "female"}:
     Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
 bodysite_word2img = {"Left Face": os.sep.join([stimuli_dir,"cue","LeftFace.png"]), 
                           "Right Face": os.sep.join([stimuli_dir,"cue","RightFace.png"]), 
@@ -230,7 +230,7 @@ if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
 # varNames = ['onset', 'duration', 'value', 'bodySite', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopacCode']
-varNames = ['SID', 'date', 'gender', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
+varNames = ['SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
 bodyCalibration_bids=pd.DataFrame(columns=varNames)
 
 # Create python lists to later concatenate or convert into pandas dataframes
@@ -401,7 +401,7 @@ for runs in runRange:
         else:
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
             intensityRating=bodyCalibration_bids['value'].iloc[-1]
-            bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", tolerance_binary, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=tolerance_binary), ignore_index=True)
+            bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ToleranceRating", tolerableText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=tolerance_binary), ignore_index=True)
             toleranceRating=bodyCalibration_bids['value'].iloc[-1]
             bodyCalibration_total_trial =[]
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, intensityRating, toleranceRating))
@@ -434,20 +434,20 @@ for runs in runRange:
     rating_sound.stop() # I think a stop needs to be introduced in order to play again.
     rating_sound.play()
 
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", biopacCode=comfort_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="unipolar", biopacCode=valence_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", biopacCode=comfort_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", biopacCode=avoid_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="unipolar", biopacCode=relax_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="unipolar", biopacCode=taskattention_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="unipolar", biopacCode=boredom_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", biopacCode=alertness_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", biopacCode=posthx_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", biopacCode=negthx_rating), ignore_index=True)  
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", biopacCode=self_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", biopacCode=other_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", biopacCode=posthx_rating), ignore_index=True)
-    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", biopacCode=present_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="unipolar", time=None, biopacCode=valence_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=None, biopacCode=avoid_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="unipolar", time=None, biopacCode=relax_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="unipolar", time=None, biopacCode=taskattention_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="unipolar", time=None, biopacCode=boredom_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=None, biopacCode=alertness_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=None, biopacCode=negthx_rating), ignore_index=True)  
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=None, biopacCode=self_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=None, biopacCode=other_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
+    bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=None, biopacCode=present_rating), ignore_index=True)
 
     rating_sound.stop() # Stop the sound so it can be played again.
 
@@ -456,7 +456,7 @@ for runs in runRange:
     """ 
     bodyCalibration_bids['SID']=expInfo['DBIC Number']
     bodyCalibration_bids['date']=expInfo['date']
-    bodyCalibration_bids['gender']=expInfo['gender']
+    bodyCalibration_bids['sex']=expInfo['sex']
     bodyCalibration_bids['session']=expInfo['session']
     bodyCalibration_bids['handedness']=expInfo['handedness']
     bodyCalibration_bids['scanner']=expInfo['scanner']
@@ -478,7 +478,7 @@ bids_df=pd.DataFrame(pd.DataFrame(bodyCalibration_bids_total, columns = ['repeti
 bids_df.to_csv(bids_filename, sep="\t")
 
 averaged_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s_participants.tsv' % (int(expInfo['DBIC Number']), expName)
-averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['gender'], expInfo['handedness'], bodySites,
+averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['sex'], expInfo['handedness'], bodySites,
                     round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
                     round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
                     round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
@@ -492,7 +492,7 @@ averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(exp
                     bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
                     bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean()])
 
-averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','DBIC_id','age','dob','gender','handedness','calibration_order',
+averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','DBIC_id','age','dob','sex','handedness','calibration_order',
                                                     'leftarm_ht','rightarm_ht','leftleg_ht','rightleg_ht','leftface_ht','rightface_ht','chest_ht','abdomen_ht',
                                                     'leftarm_i','rightarm_i','leftleg_i','rightleg_i','leftface_i','rightface_i','chest_i','abdomen_i'])
 averaged_df.to_csv(averaged_filename, sep="\t")
