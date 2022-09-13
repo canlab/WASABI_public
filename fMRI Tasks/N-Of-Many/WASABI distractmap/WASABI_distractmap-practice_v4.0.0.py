@@ -191,7 +191,7 @@ continueText = visual.TextStim(win=win, name='continueText',
 NbackInstructionText1 = "Welcome to the n-back task \n\n\nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue."
 NbackInstructionText2 = "During the task you will be presented a white square in one of nine positions on a grid. \n\n\n\n\n\n\n\nDepending on the instruction, your task is to indicate whether the \nyou see a square anywhere on the grid, or if the square's current position is the same as the position two trials ago\n\n\nPress [Space] to continue."
 NbackInstructionText3 = "Between each trial, a fixation cross will appear in the middle of the grid. \n\n\n\n\n\n\n\n\nYou do not need to respond during this time. \nSimply wait for the next trial.\n\n\n\nPress [Space] to continue."
-NbackInstructionText4 = "\n0-back\n\n\nWhen given the instruction '0-back' you will have to indicate whether a square appears anywhere on the grid by pressing the \"yes\" button (left click). \n\n\nPress [Space] to continue."
+NbackInstructionText4 = "\n0-back\n\nWhen given the instruction '0-back' in the scanner, you will have to indicate whether a square appears anywhere on the grid by pressing the \"yes\" button (left click). \n\n\nPress [Space] to continue."
 
 NbackInstructions.setText(NbackInstructionText1)
 NbackInstructions.draw()
@@ -245,9 +245,9 @@ else:
 
 while turns <= turnLimit and score <= 70:
     ## 0-back Instructions
-    NbackInstructionText5 = "When the screen says '0-back' you should make a \"yes\" response every time the square appears on the screen."
+    NbackInstructionText5 = "In the scanner, when the screen says '0-back' you should make a \"yes\" response every time the square appears on the screen."
     ClickToContinueText = "Click to continue"
-    NbackInstructionText6 = "First, we will practice some trials so that you can get used to the procedure.\nAfter each response you'll see whether you responded correctly, incorrectly, or whether you forgot to respond.\n\n\n\n\nGood Luck!"
+    NbackInstructionText6 = "First, we will practice some 0-back trials so that you can get used to the procedure.\nAfter each response you'll see whether you responded correctly, incorrectly, or whether you forgot to respond.\n\n\n\n\nGood Luck!"
     ClickToStartText = "Click to start practice"
 
     NbackInstructions.setText(NbackInstructionText5)

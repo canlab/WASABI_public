@@ -278,7 +278,7 @@ PresentText = "The thoughts I experienced during the last scan pertained to the 
 totalTrials = 7 # Figure out how many trials would be equated to 5 minutes
 # Attribute 5 seconds to rampup and rampdown time
 # stimtrialTime = 25 # This becomes very unreliable with the use of poll_for_change().
-stimtrialTime = 20 # This becomes very unreliable with the use of poll_for_change().
+stimtrialTime = 15 # This becomes very unreliable with the use of poll_for_change().
 ratingTime = 5 # Intensity Rating Time limit in seconds during the inter-trial-interval
 
 if debug == 1:
@@ -389,6 +389,7 @@ for runs in runRange:
         painRating=bodyCalibration_bids['value'].iloc[-1]
 
         if painRating < 0:
+            bodyCalibration_bids.append(wait("WaitPeriod", time=2*ratingTime))
             bodyCalibration_total_trial = []
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, None, 1))
             bodyCalibration_bids_total.append(bodyCalibration_total_trial)
@@ -396,8 +397,6 @@ for runs in runRange:
             # Update Temperature if Pain Binary is -1
             if currentTemp < maxTemp:
                 currentTemp=currentTemp+.5
-
-            bodyCalibration_bids_total.append(wait("WaitPeriod", time=10))
         else:
             bodyCalibration_bids=bodyCalibration_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
             intensityRating=bodyCalibration_bids['value'].iloc[-1]

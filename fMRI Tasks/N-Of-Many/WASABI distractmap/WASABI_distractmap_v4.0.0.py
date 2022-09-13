@@ -537,13 +537,7 @@ ClickToStartText = "Click to start practice"
 # Real Trials Start
 ###################
 
-# 6/29/2022: Tor's suggestion: Mini-blocks of 3 trials each.
-# 1. 1x 0-back Task - no-stimulation                       [3 trials]
-# 2. 2x 0-back Task - Cue + high-heat stimulation (~49 degrees)  [6 trials]
-# 3. 1x 2-back Task - No Stimulation                       [3 trials]
-# 4. 2x 2-back Task - Cue + high-heat stimulation (~49 degrees)  [6 trials]
-# There should be no back-to-back repetitions of blocks of the same condition
-
+# 6/29/2022: Tor's suggestion: Mini-blocks of 2 trials each.
 # 1. 1x 0-back Task - no-stimulation                       [2 trials]
 # 2. 2x 0-back Task - Cue + high-heat stimulation (~49 degrees)  [4 trials]
 # 3. 1x 2-back Task - No Stimulation                       [2 trials]
@@ -667,8 +661,10 @@ for runs in range(len(bodySites)):
                     """
                     rating_sound.play() # Play a sound to ensure the participant is awake.
                     nback_bids=nback_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
-                    nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
-                    nback_bids=nback_bids.append(showRatingScale(win, "DistractBinary", distractText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=distract_binary), ignore_index=True)
+                    painRating=nback_bids['value'].iloc[-1]
+                    if painRating < 0:
+                        nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+                        nback_bids=nback_bids.append(showRatingScale(win, "DistractBinary", distractText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=distract_binary), ignore_index=True)
                     rating_sound.stop()
 
                     """
@@ -745,8 +741,10 @@ for runs in range(len(bodySites)):
                     """
                     rating_sound.play() # Play a sound to ensure the participant is awake.
                     nback_bids=nback_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
-                    nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
-                    nback_bids=nback_bids.append(showRatingScale(win, "DistractBinary", distractText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=distract_binary), ignore_index=True)
+                    painRating=nback_bids['value'].iloc[-1]
+                    if painRating < 0:
+                        nback_bids=nback_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+                        nback_bids=nback_bids.append(showRatingScale(win, "DistractBinary", distractText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=distract_binary), ignore_index=True)
                     rating_sound.stop()
                     
                     """

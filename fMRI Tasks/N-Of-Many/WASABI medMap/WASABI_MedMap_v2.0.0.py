@@ -518,7 +518,11 @@ for runs in runRange:
             """        
             rating_sound.play()
             medmap_bids=medmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
-            medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+            painRating=medmap_bids['value'].iloc[-1]
+            if painRating < 0:
+                medmap_bids.append(wait("WaitPeriod", time=ratingTime))
+            else:
+                medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
 
             """
             17. Post-Question jitter
