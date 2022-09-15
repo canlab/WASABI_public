@@ -45,7 +45,7 @@ from datetime import datetime
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp

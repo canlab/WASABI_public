@@ -46,7 +46,7 @@ debug = 0
 cheat=0
 autorespond = 0
 # Device togglers
-biopac_exists = 1
+biopac_exists = 0
 thermode_exists = 1
 
 stimTime=15
