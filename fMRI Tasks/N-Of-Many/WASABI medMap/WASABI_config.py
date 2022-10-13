@@ -45,7 +45,7 @@ from datetime import datetime
 debug = 0
 autorespond = 0
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 1
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
@@ -165,6 +165,8 @@ pain_binary=20
 trialIntensity_rating=21
 tolerance_binary=22
 distract_binary=23
+
+expectancy_rating=51
 
 valence_rating=24
 intensity_rating=25

@@ -346,6 +346,18 @@ instructioncode = instruction_code
 InstructionCondition = "Instruction"
 
 # Rating question text
+
+# Pre-Control and Post-Treatment
+threatText="How threatened or safe do you feel?" # -100 (Maximally Threatened) to 100 (Maximally Safe)
+stressText="What is your stress level?" # 0 (None) to 100 (Strongest Imaginable)
+painAnxText="What is your pain anxiety level?" # 0 (None) to 100 (Strongest Imaginable)
+othAnxText="What is your anxiety level on things other than pain?" # 0 (None) to 100 (Strongest Imaginable)
+painConfText="How confident do you feel in your ability to handle the pain?" #0 (None) to 100 (Strongest Imaginable)
+
+# Pre-Trial
+expText="How painful do you expect this next stimulation will be?"
+
+# Post-Trial
 painText="Was that painful?"
 trialIntensityText="How intense was the heat stimulation?"
 
@@ -438,9 +450,9 @@ for runs in runRange:
                 temperature = 44
                 thermodeCommand=thermode_temp2program[temperature]
                 ConditionName="Placebo"
-                # Warm and not hot temperature
+                # Warm and not hot temperature, set to 44 degrees for everyone
             if runs==4 or runs==5 or runs==6 or runs==7:
-                temperature=round_to_halfdegree(participant_settingsHeat[bodySites[runs]]-((participant_settingsHeat[bodySites[runs]]-44)/2))
+                temperature=round_to_halfdegree(float(participant_settingsHeat[bodySites[runs]])-((float(participant_settingsHeat[bodySites[runs]])-44)/2))
                 thermodeCommand=thermode_temp2program[temperature] # midway between max and 44 warm
                 if runs==4 or runs==5:
                     ConditionName="Placebo"
@@ -454,6 +466,14 @@ for runs in runRange:
                 ConditionName="Placebo"
             temperature = participant_settingsHeat[bodySites[runs]]
             thermodeCommand=thermode_temp2program[temperature]
+        
+        if runs in [0, 2, 6]:
+            rating_sound.play()
+            medmap_bids=medmap_bids.append(showRatingScale(win, "Threat", threatText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="bipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "Stress", stressText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "PainAnxiety", painAnxText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "OtherAnxiety", othAnxText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "PainConfidence", painConfText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
 
         """
         8. Start Scanner
@@ -481,6 +501,8 @@ for runs in runRange:
             # Select Medoc Thermal Program
             if thermode_exists == 1:
                 sendCommand('select_tp', thermodeCommand)
+            
+            medmap_bids=medmap_bids.append(showRatingScale(win, "Expectancy", expText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=expectancy_rating), ignore_index=True)
 
             """
             12. Show Heat Cue
@@ -520,7 +542,7 @@ for runs in runRange:
             medmap_bids=medmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
             painRating=medmap_bids['value'].iloc[-1]
             if painRating < 0:
-                medmap_bids.append(wait("WaitPeriod", time=ratingTime))
+                medmap_bids.append(wait("WaitPeriod", time=ratingTime), ignore_index=True)
             else:
                 medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
 
