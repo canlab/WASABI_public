@@ -143,7 +143,7 @@ psychopyVersion = '2020.2.10'
 if debug == 1:
     expInfo = {
     'DBIC Number': '99',
-    'first(1) or second(2) day': '1',
+    'second(2) or third(3) day': '2',
     'sex': 'm',
     'session': '99',
     'handedness': 'r', 
@@ -154,7 +154,7 @@ if debug == 1:
 else:
     expInfo = {
     'DBIC Number': '',
-    'first(1) or second(2) day': '', 
+    'second(2) or third(3) day': '', 
     'sex': '',
     'session': '',
     'handedness': '', 
@@ -191,14 +191,14 @@ if debug!=1:
 
                 expInfo2 = {
                 'session': ses_num,
-                'first(1) or second(2) day': '',
+                'second(2) or third(3) day': '',
                 'scanner': '',
-                'run': '1', # If re-inserting participant midday
+                'run': '', # If re-inserting participant midday
                 'body sites': '' # If inputting a list of body sites, make sure to delimit them with ', ' with the trailing space.
                 }
                 expInfo2=subjectInfoBox("MedMap Scan", expInfo2)
                 expInfo['session'] = expInfo2['session']
-                expInfo['first(1) or second(2) day'] = expInfo2['first(1) or second(2) day']
+                expInfo['second(2) or third(3) day'] = expInfo2['second(2) or third(3) day']
                 expInfo['scanner'] = expInfo2['scanner']
                 expInfo['run'] = expInfo2['run']
                 expInfo['body sites'] = expInfo2['body sites']
@@ -244,9 +244,9 @@ else:
         'Abdomen': '48.5'
     }
 
-if expInfo['first(1) or second(2) day']=='1':
+if expInfo['second(2) or third(3) day']=='2':
     expName = 'MedMap1-conditioning'
-elif expInfo['first(1) or second(2) day']=='2':
+elif expInfo['second(2) or third(3) day']=='3':
     expName = 'MedMap2-test'  
 
 expInfo['run']=int(expInfo['run'])
@@ -390,10 +390,10 @@ OtherText = "The thoughts I experienced during the last scan concerned other peo
 ImageryText = "The thoughts I experienced during the last scan were experienced with clear and vivid mental imagery" # Strongly disagree - Neither - Strongly agree (bipolar)
 PresentText = "The thoughts I experienced during the last scan pertained to the immediate PRESENT (the here and now)" # Strongly disagree - Neither - Strongly agree (bipolar)
 
-if expInfo['first(1) or second(2) day']=='1':
+if expInfo['second(2) or third(3) day']=='2':
     movie=preloadMovie(win, "kungfury1", os.path.join(video_dir,'kungfury1.mp4'))
     movieCode=kungfury1
-if expInfo['first(1) or second(2) day']=='2':
+if expInfo['second(2) or third(3) day']=='3':
     movie=preloadMovie(win, "kungfury2", os.path.join(video_dir,'kungfury2.mp4'))
     movieCode=kungfury2
 
@@ -408,12 +408,23 @@ win.mouseVisible = False
 """
 showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord=True)
 
+if eyetracker_exists==1:
+    calibrateEyeTracker(win, el_tracker, eyetrackerCalibration)
+
+
 if expInfo['run']>1:
     runRange=range(expInfo['run']-1, 9)
 else:
     runRange=range(len(bodySites)) # +1 for hyperalignment
 
 for runs in runRange:
+    if eyetracker_exists==1:
+        startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
+
+        sourceEDF_filename = "%06d-%s.EDF" % (int(expInfo['DBIC Number']), runs)
+        destinationEDF = os.path.join(sub_dir, '%s.EDF' % runs)
+        sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
+
     """
     7. Check if you should run the Hyperalignment Scan 
     """
@@ -440,7 +451,7 @@ for runs in runRange:
         showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
 
         ## Conditioning parameters; Ideally this should be read from the participant's file 
-        if expInfo['first(1) or second(2) day']=='1':
+        if expInfo['second(2) or third(3) day']=='2':
             if runs==0 or runs==1:
                 temperature = participant_settingsHeat[bodySites[runs]]
                 thermodeCommand=thermode_temp2program[temperature]
@@ -459,7 +470,7 @@ for runs in runRange:
                 if runs==6 or runs==7:
                     ConditionName="Control"
 
-        elif expInfo['first(1) or second(2) day']=='2':
+        elif expInfo['second(2) or third(3) day']=='3':
             if runs in [0, 1, 6, 7]:
                 ConditionName="Control"
             if runs in [2, 3, 4 ,5]:
@@ -584,7 +595,7 @@ for runs in runRange:
         """ 
         # Append constants to the entire run
         medmap_bids['SID']=expInfo['DBIC Number']
-        medmap_bids['day']=expInfo['first(1) or second(2) day']
+        medmap_bids['day']=expInfo['second(2) or third(3) day']
         medmap_bids['sex']=expInfo['sex']
         medmap_bids['session']=expInfo['session']
         medmap_bids['handedness']=expInfo['handedness'] 
@@ -596,6 +607,9 @@ for runs in runRange:
         medmap_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
         medmap_bids.to_csv(medmap_bids_filename, sep="\t")
         medmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
+
+        if eyetracker_exists==1:
+            stopEyeTracker(el_tracker, sourceEDF, destinationEDF, biopacCode=eyetrackerCode)
 
         """
         20. End of Run, Wait for Experimenter instructions to begin next run
