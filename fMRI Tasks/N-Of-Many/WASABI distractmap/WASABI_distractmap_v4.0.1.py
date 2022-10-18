@@ -59,6 +59,7 @@ x 5. Attempted to shorten by removing post-run questions
 x 6. Removes the mousepointer from the nback
 x 7. Fixed a bug which mislabelled 2-back-heat trials as 2-back at 32 degrees.
 x 8. Fixed a bug in recording of onset times for nback.
+x 9. Now testing Left Leg and Chest instead of Left Face and Right Leg.
 
 
 0. Import Libraries
@@ -230,15 +231,10 @@ expInfo['run']=int(expInfo['run'])
 3. Configure the Stimuli Arrays
 """
 if expInfo['body sites']=="":
-    ## Based on our discussion with Tor, these body sites will likely have to change to Right Leg and Chest.
-    # bodySites1 = ['Right Leg', 'Left Face', 'Right Leg', 'Left Face']
-    # bodySites2 = ['Left Face', 'Right Leg', 'Left Face', 'Right Leg'] 
 
-    # We will only have time for 2 runs on each day.
-    bodySites1 = ['Right Leg', 'Left Face']
-    bodySites2 = ['Left Face', 'Right Leg'] 
-    
-    # bodySites1 = ['Left Face', 'Left Face', 'Left Face', 'Left Face']
+    bodySites1 = ['Left Leg', 'Chest']
+    bodySites2 = ['Chest', 'Left Leg'] 
+
 
     if int(expInfo['DBIC Number'])%2==0:
         bodySites=bodySites1
