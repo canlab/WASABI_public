@@ -1246,13 +1246,14 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
         return
 
 
-def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
+def nback(win, name, answers, fixation='+', feedback=False, cheat=False, nofMRI=False):
     """Start a spatial n-back task.
 
     Args:
         win (visual.Window): Pass in the Window to draw text to. 
         name (str): String name of the type of nback task being shown. e.g., "2-back".
         answers (str): filepath of the excel file containing the answers of the nback, dictating the trial sequence.
+        fixation (str): String to show in the middle of the nback grid. Defaults to '+'.
         feedback (bool, optional): Boolean determining whether participant receives trial-by-trial feedback. Defaults to False.
         cheat (bool, optional): Boolean determining whether participants should always get 100%. Defaults to False.
         nofMRI (bool, optional): Time to display the rating scale on screen in seconds. Defaults to False.
@@ -1294,15 +1295,16 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
         fillColor=[1.000,1.000,1.000], fillColorSpace='rgb',
         opacity=1, depth=-1.0, interpolate=True)
     fixation = visual.TextStim(win=win, name='fixation_1',
-        text='+',
+        text=fixation,
         font='Arial',
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0, 
         color='white', colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=-2.0)
-    response = event.Mouse(win=win)
-    response.mouseClock = core.Clock()
 
+    response = event.Mouse(win=win, visible=False)
+    response.mouseClock = core.Clock()
+ 
     Feedback = visual.TextStim(win=win, name='Feedback',
         text="",
         font='Arial',
@@ -1359,6 +1361,8 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
         frameN = -1
         
         # -------Run Routine "Nback_Trial"-------
+        global fmriStart
+        onset = globalClock.getTime() - fmriStart
         while continueRoutine and routineTimer.getTime() > 0:
             # gotValidClick = False
             # get current time
@@ -1547,7 +1551,7 @@ def nback(win, name, answers, feedback=False, cheat=False, nofMRI=False):
         else:
             score = correct*100/trials.nTotal
         thisExp.nextEntry()
-        bids_trial={'onset': grid_lines.tStartRefresh, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, 'condition': name, 'score': score} 
+        bids_trial={'onset': onset, 'duration': t, 'rt': mouse_response_rt, 'mouseclick': mouse_response, 'correct': response.corr, 'condition': name, 'score': score} 
         nback_bids=nback_bids.append(bids_trial, ignore_index=True)
 
     """ 
