@@ -39,7 +39,6 @@ Trials per file are defined by the following headers:
 With version 1.03, the stimulation duration was reduced to 15 seconds at peak time. Edits were made to the bids dataframe. 
 With version 1.04, the stimulation duration was reduced to 10 seconds at peak time. Eyetracker functionality was added. Eligibility criteria includes being able to tolerate 47 degrees C to chest and left leg. Added an Eligibility column to the participants.tsv file.
 
-
 0a. Import Libraries
 """
 
@@ -176,15 +175,10 @@ if expInfo['body sites']=="":
     bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     random.shuffle(bodySites)
 else:
-    # This doesn't really work in a user friendly way. Next iteration should have it so it appends a list of body sites
-    # in accordance to the run index.
     bodySites=list(expInfo['body sites'].split(", "))
 
 # If bodysites and run order need to be manually set for the participant uncomment below and edit:
 # bodySites = ["Left Leg"]
-
-# bodySites = ["", "", "", "", "", "Left Face", "Chest", "Right Arm"]
-
 
 expInfo['body_site_order'] = str(bodySites)
 expInfo['expName'] = expName
@@ -246,7 +240,6 @@ bodyCalibration_bids_trial = []
 
 averaged_data = []
 
-
 """
 5. Initialize Trial-level Components
 """
@@ -267,7 +260,7 @@ painText="Was that painful?"
 trialIntensityText="How intense was the heat stimulation?"
 tolerableText="Was it tolerable, and can you take more of that heat?"
 
-# No longer asked as of 10/18/2022 to shorten scan time.
+
 IntensityText = 'HOW INTENSE was the WORST heat you experienced?'
 ComfortText = "How comfortable do you feel right now?" # (Bipolar)
 ValenceText = "HOW UNPLEASANT was the WORST heat you experienced?"  # 0 -- Most Unpleasant (Unipolar)
@@ -403,7 +396,7 @@ for runs in runRange:
         painRating=bodyCalibration_bids['value'].iloc[-1]
 
         if painRating < 0:
-            bodyCalibration_bids.append(wait("WaitPeriod", time=2*ratingTime), ignore_index=True)
+            bodyCalibration_bids.append(wait("WaitPeriod", time=2*ratingTime))
             bodyCalibration_total_trial = []
             bodyCalibration_total_trial.extend((r+1, bodySites[runs], currentTemp, painRating, None, 1))
             bodyCalibration_bids_total.append(bodyCalibration_total_trial)
@@ -480,7 +473,7 @@ for runs in runRange:
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run
-    """   
+    """
     if eyetracker_exists==1:
         stopEyeTracker(el_tracker, sourceEDF, destinationEDF, biopacCode=eyetrackerCode)
     nextRun(win)
@@ -510,15 +503,6 @@ averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(exp
 averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','DBIC_id','age','dob','sex','handedness','calibration_order',
                                                     'leftarm_ht','rightarm_ht','leftleg_ht','rightleg_ht','leftface_ht','rightface_ht','chest_ht','abdomen_ht',
                                                     'leftarm_i','rightarm_i','leftleg_i','rightleg_i','leftface_i','rightface_i','chest_i','abdomen_i'])
-averaged_df.to_csv(averaged_filename, sep="\t")
-
-"""
-19. Wrap up
-"""
-if biopac_exists:
-    biopac.setData(biopac,0)
-    biopac.setData(biopac,end_task)
-win.flip()
 
 # If there are no left face or right leg trials other than the first that are painful yet tolerable, then calibration has failed. 
 if bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].count()==0:
@@ -532,6 +516,16 @@ if bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (b
 if averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
     averaged_df['Eligible']=-3
+
+averaged_df.to_csv(averaged_filename, sep="\t")
+
+"""
+19. Wrap up
+"""
+if biopac_exists:
+    biopac.setData(biopac,0)
+    biopac.setData(biopac,end_task)
+win.flip()
 
 """
 20. Wrap up

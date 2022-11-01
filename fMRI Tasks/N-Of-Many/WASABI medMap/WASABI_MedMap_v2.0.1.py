@@ -28,7 +28,7 @@ sub-SIDXXXXX_ses-XX_task-medmap_acq-[bodySite]_run-X_events.tsv
 Each file will consist of the following headers:
 'SID', 'day', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel'
  
-Version 2.1.1: Removes post-run questions to save scantime.
+Version 2.0.1: Updates the pre-trial question anchors. Will now accept calibration files with an extra Eligibility column
 
 
 0a. Import Libraries
@@ -170,7 +170,7 @@ if debug!=1:
         if "_task-bodyCalibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
             a = pd.read_csv(dlg1[0], delimiter='\t', index_col=0, header=0, squeeze=True)
-            if a.shape == (1,23):
+            if a.shape == (1,23) | a.shape == (1,24):
                 participant_settingsHeat = {}
                 p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
                 expInfo['DBIC Number'] = p_info['DBIC_id']
@@ -373,20 +373,20 @@ rating_sound=mySound=sound.Sound('B', octave=5, stereo=1, secs=.5, sampleRate=44
 ## When you want to play the sound, run this line of code:
 # rating_sound.play()
 
-# IntensityText = 'HOW INTENSE was the WORST heat you experienced?'
-# ComfortText = "How comfortable do you feel right now?" # (Bipolar)
-# ValenceText = "HOW UNPLEASANT was the WORST heat you experienced?"  # 0 -- Most Unpleasant (Unipolar)
-# AvoidText = "Please rate HOW MUCH you want to avoid this experience in the future?" # Not at all -- Most(Unipolar)
-# RelaxText = "How relaxed are you feeling right now?" # Least relaxed -- Most Relaxed (Unipolar)
-# TaskAttentionText = "During the last scan, how well could you keep your attention on the task?" # Not at all -- Best (Unipolar)
-# BoredomText = "During the last scan, how bored were you?" # Not bored at all -- Extremely Bored (Unipolar)
-# AlertnessText = "During the last scan how sleepy vs. alert were you?" # Extremely Sleepy - Neutral - Extremely Alert (Bipolar)
-# PosThxText = "The thoughts I experienced during the last scan were POSITIVE" # Strongly disagree - Neither - Strongly Agree (Bipolar)
-# NegThxText = "The thoughts I experienced during the last scan were NEGATIVE" # Strongly disagree - Neither - Strongly agree (bipolar)
-# SelfText = "The thoughts I experienced during the last scan were related to myself" # Strongly disagree -- Neither -- Strongly Agree (Bipolar)
-# OtherText = "The thoughts I experienced during the last scan concerned other people." # Strongly disagree - Neither - Strongly agree (Bipolar)
-# ImageryText = "The thoughts I experienced during the last scan were experienced with clear and vivid mental imagery" # Strongly disagree - Neither - Strongly agree (bipolar)
-# PresentText = "The thoughts I experienced during the last scan pertained to the immediate PRESENT (the here and now)" # Strongly disagree - Neither - Strongly agree (bipolar)
+IntensityText = 'HOW INTENSE was the WORST heat you experienced?'
+ComfortText = "How comfortable do you feel right now?" # (Bipolar)
+ValenceText = "HOW UNPLEASANT was the WORST heat you experienced?"  # 0 -- Most Unpleasant (Unipolar)
+AvoidText = "Please rate HOW MUCH you want to avoid this experience in the future?" # Not at all -- Most(Unipolar)
+RelaxText = "How relaxed are you feeling right now?" # Least relaxed -- Most Relaxed (Unipolar)
+TaskAttentionText = "During the last scan, how well could you keep your attention on the task?" # Not at all -- Best (Unipolar)
+BoredomText = "During the last scan, how bored were you?" # Not bored at all -- Extremely Bored (Unipolar)
+AlertnessText = "During the last scan how sleepy vs. alert were you?" # Extremely Sleepy - Neutral - Extremely Alert (Bipolar)
+PosThxText = "The thoughts I experienced during the last scan were POSITIVE" # Strongly disagree - Neither - Strongly Agree (Bipolar)
+NegThxText = "The thoughts I experienced during the last scan were NEGATIVE" # Strongly disagree - Neither - Strongly agree (bipolar)
+SelfText = "The thoughts I experienced during the last scan were related to myself" # Strongly disagree -- Neither -- Strongly Agree (Bipolar)
+OtherText = "The thoughts I experienced during the last scan concerned other people." # Strongly disagree - Neither - Strongly agree (Bipolar)
+ImageryText = "The thoughts I experienced during the last scan were experienced with clear and vivid mental imagery" # Strongly disagree - Neither - Strongly agree (bipolar)
+PresentText = "The thoughts I experienced during the last scan pertained to the immediate PRESENT (the here and now)" # Strongly disagree - Neither - Strongly agree (bipolar)
 
 if expInfo['second(2) or third(3) day']=='2':
     movie=preloadMovie(win, "kungfury1", os.path.join(video_dir,'kungfury1.mp4'))
@@ -406,9 +406,8 @@ win.mouseVisible = False
 """
 showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord=True)
 
-if eyetracker_exists==1:
-    calibrateEyeTracker(win, el_tracker, eyetrackerCalibration)
-
+# if eyetracker_exists==1:
+#     calibrateEyeTracker(win, el_tracker, eyetrackerCalibration)
 
 if expInfo['run']>1:
     runRange=range(expInfo['run']-1, 9)
@@ -417,11 +416,10 @@ else:
 
 for runs in runRange:
     if eyetracker_exists==1:
-        startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
-
-        sourceEDF_filename = "%06d-%s.EDF" % (int(expInfo['DBIC Number']), runs)
-        destinationEDF = os.path.join(sub_dir, '%s.EDF' % runs)
+        sourceEDF_filename = "S%dR%s.EDF" % (int(expInfo['DBIC Number']), runs+1)
+        destinationEDF = os.path.join(sub_dir, "S%dR%s.EDF" % (int(expInfo['DBIC Number']), runs+1))
         sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
+        startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
 
     """
     7. Check if you should run the Hyperalignment Scan 
@@ -480,11 +478,11 @@ for runs in runRange:
         
         if runs in [0, 2, 6]:
             rating_sound.play()
-            medmap_bids=medmap_bids.append(showRatingScale(win, "Threat", threatText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="bipolar", time=None, nofMRI=True), ignore_index=True)
-            medmap_bids=medmap_bids.append(showRatingScale(win, "Stress", stressText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
-            medmap_bids=medmap_bids.append(showRatingScale(win, "PainAnxiety", painAnxText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
-            medmap_bids=medmap_bids.append(showRatingScale(win, "OtherAnxiety", othAnxText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
-            medmap_bids=medmap_bids.append(showRatingScale(win, "PainConfidence", painConfText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "Threat", threatText, os.sep.join([stimuli_dir,"ratingscale","SafeThreat.png"]), type="bipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "Stress", stressText, os.sep.join([stimuli_dir,"ratingscale","UnipolarSensation.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "PainAnxiety", painAnxText, os.sep.join([stimuli_dir,"ratingscale","UnipolarSensation.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "OtherAnxiety", othAnxText, os.sep.join([stimuli_dir,"ratingscale","UnipolarSensation.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
+            medmap_bids=medmap_bids.append(showRatingScale(win, "PainConfidence", painConfText, os.sep.join([stimuli_dir,"ratingscale","UnipolarSensation.png"]), type="unipolar", time=None, nofMRI=True), ignore_index=True)
 
         """
         8. Start Scanner
@@ -569,26 +567,26 @@ for runs in runRange:
         """
         18. Begin post-run self-report questions
         """        
-        # rating_sound.stop() # I think a stop needs to be introduced in order to play again.
-        # rating_sound.play()
+        rating_sound.stop() # I think a stop needs to be introduced in order to play again.
+        rating_sound.play()
 
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="unipolar", time=None, biopacCode=valence_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=None, biopacCode=avoid_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="unipolar", time=None, biopacCode=relax_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="unipolar", time=None, biopacCode=taskattention_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="unipolar", time=None, biopacCode=boredom_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=None, biopacCode=alertness_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=None, biopacCode=negthx_rating), ignore_index=True)  
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=None, biopacCode=self_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=None, biopacCode=other_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
-        # medmap_bids=medmap_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=None, biopacCode=present_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "ComfortRating", ComfortText, os.sep.join([stimuli_dir,"ratingscale","ComfortScale.png"]), type="bipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "ValenceRating", ValenceText, os.sep.join([stimuli_dir,"ratingscale","postvalenceScale.png"]), type="unipolar", time=None, biopacCode=valence_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "IntensityRating", IntensityText, os.sep.join([stimuli_dir,"ratingscale","postintensityScale.png"]), type="unipolar", time=None, biopacCode=comfort_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "AvoidanceRating", AvoidText, os.sep.join([stimuli_dir,"ratingscale","AvoidScale.png"]), type="bipolar", time=None, biopacCode=avoid_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "RelaxationRating", RelaxText, os.sep.join([stimuli_dir,"ratingscale","RelaxScale.png"]), type="unipolar", time=None, biopacCode=relax_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "AttentionRating", TaskAttentionText, os.sep.join([stimuli_dir,"ratingscale","TaskAttentionScale.png"]), type="unipolar", time=None, biopacCode=taskattention_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "BoredomRating", BoredomText, os.sep.join([stimuli_dir,"ratingscale","BoredomScale.png"]), type="unipolar", time=None, biopacCode=boredom_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "AlertnessRating", AlertnessText, os.sep.join([stimuli_dir,"ratingscale","AlertnessScale.png"]), type="bipolar", time=None, biopacCode=alertness_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "PosThxRating", PosThxText, os.sep.join([stimuli_dir,"ratingscale","PosThxScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "NegThxRating", NegThxText, os.sep.join([stimuli_dir,"ratingscale","NegThxScale.png"]), type="bipolar", time=None, biopacCode=negthx_rating), ignore_index=True)  
+        medmap_bids=medmap_bids.append(showRatingScale(win, "SelfRating", SelfText, os.sep.join([stimuli_dir,"ratingscale","SelfScale.png"]), type="bipolar", time=None, biopacCode=self_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "OtherRating", OtherText, os.sep.join([stimuli_dir,"ratingscale","OtherScale.png"]), type="bipolar", time=None, biopacCode=other_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "ImageryRating", ImageryText, os.sep.join([stimuli_dir,"ratingscale","ImageryScale.png"]), type="bipolar", time=None, biopacCode=posthx_rating), ignore_index=True)
+        medmap_bids=medmap_bids.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=None, biopacCode=present_rating), ignore_index=True)
 
 
-        # rating_sound.stop() # Stop the sound so it can be played again.
+        rating_sound.stop() # Stop the sound so it can be played again.
 
         """
         19. Save data into .TSV formats and Tying up Loose Ends
