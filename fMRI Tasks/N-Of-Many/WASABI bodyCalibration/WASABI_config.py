@@ -47,7 +47,7 @@ autorespond = 0
 # Device togglers
 biopac_exists = 1
 thermode_exists = 1
-eyetracker_exists = 0
+eyetracker_exists = 1
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame

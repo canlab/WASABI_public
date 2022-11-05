@@ -312,7 +312,7 @@ showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord
 if expInfo['run']>1:
     runRange=range(expInfo['run']-1, 8)
 else:
-    runRange=range(len(bodySites)) # +1 for hyperalignment
+    runRange=range(len(bodySites))
 
 for runs in runRange:
     if eyetracker_exists==1:
@@ -490,7 +490,6 @@ for runs in runRange:
 """
 bids_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s.tsv' % (int(expInfo['DBIC Number']), expName)
 bids_df=pd.DataFrame(pd.DataFrame(bodyCalibration_bids_total, columns = ['repetition', 'body_site', 'temperature', 'pain', 'intensity', 'tolerance']))
-bids_df.to_csv(bids_filename, sep="\t")
 
 averaged_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s_participants.tsv' % (int(expInfo['DBIC Number']), expName)
 averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(expInfo['dob (mm/dd/yyyy)']), expInfo['dob (mm/dd/yyyy)'], expInfo['sex'], expInfo['handedness'], bodySites,
@@ -510,7 +509,7 @@ averaged_data.extend([expInfo['date'], expInfo['DBIC Number'], calculate_age(exp
 averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','DBIC_id','age','dob','sex','handedness','calibration_order',
                                                     'leftarm_ht','rightarm_ht','leftleg_ht','rightleg_ht','leftface_ht','rightface_ht','chest_ht','abdomen_ht',
                                                     'leftarm_i','rightarm_i','leftleg_i','rightleg_i','leftface_i','rightface_i','chest_i','abdomen_i'])
-averaged_df.to_csv(averaged_filename, sep="\t")
+
 
 """
 19. Wrap up
@@ -532,6 +531,10 @@ if bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (b
 if averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
     averaged_df['Eligible']=-3
+
+# Write the CSVs with eligibility columns
+bids_df.to_csv(bids_filename, sep="\t")
+averaged_df.to_csv(averaged_filename, sep="\t")
 
 """
 20. Wrap up
