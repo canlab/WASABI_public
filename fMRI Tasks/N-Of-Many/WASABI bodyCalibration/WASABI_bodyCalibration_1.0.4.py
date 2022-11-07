@@ -183,7 +183,7 @@ else:
 # If bodysites and run order need to be manually set for the participant uncomment below and edit:
 # bodySites = ["Left Leg"]
 
-# bodySites = ["", "", "", "", "", "Left Face", "Chest", "Right Arm"]
+bodySites = ["", "", "", "Right Arm", "Left Arm", "Left Face", "Right Face", "Right Leg"]
 
 
 expInfo['body_site_order'] = str(bodySites)
@@ -528,9 +528,9 @@ if bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (b
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
     averaged_df['Eligible']=-2
 
-if averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
-    end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
-    averaged_df['Eligible']=-3
+#if averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
+   # end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
+   # averaged_df['Eligible']=-3
 
 # Write the CSVs with eligibility columns
 bids_df.to_csv(bids_filename, sep="\t")
