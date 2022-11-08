@@ -42,7 +42,7 @@ from datetime import datetime
 2. Global Variable Configurations
 """
 
-debug = 1
+debug = 0
 autorespond = 0
 # Device togglers
 biopac_exists = 1
