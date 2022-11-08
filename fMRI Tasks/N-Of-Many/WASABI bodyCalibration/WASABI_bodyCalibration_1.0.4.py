@@ -14,7 +14,7 @@ Siemens 3T fMRI scanner. Physiological data is acquired with a Biopac MP150 Phys
 
 Some measures have been taken to minimize experimental latency. PTB/Psychopy style is used to initialize all objects prior to screen flipping as much as possible.
     
-Data is written in BIDS 1.4.1 format, as separa31244te tab-separated-value (.tsv) files for each run per subject, (UTF-8 encoding). 
+Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) files for each run per subject, (UTF-8 encoding). 
 Following this format:
 all data headers are in lower snake_case.
 
@@ -539,6 +539,10 @@ averaged_df.to_csv(averaged_filename, sep="\t")
 """
 20. Wrap up
 """
+if eyetracker_exists==1:
+    # Close the link to the tracker.
+    el_tracker.close()
+
 endScan(win, text=end_msg)
 
 """
