@@ -180,11 +180,11 @@ else:
     # in accordance to the run index.
     bodySites=list(expInfo['body sites'].split(", "))
 
-# If bodysites and run order need to be manually set for the participant uncomment below and edit:
+# If bodySites and run order need to be manually set for the participant uncomment below and edit:
 # bodySites = ["Left Leg"]
 
-bodySites = ["", "", "", "Right Arm", "Left Arm", "Left Face", "Right Face", "Right Leg"]
-
+bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+random.shuffle(bodySites)
 
 expInfo['body_site_order'] = str(bodySites)
 expInfo['expName'] = expName
@@ -528,9 +528,9 @@ if bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (b
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
     averaged_df['Eligible']=-2
 
-if averaged_df.loc[0]['leftleg_ht']<47 | averaged_df.loc[0]['chest_ht']<47:
-   end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
-   averaged_df['Eligible']=-3
+#if averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
+   # end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
+   # averaged_df['Eligible']=-3
 
 # Write the CSVs with eligibility columns
 bids_df.to_csv(bids_filename, sep="\t")
