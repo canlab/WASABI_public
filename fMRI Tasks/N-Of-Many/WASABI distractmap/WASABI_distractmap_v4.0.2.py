@@ -151,7 +151,7 @@ else:
         if "_task-bodyCalibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
             a = pd.read_csv(dlg1[0], delimiter='\t', index_col=0, header=0, squeeze=True)
-            if a.shape == (1,23) | a.shape == (1,24):
+            if a.shape == (1,23) or a.shape == (1,24):
                 participant_settingsHeat = {}
                 p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
                 expInfo['DBIC Number'] = p_info['DBIC_id']
@@ -323,6 +323,10 @@ trials_per_block=2
 rating_sound=mySound=sound.Sound('B', octave=5, stereo=1, secs=.5)  
 ## When you want to play the sound, run this line of code:
 rating_sound.play()
+
+# Pre-Trial
+expText="How painful do you expect this next stimulation will be?"
+
 
 IntensityText = 'HOW INTENSE was the WORST heat you experienced?'
 ComfortText = "How comfortable do you feel right now?" # (Bipolar)
@@ -561,6 +565,8 @@ for runs in range(len(bodySites)):
             skinSite='3'
     elif (expInfo['session']=='3'):
             skinSite='1'
+    else:
+            skinSite='99'
 
     # Reset the trial possibilities for every run.
     ZerobackFiles = ["N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", 
@@ -620,7 +626,7 @@ for runs in range(len(bodySites)):
                     # nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
                     rating_sound.play()
                     # nback_bids=nback_bids.append(showText(win, "0-back Instruction", "ready...\n0-back", fontSize=0.15, time=5, biopacCode=zeroback_instructions), ignore_index=True)
-                    nback_bids=nback_bids.append(showTextAndImage(win, "0-back Instruction", "ready...\n0-back", imgPath=cueImg, fontSize=0.15, imgPos=(0, -.2), time=5, biopacCode=zeroback_cue), ignore_index=True)
+                    nback_bids=nback_bids.append(showTextAndImg(win, "0-back Instruction", "ready...\n0-back", imgPath=cueImg, fontSize=0.15, imgPos=(0, 0), time=5, biopacCode=zeroback_cue), ignore_index=True)
                 else:
                     rating_sound.play()
                     nback_bids=nback_bids.append(showText(win, "0-back Instruction", "ready...\n0-back", fontSize=0.15, time=5, biopacCode=zeroback_instructions), ignore_index=True)
@@ -692,9 +698,7 @@ for runs in range(len(bodySites)):
                 """ 
                 15. Begin 2-Back Trials
                 """
-                rating_sound.play()
-                nback_bids=nback_bids.append(showText(win, "2-back Instruction", "ready...\n2-back", fontSize=0.15, time=5, biopacCode=twoback_instructions), ignore_index=True)
-
+                
                 """
                 15i. Select Medoc Thermal Program
                 """
@@ -709,7 +713,7 @@ for runs in range(len(bodySites)):
                     # nback_bids=nback_bids.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue), ignore_index=True)
                     rating_sound.play()
                     # nback_bids=nback_bids.append(showText(win, "0-back Instruction", "ready...\n0-back", fontSize=0.15, time=5, biopacCode=zeroback_instructions), ignore_index=True)
-                    nback_bids=nback_bids.append(showTextAndImage(win, "2-back Instruction", "ready...\n2-back", imgPath=cueImg, fontSize=0.15, imgPos=(0, -.2), time=5, biopacCode=twoback_cue), ignore_index=True)
+                    nback_bids=nback_bids.append(showTextAndImg(win, "2-back Instruction", "ready...\n2-back", imgPath=cueImg, fontSize=0.15, imgPos=(0, 0), time=5, biopacCode=twoback_cue), ignore_index=True)
                 else:
                     rating_sound.play()
                     nback_bids=nback_bids.append(showText(win, "2-back Instruction", "ready...\n2-back", fontSize=0.15, time=5, biopacCode=twoback_instructions), ignore_index=True)
@@ -741,7 +745,7 @@ for runs in range(len(bodySites)):
                     # Trigger Thermal Program
                     if thermode_exists == 1:
                         sendCommand('trigger') # Trigger the thermode
-                nback_bids = nback_bids.append(nback(win, "2-back", answers=Nback, fixation='0', cheat=cheat, feedback=False), ignore_index=True)
+                nback_bids = nback_bids.append(nback(win, "2-back", answers=Nback, fixation='2', cheat=cheat, feedback=False), ignore_index=True)
                 
                 if r==4:
                     nback_bids['temperature'].iloc[-9:-1]=temperature
@@ -828,8 +832,9 @@ for runs in range(len(bodySites)):
 """
 19. Wrap up
 """
-# Close the link to the tracker.
-el_tracker.close()
+if eyetracker_exists==1:
+    # Close the link to the tracker.
+    el_tracker.close()
 endScan(win)
 
 """

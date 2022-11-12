@@ -457,6 +457,8 @@ trialIntensity_rating=21
 tolerance_binary=22
 distract_binary=23
 
+expectancy_rating=51
+
 valence_rating=24
 intensity_rating=25
 comfort_rating=26
@@ -482,6 +484,8 @@ kungfury2=41
 # Distractmap
 zeroback_instructions=42
 twoback_instructions=43
+zeroback_cue=44
+twoback_cue=45
 
 # Medoc parameters _________________________________________________
 # Set up a dictionary for all the configured Medoc programs for the main thermode

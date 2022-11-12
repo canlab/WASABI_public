@@ -171,7 +171,7 @@ if debug!=1:
         if "_task-bodyCalibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
             a = pd.read_csv(dlg1[0], delimiter='\t', index_col=0, header=0, squeeze=True)
-            if a.shape == (1,23) | a.shape == (1,24):
+            if a.shape == (1,23) or a.shape == (1,24):
                 participant_settingsHeat = {}
                 p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
                 expInfo['DBIC Number'] = p_info['DBIC_id']
@@ -631,8 +631,9 @@ for runs in runRange:
 """
 23. Wrap up
 """
-# Close the link to the tracker.
-el_tracker.close()
+if eyetracker_exists==1:
+    # Close the link to the tracker.
+    el_tracker.close()
 endScan(win)
 
 """

@@ -475,6 +475,9 @@ kungfury2=41
 # Distractmap
 zeroback_instructions=42
 twoback_instructions=43
+zeroback_cue=44
+twoback_cue=45
+
 
 # Medoc parameters _________________________________________________
 # Set up a dictionary for all the configured Medoc programs for the main thermode
