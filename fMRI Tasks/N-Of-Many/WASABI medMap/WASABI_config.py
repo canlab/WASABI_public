@@ -47,7 +47,7 @@ autorespond = 0
 # Device togglers
 biopac_exists = 1
 thermode_exists = 1
-eyetracker_exists = 0
+eyetracker_exists = 1
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
@@ -361,9 +361,6 @@ if eyetracker_exists == 1:
                 el_tracker.receiveDataFile(source, destination)
             except RuntimeError as error:
                 print('ERROR:', error)
-
-            # Close the link to the tracker.
-            el_tracker.close()
 
     def terminate_eyelink(pylink, el_tracker, source, destination):
         """ Terminate the task gracefully and retrieve the EDF data file

@@ -26,7 +26,7 @@ The paradigm will generate these files of name:
 x16 trials per file with the following
 headers:
 
-'SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt'	'mouseclick' 'correct'	'condition'	'score' 'biopac_channel'
+'SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'skin_site', 'condition', 'rt'	'mouseclick' 'correct'	'condition'	'score' 'biopac_channel'
 
 SID: DBIC Subject ID
 date: the mm/dd/yyyy date
@@ -47,19 +47,9 @@ correct:
 score: float
 biopac_channel
 
-Design 4.0.0 of the Distractmap was generated because, we wanted to randomly switch between 0-back and 2-back conditions, but also have participants have these skills practiced before they enter the scanner.
-The 0-back condition is supposed to control for visual stimulation and motor movement relative to the 2-back condition.
-
-Design was updated to 4.0.1:
-x 1. Fixes a bug from the trial-by-trial pain rating questions
-x 2. Asks stimulus intensity after every pain trial
-x 3. Task Cue and Pain Cue 'cannibalize' each other for attention, so these were combined.
-x 4. Added an expectancy question after the Pain Cue
-x 5. Removes the mousepointer from the nback
-x 6. Fixed a bug which mislabelled 2-back-heat trials as 2-back at 32 degrees.
-x 7. Fixed a bug in recording of onset times for nback.
-x 8. Now testing Left Leg and Chest instead of Left Face and Right Leg.
-x 9. Will now accept calibration files with an extra Eligibility column
+Design was updated to 4.0.2:
+1. Added skin_site instructions to prevent burns
+2. Edits to eyetracker configuration
 
 
 0. Import Libraries
@@ -98,7 +88,7 @@ from WASABI_psychopy_utilities import *
 from WASABI_config import *
 
 __author__ = "Michael Sun"
-__version__ = "4.0.1"
+__version__ = "4.0.2"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -297,7 +287,7 @@ sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Numb
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-varNames=['SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'condition', 'rt', 'mouseclick', 'correct', 'score', 'biopac_channel']
+varNames=['SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'temperature', 'body_site', 'skin_site', 'condition', 'rt', 'mouseclick', 'correct', 'score', 'biopac_channel']
 nback_bids=pd.DataFrame(columns=varNames)
 
 """
@@ -566,6 +556,12 @@ BigTrialList = [[4, 1, 2, 3, 4, 2],
 
 # for runs in runRange:
 for runs in range(len(bodySites)):
+    # Set Skin-Site to prevent burns:
+    if (expInfo['session']=='2'):
+            skinSite='3'
+    elif (expInfo['session']=='3'):
+            skinSite='1'
+
     # Reset the trial possibilities for every run.
     ZerobackFiles = ["N-back-0_1.xlsx", "N-back-0_2.xlsx", "N-back-0_3.xlsx", "N-back-0_4.xlsx", 
                     "N-back-0_5.xlsx", "N-back-0_6.xlsx", "N-back-0_7.xlsx", "N-back-0_8.xlsx",
@@ -585,7 +581,7 @@ for runs in range(len(bodySites)):
     """
     random.shuffle(BigTrialList)
     BlockTrials=BigTrialList.pop()
-    bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower()
+    bodysiteInstruction="Experimenter: \nPlease place the thermode on skin site " + skinSite + " of the: \n" + bodySites[runs].lower()
     showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
     routineTimer.reset()
 
@@ -814,6 +810,7 @@ for runs in range(len(bodySites)):
     nback_bids['handedness']=expInfo['handedness']
     nback_bids['scanner']=expInfo['scanner']
     nback_bids['body_site']=bodySites[runs]
+    nback_bids['skin_site']=skinSite
     
     nback_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
     
@@ -831,6 +828,8 @@ for runs in range(len(bodySites)):
 """
 19. Wrap up
 """
+# Close the link to the tracker.
+el_tracker.close()
 endScan(win)
 
 """

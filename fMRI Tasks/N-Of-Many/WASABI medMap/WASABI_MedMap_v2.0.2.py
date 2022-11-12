@@ -26,9 +26,10 @@ As a consequence, in one day, correct running of these paradigms will generate 8
 sub-SIDXXXXX_ses-XX_task-medmap_acq-[bodySite]_run-X_events.tsv
 
 Each file will consist of the following headers:
-'SID', 'day', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel'
+'SID', 'day', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'skin_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel'
  
 Version 2.0.1: Updates the pre-trial question anchors. Will now accept calibration files with an extra Eligibility column
+Version 2.0.2: Added Skin-Sites
 
 
 0a. Import Libraries
@@ -69,7 +70,7 @@ from WASABI_psychopy_utilities import *
 from WASABI_config import *
 
 __author__ = "Michael Sun"
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Development"
 
@@ -325,7 +326,7 @@ sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Numb
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
-varNames = ['SID', 'day', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel']
+varNames = ['SID', 'day', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'value', 'body_site', 'skin_site', 'temperature', 'condition', 'keys', 'rt', 'phase', 'biopac_channel']
 medmap_bids=pd.DataFrame(columns=varNames)
 
 """
@@ -439,11 +440,23 @@ for runs in runRange:
         """
         7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run 
         """
+        # Set Skin-Site to prevent burns:
+        if (expInfo['second(2) or third(3) day']=='2'):
+            if runs in [0, 2, 4, 7]:
+                skinSite='1'
+            if runs in [1, 3, 5, 8]:
+                skinSite='2'
+        elif (expInfo['second(2) or third(3) day']=='3'):
+            if runs in [0, 2, 4, 7]:
+                skinSite='2'
+            if runs in [1, 3, 5, 8]:
+                skinSite='3'
+
         # Update instructions and cues based on current run's body-sites:
         if runs in [0, 1, 7, 8]:
-            bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Prepare the site for stimulation"
+            bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + " on site " + skinSite + "\n\n Prepare the site for stimulation"
         else:
-            bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + "\n\n Apply the Lidoderm analgesic cream"
+            bodysiteInstruction="Experimenter: \nPlease place the thermode on the: \n" + bodySites[runs].lower() + " on site " + skinSite + "\n\n Apply the Lidoderm analgesic cream"
         showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
 
         ## Conditioning parameters; Ideally this should be read from the participant's file 
@@ -599,6 +612,7 @@ for runs in runRange:
         medmap_bids['handedness']=expInfo['handedness'] 
         medmap_bids['scanner']=expInfo['scanner']
         medmap_bids['body_site']=bodySites[runs]
+        medmap_bids['skin_site']=skinSite
         medmap_bids['phase']=ConditionName
         medmap_bids['temperature']=temperature
 
@@ -617,6 +631,8 @@ for runs in runRange:
 """
 23. Wrap up
 """
+# Close the link to the tracker.
+el_tracker.close()
 endScan(win)
 
 """
