@@ -14,7 +14,7 @@
    height="146.25"
    viewBox="0 0 552.1875 146.25"
    sodipodi:docname="UnipolarSensation.svg"
-   inkscape:export-filename="F:\Dropbox (Dartmouth College)\CANLab Projects\WASABI\Paradigms\WASABI_Expectancy_and_Distraction\WASABI Acceptance Map\ratingscale\postvalenceScale.png"
+   inkscape:export-filename="C:\Users\Michael\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI medMap\stimuli\ratingscale\UnipolarSensation.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <metadata
@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -40,17 +40,17 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1500"
-     inkscape:window-height="2321"
+     inkscape:window-width="1431"
+     inkscape:window-height="900"
      id="namedview3349"
      showgrid="false"
      borderlayer="true"
      inkscape:zoom="2.1079796"
-     inkscape:cx="305.45956"
+     inkscape:cx="212.24234"
      inkscape:cy="18.307655"
-     inkscape:window-x="8291"
-     inkscape:window-y="275"
-     inkscape:window-maximized="1"
+     inkscape:window-x="4626"
+     inkscape:window-y="658"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg3347"
      inkscape:document-rotation="0"
      inkscape:snap-global="false" />
@@ -85,7 +85,7 @@
        x="-0.21078783"
        y="84.377846"
        style="font-size:22.5px;line-height:1.25;text-align:start;text-anchor:start"
-       id="tspan66"></tspan><tspan
+       id="tspan66" /><tspan
        sodipodi:role="line"
        x="-0.21078783"
        y="112.50285"
