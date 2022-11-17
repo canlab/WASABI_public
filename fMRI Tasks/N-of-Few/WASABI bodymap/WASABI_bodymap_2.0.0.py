@@ -12,7 +12,7 @@ This python script was extensively modified in order to work in the Dartmouth Br
 Siemens 3T fMRI scanner. Physiological data is acquired with a Biopac MP150 Physiological data acquisition device via LabJack U3.
 
 Some measures have been taken to minimize experimental latency. PTB/Psychopy style is used to initialize all objects prior to screen flipping as much as possible.
-    
+    3124
 Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) files for each run per subject, (UTF-8 encoding). 
 Following this format:
 all data headers are in lower snake_case.
@@ -503,7 +503,7 @@ if bodySites_exists == False:
 # For Stephanie's run / if a session needs to be rerun; enter body site in below array and make sure varaible name is in line with if statemnet/no indent or space
 # bodySites = ["Left Arm", "Left Leg", "Right Face"]
 
-bodySites = ['Chest', 'Right Arm']
+bodySites = ["Left Leg"]
 random.shuffle(bodySites)
 # If you want to rerun a run mid-run, shuffle remaining bodysites first, and then prepend the interrupted run:
 # bodySites.insert(0, "Left Face")
