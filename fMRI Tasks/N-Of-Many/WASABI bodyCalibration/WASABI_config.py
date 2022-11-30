@@ -129,11 +129,6 @@ if thermode_exists == 1:
     from medocControl import *
 
 if eyetracker_exists == 1:
-    # Import medocControl library, python library custom written for Medoc with pyMedoc pollforchange functionality. 
-    # Make sure medocControl.py is in the same directory 
-    from medocControl import *
-
-if eyetracker_exists == 1:
     # Import Eyetracker library. 
     # Make sure EyeLinkCoreGraphicsPsychoPy.py is in the same directory 
     import pylink
