@@ -494,7 +494,7 @@ if bodySites_exists == False:
     random.shuffle(bodySites)
     bodySites = bodySites[0:4]
 
-# random.shuffle(bodySites)
+random.shuffle(bodySites)
 
 # # For melanie's run / if a session needs to be rerun; enter body site in below array and make sure varaible name is in line with if statemnet/no indent or space
 ###bodySites = ["Right Face"]
