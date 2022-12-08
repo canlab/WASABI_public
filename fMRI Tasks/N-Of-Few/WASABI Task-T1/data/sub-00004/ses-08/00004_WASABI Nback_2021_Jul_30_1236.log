@@ -1,0 +1,1328 @@
+0.5739 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+23.8725 	EXP 	Created fixation_2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation_2', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+23.9449 	EXP 	Created Nbackinstructions = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='Nbackinstructions', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+23.9486 	EXP 	Created fixation_2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation_2', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+24.3736 	EXP 	Created grid_lines_2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image='grid.png', interpolate=True, mask=None, maskParams=None, name='grid_lines_2', opacity=1, ori=0.0, pos=array([0., 0.]), size=array([0.6, 0.6]), texRes=128, units='height', win=Window(...))
+24.3772 	EXP 	Created target_square_2 = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=-1.0, fillColor=array([1., 1., 1.]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([0, 0, 0]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1, name='target_square_2', opacity=0.5, ori=0.0, pos=array([0., 0.]), size=array([0.15, 0.15]), units='height', vertices=ndarray(...), win=Window(...))
+24.3810 	EXP 	Created fixation_3 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation_3', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+24.3818 	EXP 	window1: mouseVisible = True
+24.3861 	EXP 	window1: mouseVisible = False
+24.3866 	EXP 	Created sequence: sequential, trialTypes=2, nReps=1, seed=None
+24.3872 	EXP 	New trial (rep=0, index=0): OrderedDict([('RestT1', 0), ('TaskT1', 1)])
+24.3876 	EXP 	Created sequence: random, trialTypes=1, nReps=0, seed=None
+24.3882 	EXP 	Created sequence: random, trialTypes=1, nReps=1, seed=None
+24.3885 	EXP 	New trial (rep=0, index=0): None
+24.4638 	EXP 	Nbackinstructions: autoDraw = True
+78.1927 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+78.1943 	DATA 	Keypress: space
+78.2106 	EXP 	Nbackinstructions: autoDraw = False
+106.3909 	DATA 	Keypress: s
+106.4475 	EXP 	Imported c:\Users\Dartmouth\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\WASABI Task-T1\N-back-2.xlsx as conditions, 120 conditions, 3 params
+106.4482 	EXP 	Created sequence: sequential, trialTypes=120, nReps=1, seed=None
+106.4486 	EXP 	New trial (rep=0, index=0): {'square': 5, 'location': [0, 0], 'corrAns': None}
+106.4490 	EXP 	window1: mouseVisible = False
+106.4547 	EXP 	New trial (rep=0, index=1): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+106.4551 	EXP 	window1: mouseVisible = False
+106.4590 	EXP 	New trial (rep=0, index=2): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+106.4594 	EXP 	window1: mouseVisible = False
+106.4631 	EXP 	New trial (rep=0, index=3): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+106.4635 	EXP 	window1: mouseVisible = False
+106.4672 	EXP 	New trial (rep=0, index=4): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+106.4676 	EXP 	window1: mouseVisible = False
+106.4713 	EXP 	New trial (rep=0, index=5): {'square': 9, 'location': [0.2, -0.2], 'corrAns': 1}
+106.4717 	EXP 	window1: mouseVisible = False
+106.4754 	EXP 	New trial (rep=0, index=6): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+106.4758 	EXP 	window1: mouseVisible = False
+106.4796 	EXP 	New trial (rep=0, index=7): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+106.4800 	EXP 	window1: mouseVisible = False
+106.4837 	EXP 	New trial (rep=0, index=8): {'square': 5, 'location': [0, 0], 'corrAns': None}
+106.4840 	EXP 	window1: mouseVisible = False
+106.4880 	EXP 	New trial (rep=0, index=9): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+106.4883 	EXP 	window1: mouseVisible = False
+106.4921 	EXP 	New trial (rep=0, index=10): {'square': 5, 'location': [0, 0], 'corrAns': 1}
+106.4924 	EXP 	window1: mouseVisible = False
+106.4961 	EXP 	New trial (rep=0, index=11): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+106.4965 	EXP 	window1: mouseVisible = False
+106.5003 	EXP 	New trial (rep=0, index=12): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+106.5007 	EXP 	window1: mouseVisible = False
+106.5044 	EXP 	New trial (rep=0, index=13): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+106.5048 	EXP 	window1: mouseVisible = False
+106.5275 	EXP 	fixation_2: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0., 0.])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0. , 0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0.2, 0. ])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0.2, 0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0., 0.])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0., 0.])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0.2, 0. ])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0.2, 0.2])
+106.5275 	EXP 	grid_lines_2: autoDraw = False
+106.5275 	EXP 	target_square_2: autoDraw = False
+106.5275 	EXP 	fixation_3: autoDraw = False
+106.5275 	EXP 	target_square_2: pos = array([0.2, 0. ])
+106.5275 	EXP 	grid_lines_2: autoDraw = True
+106.5275 	EXP 	target_square_2: autoDraw = True
+107.1814 	EXP 	New trial (rep=0, index=14): {'square': 8, 'location': [0, -0.2], 'corrAns': None}
+107.1819 	EXP 	window1: mouseVisible = False
+107.1942 	EXP 	grid_lines_2: autoDraw = False
+107.1942 	EXP 	target_square_2: autoDraw = False
+107.1942 	EXP 	fixation_3: autoDraw = False
+107.1942 	EXP 	target_square_2: pos = array([ 0. , -0.2])
+107.1942 	EXP 	grid_lines_2: autoDraw = True
+107.1942 	EXP 	target_square_2: autoDraw = True
+108.1775 	EXP 	fixation_3: autoDraw = True
+108.1942 	EXP 	target_square_2: autoDraw = False
+109.1775 	EXP 	fixation_3: autoDraw = False
+109.1813 	EXP 	New trial (rep=0, index=15): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+109.1818 	EXP 	window1: mouseVisible = False
+109.1942 	EXP 	grid_lines_2: autoDraw = False
+109.1942 	EXP 	target_square_2: autoDraw = False
+109.1942 	EXP 	fixation_3: autoDraw = False
+109.1942 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+109.1942 	EXP 	grid_lines_2: autoDraw = True
+109.1942 	EXP 	target_square_2: autoDraw = True
+110.1775 	EXP 	fixation_3: autoDraw = True
+110.1942 	EXP 	target_square_2: autoDraw = False
+111.1776 	EXP 	fixation_3: autoDraw = False
+111.1813 	EXP 	New trial (rep=0, index=16): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+111.1818 	EXP 	window1: mouseVisible = False
+111.1942 	EXP 	grid_lines_2: autoDraw = False
+111.1942 	EXP 	target_square_2: autoDraw = False
+111.1942 	EXP 	fixation_3: autoDraw = False
+111.1942 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+111.1942 	EXP 	grid_lines_2: autoDraw = True
+111.1942 	EXP 	target_square_2: autoDraw = True
+112.1776 	EXP 	fixation_3: autoDraw = True
+112.1942 	EXP 	target_square_2: autoDraw = False
+113.1776 	EXP 	fixation_3: autoDraw = False
+113.1814 	EXP 	New trial (rep=0, index=17): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+113.1819 	EXP 	window1: mouseVisible = False
+113.1942 	EXP 	grid_lines_2: autoDraw = False
+113.1942 	EXP 	target_square_2: autoDraw = False
+113.1942 	EXP 	fixation_3: autoDraw = False
+113.1942 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+113.1942 	EXP 	grid_lines_2: autoDraw = True
+113.1942 	EXP 	target_square_2: autoDraw = True
+114.1776 	EXP 	fixation_3: autoDraw = True
+114.1942 	EXP 	target_square_2: autoDraw = False
+115.1776 	EXP 	fixation_3: autoDraw = False
+115.1813 	EXP 	New trial (rep=0, index=18): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+115.1818 	EXP 	window1: mouseVisible = False
+115.1943 	EXP 	grid_lines_2: autoDraw = False
+115.1943 	EXP 	target_square_2: autoDraw = False
+115.1943 	EXP 	fixation_3: autoDraw = False
+115.1943 	EXP 	target_square_2: pos = array([0.2, 0.2])
+115.1943 	EXP 	grid_lines_2: autoDraw = True
+115.1943 	EXP 	target_square_2: autoDraw = True
+116.1776 	EXP 	fixation_3: autoDraw = True
+116.1942 	EXP 	target_square_2: autoDraw = False
+117.1776 	EXP 	fixation_3: autoDraw = False
+117.1814 	EXP 	New trial (rep=0, index=19): {'square': 5, 'location': [0, 0], 'corrAns': None}
+117.1818 	EXP 	window1: mouseVisible = False
+117.1942 	EXP 	grid_lines_2: autoDraw = False
+117.1942 	EXP 	target_square_2: autoDraw = False
+117.1942 	EXP 	fixation_3: autoDraw = False
+117.1942 	EXP 	target_square_2: pos = array([0., 0.])
+117.1942 	EXP 	grid_lines_2: autoDraw = True
+117.1942 	EXP 	target_square_2: autoDraw = True
+118.1776 	EXP 	fixation_3: autoDraw = True
+118.1943 	EXP 	target_square_2: autoDraw = False
+119.1775 	EXP 	fixation_3: autoDraw = False
+119.1813 	EXP 	New trial (rep=0, index=20): {'square': 3, 'location': [0.2, 0.2], 'corrAns': 1}
+119.1818 	EXP 	window1: mouseVisible = False
+119.1943 	EXP 	grid_lines_2: autoDraw = False
+119.1943 	EXP 	target_square_2: autoDraw = False
+119.1943 	EXP 	fixation_3: autoDraw = False
+119.1943 	EXP 	target_square_2: pos = array([0.2, 0.2])
+119.1943 	EXP 	grid_lines_2: autoDraw = True
+119.1943 	EXP 	target_square_2: autoDraw = True
+120.1776 	EXP 	fixation_3: autoDraw = True
+120.1943 	EXP 	target_square_2: autoDraw = False
+121.0780 	DATA 	Mouse: Left button down, pos=(872,583)
+121.1776 	EXP 	fixation_3: autoDraw = False
+121.1815 	EXP 	New trial (rep=0, index=21): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+121.1820 	EXP 	window1: mouseVisible = False
+121.1943 	EXP 	grid_lines_2: autoDraw = False
+121.1943 	EXP 	target_square_2: autoDraw = False
+121.1943 	EXP 	fixation_3: autoDraw = False
+121.1943 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+121.1943 	EXP 	grid_lines_2: autoDraw = True
+121.1943 	EXP 	target_square_2: autoDraw = True
+121.4447 	DATA 	Mouse:  Left button up, pos=(872,583)
+122.1776 	EXP 	fixation_3: autoDraw = True
+122.1943 	EXP 	target_square_2: autoDraw = False
+123.1777 	EXP 	fixation_3: autoDraw = False
+123.1816 	EXP 	New trial (rep=0, index=22): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+123.1821 	EXP 	window1: mouseVisible = False
+123.1943 	EXP 	grid_lines_2: autoDraw = False
+123.1943 	EXP 	target_square_2: autoDraw = False
+123.1943 	EXP 	fixation_3: autoDraw = False
+123.1943 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+123.1943 	EXP 	grid_lines_2: autoDraw = True
+123.1943 	EXP 	target_square_2: autoDraw = True
+124.1776 	EXP 	fixation_3: autoDraw = True
+124.1943 	EXP 	target_square_2: autoDraw = False
+125.1776 	EXP 	fixation_3: autoDraw = False
+125.1814 	EXP 	New trial (rep=0, index=23): {'square': 4, 'location': [-0.2, 0], 'corrAns': 1}
+125.1818 	EXP 	window1: mouseVisible = False
+125.1943 	EXP 	grid_lines_2: autoDraw = False
+125.1943 	EXP 	target_square_2: autoDraw = False
+125.1943 	EXP 	fixation_3: autoDraw = False
+125.1943 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+125.1943 	EXP 	grid_lines_2: autoDraw = True
+125.1943 	EXP 	target_square_2: autoDraw = True
+125.7280 	DATA 	Mouse: Left button down, pos=(872,583)
+126.0279 	DATA 	Mouse:  Left button up, pos=(872,583)
+126.1777 	EXP 	fixation_3: autoDraw = True
+126.1943 	EXP 	target_square_2: autoDraw = False
+127.1777 	EXP 	fixation_3: autoDraw = False
+127.1816 	EXP 	New trial (rep=0, index=24): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+127.1820 	EXP 	window1: mouseVisible = False
+127.1943 	EXP 	grid_lines_2: autoDraw = False
+127.1943 	EXP 	target_square_2: autoDraw = False
+127.1943 	EXP 	fixation_3: autoDraw = False
+127.1943 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+127.1943 	EXP 	grid_lines_2: autoDraw = True
+127.1943 	EXP 	target_square_2: autoDraw = True
+128.1777 	EXP 	fixation_3: autoDraw = True
+128.1943 	EXP 	target_square_2: autoDraw = False
+129.1777 	EXP 	fixation_3: autoDraw = False
+129.1816 	EXP 	New trial (rep=0, index=25): {'square': 5, 'location': [0, 0], 'corrAns': None}
+129.1820 	EXP 	window1: mouseVisible = False
+129.1943 	EXP 	grid_lines_2: autoDraw = False
+129.1943 	EXP 	target_square_2: autoDraw = False
+129.1943 	EXP 	fixation_3: autoDraw = False
+129.1943 	EXP 	target_square_2: pos = array([0., 0.])
+129.1943 	EXP 	grid_lines_2: autoDraw = True
+129.1943 	EXP 	target_square_2: autoDraw = True
+130.1777 	EXP 	fixation_3: autoDraw = True
+130.1944 	EXP 	target_square_2: autoDraw = False
+131.1777 	EXP 	fixation_3: autoDraw = False
+131.1816 	EXP 	New trial (rep=0, index=26): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+131.1820 	EXP 	window1: mouseVisible = False
+131.1944 	EXP 	grid_lines_2: autoDraw = False
+131.1944 	EXP 	target_square_2: autoDraw = False
+131.1944 	EXP 	fixation_3: autoDraw = False
+131.1944 	EXP 	target_square_2: pos = array([0. , 0.2])
+131.1944 	EXP 	grid_lines_2: autoDraw = True
+131.1944 	EXP 	target_square_2: autoDraw = True
+132.1777 	EXP 	fixation_3: autoDraw = True
+132.1944 	EXP 	target_square_2: autoDraw = False
+133.1777 	EXP 	fixation_3: autoDraw = False
+133.1816 	EXP 	New trial (rep=0, index=27): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+133.1821 	EXP 	window1: mouseVisible = False
+133.1944 	EXP 	grid_lines_2: autoDraw = False
+133.1944 	EXP 	target_square_2: autoDraw = False
+133.1944 	EXP 	fixation_3: autoDraw = False
+133.1944 	EXP 	target_square_2: pos = array([0.2, 0. ])
+133.1944 	EXP 	grid_lines_2: autoDraw = True
+133.1944 	EXP 	target_square_2: autoDraw = True
+134.1777 	EXP 	fixation_3: autoDraw = True
+134.1944 	EXP 	target_square_2: autoDraw = False
+135.1777 	EXP 	fixation_3: autoDraw = False
+135.1816 	EXP 	New trial (rep=0, index=28): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+135.1820 	EXP 	window1: mouseVisible = False
+135.1944 	EXP 	grid_lines_2: autoDraw = False
+135.1944 	EXP 	target_square_2: autoDraw = False
+135.1944 	EXP 	fixation_3: autoDraw = False
+135.1944 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+135.1944 	EXP 	grid_lines_2: autoDraw = True
+135.1944 	EXP 	target_square_2: autoDraw = True
+136.1777 	EXP 	fixation_3: autoDraw = True
+136.1944 	EXP 	target_square_2: autoDraw = False
+137.1778 	EXP 	fixation_3: autoDraw = False
+137.1816 	EXP 	New trial (rep=0, index=29): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+137.1820 	EXP 	window1: mouseVisible = False
+137.1944 	EXP 	grid_lines_2: autoDraw = False
+137.1944 	EXP 	target_square_2: autoDraw = False
+137.1944 	EXP 	fixation_3: autoDraw = False
+137.1944 	EXP 	target_square_2: pos = array([0.2, 0. ])
+137.1944 	EXP 	grid_lines_2: autoDraw = True
+137.1944 	EXP 	target_square_2: autoDraw = True
+138.1778 	EXP 	fixation_3: autoDraw = True
+138.1944 	EXP 	target_square_2: autoDraw = False
+139.1777 	EXP 	fixation_3: autoDraw = False
+139.1817 	EXP 	New trial (rep=0, index=30): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+139.1821 	EXP 	window1: mouseVisible = False
+139.1944 	EXP 	grid_lines_2: autoDraw = False
+139.1944 	EXP 	target_square_2: autoDraw = False
+139.1944 	EXP 	fixation_3: autoDraw = False
+139.1944 	EXP 	target_square_2: pos = array([0.2, 0. ])
+139.1944 	EXP 	grid_lines_2: autoDraw = True
+139.1944 	EXP 	target_square_2: autoDraw = True
+140.1778 	EXP 	fixation_3: autoDraw = True
+140.1944 	EXP 	target_square_2: autoDraw = False
+141.1778 	EXP 	fixation_3: autoDraw = False
+141.1816 	EXP 	New trial (rep=0, index=31): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+141.1820 	EXP 	window1: mouseVisible = False
+141.1944 	EXP 	grid_lines_2: autoDraw = False
+141.1944 	EXP 	target_square_2: autoDraw = False
+141.1944 	EXP 	fixation_3: autoDraw = False
+141.1944 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+141.1944 	EXP 	grid_lines_2: autoDraw = True
+141.1944 	EXP 	target_square_2: autoDraw = True
+142.1778 	EXP 	fixation_3: autoDraw = True
+142.1945 	EXP 	target_square_2: autoDraw = False
+143.1778 	EXP 	fixation_3: autoDraw = False
+143.1816 	EXP 	New trial (rep=0, index=32): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+143.1820 	EXP 	window1: mouseVisible = False
+143.1944 	EXP 	grid_lines_2: autoDraw = False
+143.1944 	EXP 	target_square_2: autoDraw = False
+143.1944 	EXP 	fixation_3: autoDraw = False
+143.1944 	EXP 	target_square_2: pos = array([0.2, 0. ])
+143.1944 	EXP 	grid_lines_2: autoDraw = True
+143.1944 	EXP 	target_square_2: autoDraw = True
+143.9114 	DATA 	Mouse: Left button down, pos=(872,583)
+144.1778 	EXP 	fixation_3: autoDraw = True
+144.1945 	EXP 	target_square_2: autoDraw = False
+144.2448 	DATA 	Mouse:  Left button up, pos=(872,583)
+145.1778 	EXP 	fixation_3: autoDraw = False
+145.1816 	EXP 	New trial (rep=0, index=33): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+145.1820 	EXP 	window1: mouseVisible = False
+145.1945 	EXP 	grid_lines_2: autoDraw = False
+145.1945 	EXP 	target_square_2: autoDraw = False
+145.1945 	EXP 	fixation_3: autoDraw = False
+145.1945 	EXP 	target_square_2: pos = array([0. , 0.2])
+145.1945 	EXP 	grid_lines_2: autoDraw = True
+145.1945 	EXP 	target_square_2: autoDraw = True
+146.1778 	EXP 	fixation_3: autoDraw = True
+146.1945 	EXP 	target_square_2: autoDraw = False
+147.1778 	EXP 	fixation_3: autoDraw = False
+147.1816 	EXP 	New trial (rep=0, index=34): {'square': 5, 'location': [0, 0], 'corrAns': None}
+147.1820 	EXP 	window1: mouseVisible = False
+147.1945 	EXP 	grid_lines_2: autoDraw = False
+147.1945 	EXP 	target_square_2: autoDraw = False
+147.1945 	EXP 	fixation_3: autoDraw = False
+147.1945 	EXP 	target_square_2: pos = array([0., 0.])
+147.1945 	EXP 	grid_lines_2: autoDraw = True
+147.1945 	EXP 	target_square_2: autoDraw = True
+148.1778 	EXP 	fixation_3: autoDraw = True
+148.1945 	EXP 	target_square_2: autoDraw = False
+149.1778 	EXP 	fixation_3: autoDraw = False
+149.1817 	EXP 	New trial (rep=0, index=35): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+149.1821 	EXP 	window1: mouseVisible = False
+149.1945 	EXP 	grid_lines_2: autoDraw = False
+149.1945 	EXP 	target_square_2: autoDraw = False
+149.1945 	EXP 	fixation_3: autoDraw = False
+149.1945 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+149.1945 	EXP 	grid_lines_2: autoDraw = True
+149.1945 	EXP 	target_square_2: autoDraw = True
+150.1778 	EXP 	fixation_3: autoDraw = True
+150.1945 	EXP 	target_square_2: autoDraw = False
+151.1778 	EXP 	fixation_3: autoDraw = False
+151.1816 	EXP 	New trial (rep=0, index=36): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+151.1821 	EXP 	window1: mouseVisible = False
+151.1945 	EXP 	grid_lines_2: autoDraw = False
+151.1945 	EXP 	target_square_2: autoDraw = False
+151.1945 	EXP 	fixation_3: autoDraw = False
+151.1945 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+151.1945 	EXP 	grid_lines_2: autoDraw = True
+151.1945 	EXP 	target_square_2: autoDraw = True
+152.1779 	EXP 	fixation_3: autoDraw = True
+152.1945 	EXP 	target_square_2: autoDraw = False
+152.5615 	DATA 	Mouse: Left button down, pos=(872,583)
+152.9115 	DATA 	Mouse:  Left button up, pos=(872,583)
+153.1779 	EXP 	fixation_3: autoDraw = False
+153.1818 	EXP 	New trial (rep=0, index=37): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+153.1823 	EXP 	window1: mouseVisible = False
+153.1946 	EXP 	grid_lines_2: autoDraw = False
+153.1946 	EXP 	target_square_2: autoDraw = False
+153.1946 	EXP 	fixation_3: autoDraw = False
+153.1946 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+153.1946 	EXP 	grid_lines_2: autoDraw = True
+153.1946 	EXP 	target_square_2: autoDraw = True
+154.1778 	EXP 	fixation_3: autoDraw = True
+154.1945 	EXP 	target_square_2: autoDraw = False
+155.1779 	EXP 	fixation_3: autoDraw = False
+155.1816 	EXP 	New trial (rep=0, index=38): {'square': 4, 'location': [-0.2, 0], 'corrAns': 1}
+155.1821 	EXP 	window1: mouseVisible = False
+155.1946 	EXP 	grid_lines_2: autoDraw = False
+155.1946 	EXP 	target_square_2: autoDraw = False
+155.1946 	EXP 	fixation_3: autoDraw = False
+155.1946 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+155.1946 	EXP 	grid_lines_2: autoDraw = True
+155.1946 	EXP 	target_square_2: autoDraw = True
+156.1779 	EXP 	fixation_3: autoDraw = True
+156.1945 	EXP 	target_square_2: autoDraw = False
+156.2616 	DATA 	Mouse: Left button down, pos=(872,583)
+156.5282 	DATA 	Mouse:  Left button up, pos=(872,583)
+157.1779 	EXP 	fixation_3: autoDraw = False
+157.1817 	EXP 	New trial (rep=0, index=39): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+157.1822 	EXP 	window1: mouseVisible = False
+157.1946 	EXP 	grid_lines_2: autoDraw = False
+157.1946 	EXP 	target_square_2: autoDraw = False
+157.1946 	EXP 	fixation_3: autoDraw = False
+157.1946 	EXP 	target_square_2: pos = array([0.2, 0.2])
+157.1946 	EXP 	grid_lines_2: autoDraw = True
+157.1946 	EXP 	target_square_2: autoDraw = True
+158.1779 	EXP 	fixation_3: autoDraw = True
+158.1946 	EXP 	target_square_2: autoDraw = False
+159.1779 	EXP 	fixation_3: autoDraw = False
+159.1816 	EXP 	New trial (rep=0, index=40): {'square': 5, 'location': [0, 0], 'corrAns': None}
+159.1820 	EXP 	window1: mouseVisible = False
+159.1945 	EXP 	grid_lines_2: autoDraw = False
+159.1945 	EXP 	target_square_2: autoDraw = False
+159.1945 	EXP 	fixation_3: autoDraw = False
+159.1945 	EXP 	target_square_2: pos = array([0., 0.])
+159.1945 	EXP 	grid_lines_2: autoDraw = True
+159.1945 	EXP 	target_square_2: autoDraw = True
+160.1779 	EXP 	fixation_3: autoDraw = True
+160.1946 	EXP 	target_square_2: autoDraw = False
+161.1779 	EXP 	fixation_3: autoDraw = False
+161.1817 	EXP 	New trial (rep=0, index=41): {'square': 3, 'location': [0.2, 0.2], 'corrAns': 1}
+161.1821 	EXP 	window1: mouseVisible = False
+161.1946 	EXP 	grid_lines_2: autoDraw = False
+161.1946 	EXP 	target_square_2: autoDraw = False
+161.1946 	EXP 	fixation_3: autoDraw = False
+161.1946 	EXP 	target_square_2: pos = array([0.2, 0.2])
+161.1946 	EXP 	grid_lines_2: autoDraw = True
+161.1946 	EXP 	target_square_2: autoDraw = True
+162.0950 	DATA 	Mouse: Left button down, pos=(872,583)
+162.1779 	EXP 	fixation_3: autoDraw = True
+162.1946 	EXP 	target_square_2: autoDraw = False
+162.3949 	DATA 	Mouse:  Left button up, pos=(872,583)
+163.1779 	EXP 	fixation_3: autoDraw = False
+163.1824 	EXP 	New trial (rep=0, index=42): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+163.1829 	EXP 	window1: mouseVisible = False
+163.1946 	EXP 	grid_lines_2: autoDraw = False
+163.1946 	EXP 	target_square_2: autoDraw = False
+163.1946 	EXP 	fixation_3: autoDraw = False
+163.1946 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+163.1946 	EXP 	grid_lines_2: autoDraw = True
+163.1946 	EXP 	target_square_2: autoDraw = True
+164.1779 	EXP 	fixation_3: autoDraw = True
+164.1947 	EXP 	target_square_2: autoDraw = False
+165.1780 	EXP 	fixation_3: autoDraw = False
+165.1818 	EXP 	New trial (rep=0, index=43): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+165.1823 	EXP 	window1: mouseVisible = False
+165.1946 	EXP 	grid_lines_2: autoDraw = False
+165.1946 	EXP 	target_square_2: autoDraw = False
+165.1946 	EXP 	fixation_3: autoDraw = False
+165.1946 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+165.1946 	EXP 	grid_lines_2: autoDraw = True
+165.1946 	EXP 	target_square_2: autoDraw = True
+166.1780 	EXP 	fixation_3: autoDraw = True
+166.1946 	EXP 	target_square_2: autoDraw = False
+167.1780 	EXP 	fixation_3: autoDraw = False
+167.1819 	EXP 	New trial (rep=0, index=44): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+167.1823 	EXP 	window1: mouseVisible = False
+167.1946 	EXP 	grid_lines_2: autoDraw = False
+167.1946 	EXP 	target_square_2: autoDraw = False
+167.1946 	EXP 	fixation_3: autoDraw = False
+167.1946 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+167.1946 	EXP 	grid_lines_2: autoDraw = True
+167.1946 	EXP 	target_square_2: autoDraw = True
+168.1780 	EXP 	fixation_3: autoDraw = True
+168.1946 	EXP 	target_square_2: autoDraw = False
+169.1780 	EXP 	fixation_3: autoDraw = False
+169.1818 	EXP 	New trial (rep=0, index=45): {'square': 8, 'location': [0, -0.2], 'corrAns': None}
+169.1823 	EXP 	window1: mouseVisible = False
+169.1946 	EXP 	grid_lines_2: autoDraw = False
+169.1946 	EXP 	target_square_2: autoDraw = False
+169.1946 	EXP 	fixation_3: autoDraw = False
+169.1946 	EXP 	target_square_2: pos = array([ 0. , -0.2])
+169.1946 	EXP 	grid_lines_2: autoDraw = True
+169.1946 	EXP 	target_square_2: autoDraw = True
+170.1780 	EXP 	fixation_3: autoDraw = True
+170.1946 	EXP 	target_square_2: autoDraw = False
+171.1780 	EXP 	fixation_3: autoDraw = False
+171.1820 	EXP 	New trial (rep=0, index=46): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+171.1824 	EXP 	window1: mouseVisible = False
+171.1947 	EXP 	grid_lines_2: autoDraw = False
+171.1947 	EXP 	target_square_2: autoDraw = False
+171.1947 	EXP 	fixation_3: autoDraw = False
+171.1947 	EXP 	target_square_2: pos = array([0.2, 0. ])
+171.1947 	EXP 	grid_lines_2: autoDraw = True
+171.1947 	EXP 	target_square_2: autoDraw = True
+172.1780 	EXP 	fixation_3: autoDraw = True
+172.1947 	EXP 	target_square_2: autoDraw = False
+173.1780 	EXP 	fixation_3: autoDraw = False
+173.1820 	EXP 	New trial (rep=0, index=47): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+173.1824 	EXP 	window1: mouseVisible = False
+173.1947 	EXP 	grid_lines_2: autoDraw = False
+173.1947 	EXP 	target_square_2: autoDraw = False
+173.1947 	EXP 	fixation_3: autoDraw = False
+173.1947 	EXP 	target_square_2: pos = array([0.2, 0.2])
+173.1947 	EXP 	grid_lines_2: autoDraw = True
+173.1947 	EXP 	target_square_2: autoDraw = True
+174.1780 	EXP 	fixation_3: autoDraw = True
+174.1947 	EXP 	target_square_2: autoDraw = False
+175.1780 	EXP 	fixation_3: autoDraw = False
+175.1818 	EXP 	New trial (rep=0, index=48): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+175.1823 	EXP 	window1: mouseVisible = False
+175.1947 	EXP 	grid_lines_2: autoDraw = False
+175.1947 	EXP 	target_square_2: autoDraw = False
+175.1947 	EXP 	fixation_3: autoDraw = False
+175.1947 	EXP 	target_square_2: pos = array([0.2, 0. ])
+175.1947 	EXP 	grid_lines_2: autoDraw = True
+175.1947 	EXP 	target_square_2: autoDraw = True
+175.8617 	DATA 	Mouse: Left button down, pos=(872,583)
+176.1450 	DATA 	Mouse:  Left button up, pos=(872,583)
+176.1780 	EXP 	fixation_3: autoDraw = True
+176.1947 	EXP 	target_square_2: autoDraw = False
+177.1781 	EXP 	fixation_3: autoDraw = False
+177.1818 	EXP 	New trial (rep=0, index=49): {'square': 5, 'location': [0, 0], 'corrAns': None}
+177.1822 	EXP 	window1: mouseVisible = False
+177.1947 	EXP 	grid_lines_2: autoDraw = False
+177.1947 	EXP 	target_square_2: autoDraw = False
+177.1947 	EXP 	fixation_3: autoDraw = False
+177.1947 	EXP 	target_square_2: pos = array([0., 0.])
+177.1947 	EXP 	grid_lines_2: autoDraw = True
+177.1947 	EXP 	target_square_2: autoDraw = True
+178.1780 	EXP 	fixation_3: autoDraw = True
+178.1947 	EXP 	target_square_2: autoDraw = False
+179.1781 	EXP 	fixation_3: autoDraw = False
+179.1818 	EXP 	New trial (rep=0, index=50): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+179.1823 	EXP 	window1: mouseVisible = False
+179.1947 	EXP 	grid_lines_2: autoDraw = False
+179.1947 	EXP 	target_square_2: autoDraw = False
+179.1947 	EXP 	fixation_3: autoDraw = False
+179.1947 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+179.1947 	EXP 	grid_lines_2: autoDraw = True
+179.1947 	EXP 	target_square_2: autoDraw = True
+180.1781 	EXP 	fixation_3: autoDraw = True
+180.1947 	EXP 	target_square_2: autoDraw = False
+181.1781 	EXP 	fixation_3: autoDraw = False
+181.1818 	EXP 	New trial (rep=0, index=51): {'square': 5, 'location': [0, 0], 'corrAns': 1}
+181.1822 	EXP 	window1: mouseVisible = False
+181.1947 	EXP 	grid_lines_2: autoDraw = False
+181.1947 	EXP 	target_square_2: autoDraw = False
+181.1947 	EXP 	fixation_3: autoDraw = False
+181.1947 	EXP 	target_square_2: pos = array([0., 0.])
+181.1947 	EXP 	grid_lines_2: autoDraw = True
+181.1947 	EXP 	target_square_2: autoDraw = True
+181.8784 	DATA 	Mouse: Left button down, pos=(872,583)
+182.1781 	EXP 	fixation_3: autoDraw = True
+182.1784 	DATA 	Mouse:  Left button up, pos=(872,583)
+182.1948 	EXP 	target_square_2: autoDraw = False
+183.1781 	EXP 	fixation_3: autoDraw = False
+183.1820 	EXP 	New trial (rep=0, index=52): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+183.1824 	EXP 	window1: mouseVisible = False
+183.1947 	EXP 	grid_lines_2: autoDraw = False
+183.1947 	EXP 	target_square_2: autoDraw = False
+183.1947 	EXP 	fixation_3: autoDraw = False
+183.1947 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+183.1947 	EXP 	grid_lines_2: autoDraw = True
+183.1947 	EXP 	target_square_2: autoDraw = True
+184.1781 	EXP 	fixation_3: autoDraw = True
+184.1948 	EXP 	target_square_2: autoDraw = False
+185.1781 	EXP 	fixation_3: autoDraw = False
+185.1821 	EXP 	New trial (rep=0, index=53): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+185.1825 	EXP 	window1: mouseVisible = False
+185.1948 	EXP 	grid_lines_2: autoDraw = False
+185.1948 	EXP 	target_square_2: autoDraw = False
+185.1948 	EXP 	fixation_3: autoDraw = False
+185.1948 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+185.1948 	EXP 	grid_lines_2: autoDraw = True
+185.1948 	EXP 	target_square_2: autoDraw = True
+186.1780 	EXP 	fixation_3: autoDraw = True
+186.1948 	EXP 	target_square_2: autoDraw = False
+187.1781 	EXP 	fixation_3: autoDraw = False
+187.1819 	EXP 	New trial (rep=0, index=54): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+187.1823 	EXP 	window1: mouseVisible = False
+187.1948 	EXP 	grid_lines_2: autoDraw = False
+187.1948 	EXP 	target_square_2: autoDraw = False
+187.1948 	EXP 	fixation_3: autoDraw = False
+187.1948 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+187.1948 	EXP 	grid_lines_2: autoDraw = True
+187.1948 	EXP 	target_square_2: autoDraw = True
+188.1781 	EXP 	fixation_3: autoDraw = True
+188.1948 	EXP 	target_square_2: autoDraw = False
+189.1781 	EXP 	fixation_3: autoDraw = False
+189.1820 	EXP 	New trial (rep=0, index=55): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+189.1824 	EXP 	window1: mouseVisible = False
+189.1948 	EXP 	grid_lines_2: autoDraw = False
+189.1948 	EXP 	target_square_2: autoDraw = False
+189.1948 	EXP 	fixation_3: autoDraw = False
+189.1948 	EXP 	target_square_2: pos = array([0.2, 0.2])
+189.1948 	EXP 	grid_lines_2: autoDraw = True
+189.1948 	EXP 	target_square_2: autoDraw = True
+190.1781 	EXP 	fixation_3: autoDraw = True
+190.1948 	EXP 	target_square_2: autoDraw = False
+191.1782 	EXP 	fixation_3: autoDraw = False
+191.1819 	EXP 	New trial (rep=0, index=56): {'square': 9, 'location': [0.2, -0.2], 'corrAns': 1}
+191.1823 	EXP 	window1: mouseVisible = False
+191.1948 	EXP 	grid_lines_2: autoDraw = False
+191.1948 	EXP 	target_square_2: autoDraw = False
+191.1948 	EXP 	fixation_3: autoDraw = False
+191.1948 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+191.1948 	EXP 	grid_lines_2: autoDraw = True
+191.1948 	EXP 	target_square_2: autoDraw = True
+192.1782 	EXP 	fixation_3: autoDraw = True
+192.1948 	EXP 	target_square_2: autoDraw = False
+192.7119 	DATA 	Mouse: Left button down, pos=(872,583)
+193.0784 	DATA 	Mouse:  Left button up, pos=(872,583)
+193.1782 	EXP 	fixation_3: autoDraw = False
+193.1820 	EXP 	New trial (rep=0, index=57): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+193.1824 	EXP 	window1: mouseVisible = False
+193.1948 	EXP 	grid_lines_2: autoDraw = False
+193.1948 	EXP 	target_square_2: autoDraw = False
+193.1948 	EXP 	fixation_3: autoDraw = False
+193.1948 	EXP 	target_square_2: pos = array([0.2, 0. ])
+193.1948 	EXP 	grid_lines_2: autoDraw = True
+193.1948 	EXP 	target_square_2: autoDraw = True
+194.1782 	EXP 	fixation_3: autoDraw = True
+194.1948 	EXP 	target_square_2: autoDraw = False
+195.1782 	EXP 	fixation_3: autoDraw = False
+195.1819 	EXP 	New trial (rep=0, index=58): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+195.1823 	EXP 	window1: mouseVisible = False
+195.1948 	EXP 	grid_lines_2: autoDraw = False
+195.1948 	EXP 	target_square_2: autoDraw = False
+195.1948 	EXP 	fixation_3: autoDraw = False
+195.1948 	EXP 	target_square_2: pos = array([0. , 0.2])
+195.1948 	EXP 	grid_lines_2: autoDraw = True
+195.1948 	EXP 	target_square_2: autoDraw = True
+196.1782 	EXP 	fixation_3: autoDraw = True
+196.1949 	EXP 	target_square_2: autoDraw = False
+197.1782 	EXP 	fixation_3: autoDraw = False
+197.1819 	EXP 	New trial (rep=0, index=59): {'square': 5, 'location': [0, 0], 'corrAns': None}
+197.1823 	EXP 	window1: mouseVisible = False
+197.1948 	EXP 	grid_lines_2: autoDraw = False
+197.1948 	EXP 	target_square_2: autoDraw = False
+197.1948 	EXP 	fixation_3: autoDraw = False
+197.1948 	EXP 	target_square_2: pos = array([0., 0.])
+197.1948 	EXP 	grid_lines_2: autoDraw = True
+197.1948 	EXP 	target_square_2: autoDraw = True
+198.1782 	EXP 	fixation_3: autoDraw = True
+198.1949 	EXP 	target_square_2: autoDraw = False
+199.1782 	EXP 	fixation_3: autoDraw = False
+199.1820 	EXP 	New trial (rep=0, index=60): {'square': 5, 'location': [0, 0], 'corrAns': None}
+199.1824 	EXP 	window1: mouseVisible = False
+199.1949 	EXP 	grid_lines_2: autoDraw = False
+199.1949 	EXP 	target_square_2: autoDraw = False
+199.1949 	EXP 	fixation_3: autoDraw = False
+199.1949 	EXP 	target_square_2: pos = array([0., 0.])
+199.1949 	EXP 	grid_lines_2: autoDraw = True
+199.1949 	EXP 	target_square_2: autoDraw = True
+200.1782 	EXP 	fixation_3: autoDraw = True
+200.1949 	EXP 	target_square_2: autoDraw = False
+201.1782 	EXP 	fixation_3: autoDraw = False
+201.1819 	EXP 	New trial (rep=0, index=61): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+201.1824 	EXP 	window1: mouseVisible = False
+201.1949 	EXP 	grid_lines_2: autoDraw = False
+201.1949 	EXP 	target_square_2: autoDraw = False
+201.1949 	EXP 	fixation_3: autoDraw = False
+201.1949 	EXP 	target_square_2: pos = array([0. , 0.2])
+201.1949 	EXP 	grid_lines_2: autoDraw = True
+201.1949 	EXP 	target_square_2: autoDraw = True
+202.1782 	EXP 	fixation_3: autoDraw = True
+202.1949 	EXP 	target_square_2: autoDraw = False
+203.1782 	EXP 	fixation_3: autoDraw = False
+203.1821 	EXP 	New trial (rep=0, index=62): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+203.1827 	EXP 	window1: mouseVisible = False
+203.1948 	EXP 	grid_lines_2: autoDraw = False
+203.1948 	EXP 	target_square_2: autoDraw = False
+203.1948 	EXP 	fixation_3: autoDraw = False
+203.1948 	EXP 	target_square_2: pos = array([0.2, 0. ])
+203.1948 	EXP 	grid_lines_2: autoDraw = True
+203.1948 	EXP 	target_square_2: autoDraw = True
+204.1782 	EXP 	fixation_3: autoDraw = True
+204.1949 	EXP 	target_square_2: autoDraw = False
+205.1782 	EXP 	fixation_3: autoDraw = False
+205.1819 	EXP 	New trial (rep=0, index=63): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+205.1824 	EXP 	window1: mouseVisible = False
+205.1949 	EXP 	grid_lines_2: autoDraw = False
+205.1949 	EXP 	target_square_2: autoDraw = False
+205.1949 	EXP 	fixation_3: autoDraw = False
+205.1949 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+205.1949 	EXP 	grid_lines_2: autoDraw = True
+205.1949 	EXP 	target_square_2: autoDraw = True
+206.1783 	EXP 	fixation_3: autoDraw = True
+206.1949 	EXP 	target_square_2: autoDraw = False
+207.1783 	EXP 	fixation_3: autoDraw = False
+207.1820 	EXP 	New trial (rep=0, index=64): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+207.1825 	EXP 	window1: mouseVisible = False
+207.1948 	EXP 	grid_lines_2: autoDraw = False
+207.1948 	EXP 	target_square_2: autoDraw = False
+207.1948 	EXP 	fixation_3: autoDraw = False
+207.1948 	EXP 	target_square_2: pos = array([0.2, 0.2])
+207.1948 	EXP 	grid_lines_2: autoDraw = True
+207.1948 	EXP 	target_square_2: autoDraw = True
+208.1783 	EXP 	fixation_3: autoDraw = True
+208.1949 	EXP 	target_square_2: autoDraw = False
+209.1783 	EXP 	fixation_3: autoDraw = False
+209.1820 	EXP 	New trial (rep=0, index=65): {'square': 9, 'location': [0.2, -0.2], 'corrAns': 1}
+209.1825 	EXP 	window1: mouseVisible = False
+209.1949 	EXP 	grid_lines_2: autoDraw = False
+209.1949 	EXP 	target_square_2: autoDraw = False
+209.1949 	EXP 	fixation_3: autoDraw = False
+209.1949 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+209.1949 	EXP 	grid_lines_2: autoDraw = True
+209.1949 	EXP 	target_square_2: autoDraw = True
+209.8286 	DATA 	Mouse: Left button down, pos=(872,583)
+210.1119 	DATA 	Mouse:  Left button up, pos=(872,583)
+210.1783 	EXP 	fixation_3: autoDraw = True
+210.1949 	EXP 	target_square_2: autoDraw = False
+211.1783 	EXP 	fixation_3: autoDraw = False
+211.1820 	EXP 	New trial (rep=0, index=66): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+211.1825 	EXP 	window1: mouseVisible = False
+211.1950 	EXP 	grid_lines_2: autoDraw = False
+211.1950 	EXP 	target_square_2: autoDraw = False
+211.1950 	EXP 	fixation_3: autoDraw = False
+211.1950 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+211.1950 	EXP 	grid_lines_2: autoDraw = True
+211.1950 	EXP 	target_square_2: autoDraw = True
+212.1783 	EXP 	fixation_3: autoDraw = True
+212.1950 	EXP 	target_square_2: autoDraw = False
+213.1783 	EXP 	fixation_3: autoDraw = False
+213.1822 	EXP 	New trial (rep=0, index=67): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+213.1827 	EXP 	window1: mouseVisible = False
+213.1950 	EXP 	grid_lines_2: autoDraw = False
+213.1950 	EXP 	target_square_2: autoDraw = False
+213.1950 	EXP 	fixation_3: autoDraw = False
+213.1950 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+213.1950 	EXP 	grid_lines_2: autoDraw = True
+213.1950 	EXP 	target_square_2: autoDraw = True
+214.1783 	EXP 	fixation_3: autoDraw = True
+214.1950 	EXP 	target_square_2: autoDraw = False
+215.1783 	EXP 	fixation_3: autoDraw = False
+215.1822 	EXP 	New trial (rep=0, index=68): {'square': 5, 'location': [0, 0], 'corrAns': None}
+215.1826 	EXP 	window1: mouseVisible = False
+215.1950 	EXP 	grid_lines_2: autoDraw = False
+215.1950 	EXP 	target_square_2: autoDraw = False
+215.1950 	EXP 	fixation_3: autoDraw = False
+215.1950 	EXP 	target_square_2: pos = array([0., 0.])
+215.1950 	EXP 	grid_lines_2: autoDraw = True
+215.1950 	EXP 	target_square_2: autoDraw = True
+216.1783 	EXP 	fixation_3: autoDraw = True
+216.1950 	EXP 	target_square_2: autoDraw = False
+217.1783 	EXP 	fixation_3: autoDraw = False
+217.1820 	EXP 	New trial (rep=0, index=69): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+217.1825 	EXP 	window1: mouseVisible = False
+217.1950 	EXP 	grid_lines_2: autoDraw = False
+217.1950 	EXP 	target_square_2: autoDraw = False
+217.1950 	EXP 	fixation_3: autoDraw = False
+217.1950 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+217.1950 	EXP 	grid_lines_2: autoDraw = True
+217.1950 	EXP 	target_square_2: autoDraw = True
+218.1783 	EXP 	fixation_3: autoDraw = True
+218.1950 	EXP 	target_square_2: autoDraw = False
+219.1784 	EXP 	fixation_3: autoDraw = False
+219.1820 	EXP 	New trial (rep=0, index=70): {'square': 5, 'location': [0, 0], 'corrAns': 1}
+219.1824 	EXP 	window1: mouseVisible = False
+219.1950 	EXP 	grid_lines_2: autoDraw = False
+219.1950 	EXP 	target_square_2: autoDraw = False
+219.1950 	EXP 	fixation_3: autoDraw = False
+219.1950 	EXP 	target_square_2: pos = array([0., 0.])
+219.1950 	EXP 	grid_lines_2: autoDraw = True
+219.1950 	EXP 	target_square_2: autoDraw = True
+220.1784 	EXP 	fixation_3: autoDraw = True
+220.1950 	EXP 	target_square_2: autoDraw = False
+220.2954 	DATA 	Mouse: Left button down, pos=(872,583)
+220.5953 	DATA 	Mouse:  Left button up, pos=(872,583)
+221.1784 	EXP 	fixation_3: autoDraw = False
+221.1820 	EXP 	New trial (rep=0, index=71): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+221.1825 	EXP 	window1: mouseVisible = False
+221.1950 	EXP 	grid_lines_2: autoDraw = False
+221.1950 	EXP 	target_square_2: autoDraw = False
+221.1950 	EXP 	fixation_3: autoDraw = False
+221.1950 	EXP 	target_square_2: pos = array([0.2, 0. ])
+221.1950 	EXP 	grid_lines_2: autoDraw = True
+221.1950 	EXP 	target_square_2: autoDraw = True
+222.1784 	EXP 	fixation_3: autoDraw = True
+222.1950 	EXP 	target_square_2: autoDraw = False
+223.1784 	EXP 	fixation_3: autoDraw = False
+223.1827 	EXP 	New trial (rep=0, index=72): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+223.1831 	EXP 	window1: mouseVisible = False
+223.1951 	EXP 	grid_lines_2: autoDraw = False
+223.1951 	EXP 	target_square_2: autoDraw = False
+223.1951 	EXP 	fixation_3: autoDraw = False
+223.1951 	EXP 	target_square_2: pos = array([0.2, 0.2])
+223.1951 	EXP 	grid_lines_2: autoDraw = True
+223.1951 	EXP 	target_square_2: autoDraw = True
+224.1784 	EXP 	fixation_3: autoDraw = True
+224.1951 	EXP 	target_square_2: autoDraw = False
+225.1784 	EXP 	fixation_3: autoDraw = False
+225.1821 	EXP 	New trial (rep=0, index=73): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+225.1826 	EXP 	window1: mouseVisible = False
+225.1950 	EXP 	grid_lines_2: autoDraw = False
+225.1950 	EXP 	target_square_2: autoDraw = False
+225.1950 	EXP 	fixation_3: autoDraw = False
+225.1950 	EXP 	target_square_2: pos = array([0.2, 0. ])
+225.1950 	EXP 	grid_lines_2: autoDraw = True
+225.1950 	EXP 	target_square_2: autoDraw = True
+225.7121 	DATA 	Mouse: Left button down, pos=(872,583)
+225.9954 	DATA 	Mouse:  Left button up, pos=(872,583)
+226.1784 	EXP 	fixation_3: autoDraw = True
+226.1951 	EXP 	target_square_2: autoDraw = False
+227.1784 	EXP 	fixation_3: autoDraw = False
+227.1821 	EXP 	New trial (rep=0, index=74): {'square': 8, 'location': [0, -0.2], 'corrAns': None}
+227.1826 	EXP 	window1: mouseVisible = False
+227.1951 	EXP 	grid_lines_2: autoDraw = False
+227.1951 	EXP 	target_square_2: autoDraw = False
+227.1951 	EXP 	fixation_3: autoDraw = False
+227.1951 	EXP 	target_square_2: pos = array([ 0. , -0.2])
+227.1951 	EXP 	grid_lines_2: autoDraw = True
+227.1951 	EXP 	target_square_2: autoDraw = True
+228.1784 	EXP 	fixation_3: autoDraw = True
+228.1951 	EXP 	target_square_2: autoDraw = False
+229.1784 	EXP 	fixation_3: autoDraw = False
+229.1821 	EXP 	New trial (rep=0, index=75): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+229.1826 	EXP 	window1: mouseVisible = False
+229.1951 	EXP 	grid_lines_2: autoDraw = False
+229.1951 	EXP 	target_square_2: autoDraw = False
+229.1951 	EXP 	fixation_3: autoDraw = False
+229.1951 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+229.1951 	EXP 	grid_lines_2: autoDraw = True
+229.1951 	EXP 	target_square_2: autoDraw = True
+230.1784 	EXP 	fixation_3: autoDraw = True
+230.1951 	EXP 	target_square_2: autoDraw = False
+231.1785 	EXP 	fixation_3: autoDraw = False
+231.1822 	EXP 	New trial (rep=0, index=76): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+231.1827 	EXP 	window1: mouseVisible = False
+231.1951 	EXP 	grid_lines_2: autoDraw = False
+231.1951 	EXP 	target_square_2: autoDraw = False
+231.1951 	EXP 	fixation_3: autoDraw = False
+231.1951 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+231.1951 	EXP 	grid_lines_2: autoDraw = True
+231.1951 	EXP 	target_square_2: autoDraw = True
+232.1784 	EXP 	fixation_3: autoDraw = True
+232.1951 	EXP 	target_square_2: autoDraw = False
+233.1785 	EXP 	fixation_3: autoDraw = False
+233.1823 	EXP 	New trial (rep=0, index=77): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+233.1828 	EXP 	window1: mouseVisible = False
+233.1951 	EXP 	grid_lines_2: autoDraw = False
+233.1951 	EXP 	target_square_2: autoDraw = False
+233.1951 	EXP 	fixation_3: autoDraw = False
+233.1951 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+233.1951 	EXP 	grid_lines_2: autoDraw = True
+233.1951 	EXP 	target_square_2: autoDraw = True
+234.1785 	EXP 	fixation_3: autoDraw = True
+234.1951 	EXP 	target_square_2: autoDraw = False
+235.1785 	EXP 	fixation_3: autoDraw = False
+235.1823 	EXP 	New trial (rep=0, index=78): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+235.1827 	EXP 	window1: mouseVisible = False
+235.1951 	EXP 	grid_lines_2: autoDraw = False
+235.1951 	EXP 	target_square_2: autoDraw = False
+235.1951 	EXP 	fixation_3: autoDraw = False
+235.1951 	EXP 	target_square_2: pos = array([0.2, 0.2])
+235.1951 	EXP 	grid_lines_2: autoDraw = True
+235.1951 	EXP 	target_square_2: autoDraw = True
+236.1784 	EXP 	fixation_3: autoDraw = True
+236.1951 	EXP 	target_square_2: autoDraw = False
+237.1785 	EXP 	fixation_3: autoDraw = False
+237.1824 	EXP 	New trial (rep=0, index=79): {'square': 5, 'location': [0, 0], 'corrAns': None}
+237.1828 	EXP 	window1: mouseVisible = False
+237.1952 	EXP 	grid_lines_2: autoDraw = False
+237.1952 	EXP 	target_square_2: autoDraw = False
+237.1952 	EXP 	fixation_3: autoDraw = False
+237.1952 	EXP 	target_square_2: pos = array([0., 0.])
+237.1952 	EXP 	grid_lines_2: autoDraw = True
+237.1952 	EXP 	target_square_2: autoDraw = True
+238.1785 	EXP 	fixation_3: autoDraw = True
+238.1951 	EXP 	target_square_2: autoDraw = False
+239.1785 	EXP 	fixation_3: autoDraw = False
+239.1823 	EXP 	New trial (rep=0, index=80): {'square': 3, 'location': [0.2, 0.2], 'corrAns': 1}
+239.1828 	EXP 	window1: mouseVisible = False
+239.1952 	EXP 	grid_lines_2: autoDraw = False
+239.1952 	EXP 	target_square_2: autoDraw = False
+239.1952 	EXP 	fixation_3: autoDraw = False
+239.1952 	EXP 	target_square_2: pos = array([0.2, 0.2])
+239.1952 	EXP 	grid_lines_2: autoDraw = True
+239.1952 	EXP 	target_square_2: autoDraw = True
+239.7622 	DATA 	Mouse: Left button down, pos=(872,583)
+240.0288 	DATA 	Mouse:  Left button up, pos=(872,583)
+240.1785 	EXP 	fixation_3: autoDraw = True
+240.1952 	EXP 	target_square_2: autoDraw = False
+241.1785 	EXP 	fixation_3: autoDraw = False
+241.1823 	EXP 	New trial (rep=0, index=81): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+241.1828 	EXP 	window1: mouseVisible = False
+241.1952 	EXP 	grid_lines_2: autoDraw = False
+241.1952 	EXP 	target_square_2: autoDraw = False
+241.1952 	EXP 	fixation_3: autoDraw = False
+241.1952 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+241.1952 	EXP 	grid_lines_2: autoDraw = True
+241.1952 	EXP 	target_square_2: autoDraw = True
+242.1786 	EXP 	fixation_3: autoDraw = True
+242.1952 	EXP 	target_square_2: autoDraw = False
+243.1786 	EXP 	fixation_3: autoDraw = False
+243.1826 	EXP 	New trial (rep=0, index=82): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+243.1831 	EXP 	window1: mouseVisible = False
+243.1952 	EXP 	grid_lines_2: autoDraw = False
+243.1952 	EXP 	target_square_2: autoDraw = False
+243.1952 	EXP 	fixation_3: autoDraw = False
+243.1952 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+243.1952 	EXP 	grid_lines_2: autoDraw = True
+243.1952 	EXP 	target_square_2: autoDraw = True
+244.1785 	EXP 	fixation_3: autoDraw = True
+244.1952 	EXP 	target_square_2: autoDraw = False
+245.1786 	EXP 	fixation_3: autoDraw = False
+245.1824 	EXP 	New trial (rep=0, index=83): {'square': 4, 'location': [-0.2, 0], 'corrAns': 1}
+245.1829 	EXP 	window1: mouseVisible = False
+245.1952 	EXP 	grid_lines_2: autoDraw = False
+245.1952 	EXP 	target_square_2: autoDraw = False
+245.1952 	EXP 	fixation_3: autoDraw = False
+245.1952 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+245.1952 	EXP 	grid_lines_2: autoDraw = True
+245.1952 	EXP 	target_square_2: autoDraw = True
+245.6623 	DATA 	Mouse: Left button down, pos=(872,583)
+245.9622 	DATA 	Mouse:  Left button up, pos=(872,583)
+246.1786 	EXP 	fixation_3: autoDraw = True
+246.1952 	EXP 	target_square_2: autoDraw = False
+247.1786 	EXP 	fixation_3: autoDraw = False
+247.1823 	EXP 	New trial (rep=0, index=84): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+247.1828 	EXP 	window1: mouseVisible = False
+247.1952 	EXP 	grid_lines_2: autoDraw = False
+247.1952 	EXP 	target_square_2: autoDraw = False
+247.1952 	EXP 	fixation_3: autoDraw = False
+247.1952 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+247.1952 	EXP 	grid_lines_2: autoDraw = True
+247.1952 	EXP 	target_square_2: autoDraw = True
+248.1786 	EXP 	fixation_3: autoDraw = True
+248.1952 	EXP 	target_square_2: autoDraw = False
+249.1787 	EXP 	fixation_3: autoDraw = False
+249.1824 	EXP 	New trial (rep=0, index=85): {'square': 5, 'location': [0, 0], 'corrAns': None}
+249.1828 	EXP 	window1: mouseVisible = False
+249.1952 	EXP 	grid_lines_2: autoDraw = False
+249.1952 	EXP 	target_square_2: autoDraw = False
+249.1952 	EXP 	fixation_3: autoDraw = False
+249.1952 	EXP 	target_square_2: pos = array([0., 0.])
+249.1952 	EXP 	grid_lines_2: autoDraw = True
+249.1952 	EXP 	target_square_2: autoDraw = True
+250.1786 	EXP 	fixation_3: autoDraw = True
+250.1953 	EXP 	target_square_2: autoDraw = False
+251.1786 	EXP 	fixation_3: autoDraw = False
+251.1824 	EXP 	New trial (rep=0, index=86): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+251.1829 	EXP 	window1: mouseVisible = False
+251.1953 	EXP 	grid_lines_2: autoDraw = False
+251.1953 	EXP 	target_square_2: autoDraw = False
+251.1953 	EXP 	fixation_3: autoDraw = False
+251.1953 	EXP 	target_square_2: pos = array([0. , 0.2])
+251.1953 	EXP 	grid_lines_2: autoDraw = True
+251.1953 	EXP 	target_square_2: autoDraw = True
+252.1786 	EXP 	fixation_3: autoDraw = True
+252.1953 	EXP 	target_square_2: autoDraw = False
+253.1786 	EXP 	fixation_3: autoDraw = False
+253.1825 	EXP 	New trial (rep=0, index=87): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+253.1830 	EXP 	window1: mouseVisible = False
+253.1953 	EXP 	grid_lines_2: autoDraw = False
+253.1953 	EXP 	target_square_2: autoDraw = False
+253.1953 	EXP 	fixation_3: autoDraw = False
+253.1953 	EXP 	target_square_2: pos = array([0.2, 0. ])
+253.1953 	EXP 	grid_lines_2: autoDraw = True
+253.1953 	EXP 	target_square_2: autoDraw = True
+254.1786 	EXP 	fixation_3: autoDraw = True
+254.1953 	EXP 	target_square_2: autoDraw = False
+255.1787 	EXP 	fixation_3: autoDraw = False
+255.1824 	EXP 	New trial (rep=0, index=88): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+255.1829 	EXP 	window1: mouseVisible = False
+255.1953 	EXP 	grid_lines_2: autoDraw = False
+255.1953 	EXP 	target_square_2: autoDraw = False
+255.1953 	EXP 	fixation_3: autoDraw = False
+255.1953 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+255.1953 	EXP 	grid_lines_2: autoDraw = True
+255.1953 	EXP 	target_square_2: autoDraw = True
+256.1787 	EXP 	fixation_3: autoDraw = True
+256.1953 	EXP 	target_square_2: autoDraw = False
+257.1786 	EXP 	fixation_3: autoDraw = False
+257.1824 	EXP 	New trial (rep=0, index=89): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+257.1829 	EXP 	window1: mouseVisible = False
+257.1953 	EXP 	grid_lines_2: autoDraw = False
+257.1953 	EXP 	target_square_2: autoDraw = False
+257.1953 	EXP 	fixation_3: autoDraw = False
+257.1953 	EXP 	target_square_2: pos = array([0.2, 0. ])
+257.1953 	EXP 	grid_lines_2: autoDraw = True
+257.1953 	EXP 	target_square_2: autoDraw = True
+257.7457 	DATA 	Mouse: Left button down, pos=(872,583)
+258.0290 	DATA 	Mouse:  Left button up, pos=(872,583)
+258.1787 	EXP 	fixation_3: autoDraw = True
+258.1953 	EXP 	target_square_2: autoDraw = False
+259.1787 	EXP 	fixation_3: autoDraw = False
+259.1827 	EXP 	New trial (rep=0, index=90): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+259.1832 	EXP 	window1: mouseVisible = False
+259.1953 	EXP 	grid_lines_2: autoDraw = False
+259.1953 	EXP 	target_square_2: autoDraw = False
+259.1953 	EXP 	fixation_3: autoDraw = False
+259.1953 	EXP 	target_square_2: pos = array([0.2, 0. ])
+259.1953 	EXP 	grid_lines_2: autoDraw = True
+259.1953 	EXP 	target_square_2: autoDraw = True
+260.1787 	EXP 	fixation_3: autoDraw = True
+260.1953 	EXP 	target_square_2: autoDraw = False
+261.1787 	EXP 	fixation_3: autoDraw = False
+261.1824 	EXP 	New trial (rep=0, index=91): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+261.1829 	EXP 	window1: mouseVisible = False
+261.1953 	EXP 	grid_lines_2: autoDraw = False
+261.1953 	EXP 	target_square_2: autoDraw = False
+261.1953 	EXP 	fixation_3: autoDraw = False
+261.1953 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+261.1953 	EXP 	grid_lines_2: autoDraw = True
+261.1953 	EXP 	target_square_2: autoDraw = True
+262.1787 	EXP 	fixation_3: autoDraw = True
+262.1953 	EXP 	target_square_2: autoDraw = False
+263.1787 	EXP 	fixation_3: autoDraw = False
+263.1825 	EXP 	New trial (rep=0, index=92): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+263.1830 	EXP 	window1: mouseVisible = False
+263.1953 	EXP 	grid_lines_2: autoDraw = False
+263.1953 	EXP 	target_square_2: autoDraw = False
+263.1953 	EXP 	fixation_3: autoDraw = False
+263.1953 	EXP 	target_square_2: pos = array([0.2, 0. ])
+263.1953 	EXP 	grid_lines_2: autoDraw = True
+263.1953 	EXP 	target_square_2: autoDraw = True
+263.7957 	DATA 	Mouse: Left button down, pos=(872,583)
+264.0790 	DATA 	Mouse:  Left button up, pos=(872,583)
+264.1787 	EXP 	fixation_3: autoDraw = True
+264.1954 	EXP 	target_square_2: autoDraw = False
+265.1787 	EXP 	fixation_3: autoDraw = False
+265.1824 	EXP 	New trial (rep=0, index=93): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+265.1829 	EXP 	window1: mouseVisible = False
+265.1954 	EXP 	grid_lines_2: autoDraw = False
+265.1954 	EXP 	target_square_2: autoDraw = False
+265.1954 	EXP 	fixation_3: autoDraw = False
+265.1954 	EXP 	target_square_2: pos = array([0. , 0.2])
+265.1954 	EXP 	grid_lines_2: autoDraw = True
+265.1954 	EXP 	target_square_2: autoDraw = True
+266.1787 	EXP 	fixation_3: autoDraw = True
+266.1954 	EXP 	target_square_2: autoDraw = False
+267.1787 	EXP 	fixation_3: autoDraw = False
+267.1825 	EXP 	New trial (rep=0, index=94): {'square': 5, 'location': [0, 0], 'corrAns': None}
+267.1829 	EXP 	window1: mouseVisible = False
+267.1954 	EXP 	grid_lines_2: autoDraw = False
+267.1954 	EXP 	target_square_2: autoDraw = False
+267.1954 	EXP 	fixation_3: autoDraw = False
+267.1954 	EXP 	target_square_2: pos = array([0., 0.])
+267.1954 	EXP 	grid_lines_2: autoDraw = True
+267.1954 	EXP 	target_square_2: autoDraw = True
+268.1787 	EXP 	fixation_3: autoDraw = True
+268.1954 	EXP 	target_square_2: autoDraw = False
+269.1787 	EXP 	fixation_3: autoDraw = False
+269.1824 	EXP 	New trial (rep=0, index=95): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+269.1829 	EXP 	window1: mouseVisible = False
+269.1954 	EXP 	grid_lines_2: autoDraw = False
+269.1954 	EXP 	target_square_2: autoDraw = False
+269.1954 	EXP 	fixation_3: autoDraw = False
+269.1954 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+269.1954 	EXP 	grid_lines_2: autoDraw = True
+269.1954 	EXP 	target_square_2: autoDraw = True
+270.1788 	EXP 	fixation_3: autoDraw = True
+270.1954 	EXP 	target_square_2: autoDraw = False
+271.1788 	EXP 	fixation_3: autoDraw = False
+271.1825 	EXP 	New trial (rep=0, index=96): {'square': 4, 'location': [-0.2, 0], 'corrAns': None}
+271.1830 	EXP 	window1: mouseVisible = False
+271.1954 	EXP 	grid_lines_2: autoDraw = False
+271.1954 	EXP 	target_square_2: autoDraw = False
+271.1954 	EXP 	fixation_3: autoDraw = False
+271.1954 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+271.1954 	EXP 	grid_lines_2: autoDraw = True
+271.1954 	EXP 	target_square_2: autoDraw = True
+272.1788 	EXP 	fixation_3: autoDraw = True
+272.1954 	EXP 	target_square_2: autoDraw = False
+273.1788 	EXP 	fixation_3: autoDraw = False
+273.1828 	EXP 	New trial (rep=0, index=97): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+273.1832 	EXP 	window1: mouseVisible = False
+273.1954 	EXP 	grid_lines_2: autoDraw = False
+273.1954 	EXP 	target_square_2: autoDraw = False
+273.1954 	EXP 	fixation_3: autoDraw = False
+273.1954 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+273.1954 	EXP 	grid_lines_2: autoDraw = True
+273.1954 	EXP 	target_square_2: autoDraw = True
+274.1788 	EXP 	fixation_3: autoDraw = True
+274.1954 	EXP 	target_square_2: autoDraw = False
+275.1788 	EXP 	fixation_3: autoDraw = False
+275.1826 	EXP 	New trial (rep=0, index=98): {'square': 4, 'location': [-0.2, 0], 'corrAns': 1}
+275.1831 	EXP 	window1: mouseVisible = False
+275.1955 	EXP 	grid_lines_2: autoDraw = False
+275.1955 	EXP 	target_square_2: autoDraw = False
+275.1955 	EXP 	fixation_3: autoDraw = False
+275.1955 	EXP 	target_square_2: pos = array([-0.2,  0. ])
+275.1955 	EXP 	grid_lines_2: autoDraw = True
+275.1955 	EXP 	target_square_2: autoDraw = True
+275.6487 	DATA 	Mouse: Left button down, pos=(872,583)
+275.9457 	DATA 	Mouse:  Left button up, pos=(872,583)
+276.1788 	EXP 	fixation_3: autoDraw = True
+276.1954 	EXP 	target_square_2: autoDraw = False
+277.1788 	EXP 	fixation_3: autoDraw = False
+277.1825 	EXP 	New trial (rep=0, index=99): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+277.1831 	EXP 	window1: mouseVisible = False
+277.1955 	EXP 	grid_lines_2: autoDraw = False
+277.1955 	EXP 	target_square_2: autoDraw = False
+277.1955 	EXP 	fixation_3: autoDraw = False
+277.1955 	EXP 	target_square_2: pos = array([0.2, 0.2])
+277.1955 	EXP 	grid_lines_2: autoDraw = True
+277.1955 	EXP 	target_square_2: autoDraw = True
+278.1788 	EXP 	fixation_3: autoDraw = True
+278.1955 	EXP 	target_square_2: autoDraw = False
+279.1788 	EXP 	fixation_3: autoDraw = False
+279.1826 	EXP 	New trial (rep=0, index=100): {'square': 5, 'location': [0, 0], 'corrAns': None}
+279.1830 	EXP 	window1: mouseVisible = False
+279.1955 	EXP 	grid_lines_2: autoDraw = False
+279.1955 	EXP 	target_square_2: autoDraw = False
+279.1955 	EXP 	fixation_3: autoDraw = False
+279.1955 	EXP 	target_square_2: pos = array([0., 0.])
+279.1955 	EXP 	grid_lines_2: autoDraw = True
+279.1955 	EXP 	target_square_2: autoDraw = True
+280.1788 	EXP 	fixation_3: autoDraw = True
+280.1955 	EXP 	target_square_2: autoDraw = False
+281.1787 	EXP 	fixation_3: autoDraw = False
+281.1824 	EXP 	New trial (rep=0, index=101): {'square': 3, 'location': [0.2, 0.2], 'corrAns': 1}
+281.1829 	EXP 	window1: mouseVisible = False
+281.1955 	EXP 	grid_lines_2: autoDraw = False
+281.1955 	EXP 	target_square_2: autoDraw = False
+281.1955 	EXP 	fixation_3: autoDraw = False
+281.1955 	EXP 	target_square_2: pos = array([0.2, 0.2])
+281.1955 	EXP 	grid_lines_2: autoDraw = True
+281.1955 	EXP 	target_square_2: autoDraw = True
+282.1788 	EXP 	fixation_3: autoDraw = True
+282.1955 	EXP 	target_square_2: autoDraw = False
+283.1788 	EXP 	fixation_3: autoDraw = False
+283.1829 	EXP 	New trial (rep=0, index=102): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+283.1833 	EXP 	window1: mouseVisible = False
+283.1955 	EXP 	grid_lines_2: autoDraw = False
+283.1955 	EXP 	target_square_2: autoDraw = False
+283.1955 	EXP 	fixation_3: autoDraw = False
+283.1955 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+283.1955 	EXP 	grid_lines_2: autoDraw = True
+283.1955 	EXP 	target_square_2: autoDraw = True
+284.1788 	EXP 	fixation_3: autoDraw = True
+284.1955 	EXP 	target_square_2: autoDraw = False
+285.1789 	EXP 	fixation_3: autoDraw = False
+285.1826 	EXP 	New trial (rep=0, index=103): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+285.1831 	EXP 	window1: mouseVisible = False
+285.1955 	EXP 	grid_lines_2: autoDraw = False
+285.1955 	EXP 	target_square_2: autoDraw = False
+285.1955 	EXP 	fixation_3: autoDraw = False
+285.1955 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+285.1955 	EXP 	grid_lines_2: autoDraw = True
+285.1955 	EXP 	target_square_2: autoDraw = True
+286.1788 	EXP 	fixation_3: autoDraw = True
+286.1955 	EXP 	target_square_2: autoDraw = False
+287.1789 	EXP 	fixation_3: autoDraw = False
+287.1825 	EXP 	New trial (rep=0, index=104): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+287.1830 	EXP 	window1: mouseVisible = False
+287.1955 	EXP 	grid_lines_2: autoDraw = False
+287.1955 	EXP 	target_square_2: autoDraw = False
+287.1955 	EXP 	fixation_3: autoDraw = False
+287.1955 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+287.1955 	EXP 	grid_lines_2: autoDraw = True
+287.1955 	EXP 	target_square_2: autoDraw = True
+288.1789 	EXP 	fixation_3: autoDraw = True
+288.1955 	EXP 	target_square_2: autoDraw = False
+289.1789 	EXP 	fixation_3: autoDraw = False
+289.1827 	EXP 	New trial (rep=0, index=105): {'square': 8, 'location': [0, -0.2], 'corrAns': None}
+289.1831 	EXP 	window1: mouseVisible = False
+289.1956 	EXP 	grid_lines_2: autoDraw = False
+289.1956 	EXP 	target_square_2: autoDraw = False
+289.1956 	EXP 	fixation_3: autoDraw = False
+289.1956 	EXP 	target_square_2: pos = array([ 0. , -0.2])
+289.1956 	EXP 	grid_lines_2: autoDraw = True
+289.1956 	EXP 	target_square_2: autoDraw = True
+290.1789 	EXP 	fixation_3: autoDraw = True
+290.1956 	EXP 	target_square_2: autoDraw = False
+291.1788 	EXP 	fixation_3: autoDraw = False
+291.1825 	EXP 	New trial (rep=0, index=106): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+291.1830 	EXP 	window1: mouseVisible = False
+291.1956 	EXP 	grid_lines_2: autoDraw = False
+291.1956 	EXP 	target_square_2: autoDraw = False
+291.1956 	EXP 	fixation_3: autoDraw = False
+291.1956 	EXP 	target_square_2: pos = array([0.2, 0. ])
+291.1956 	EXP 	grid_lines_2: autoDraw = True
+291.1956 	EXP 	target_square_2: autoDraw = True
+292.1789 	EXP 	fixation_3: autoDraw = True
+292.1956 	EXP 	target_square_2: autoDraw = False
+293.1789 	EXP 	fixation_3: autoDraw = False
+293.1827 	EXP 	New trial (rep=0, index=107): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+293.1834 	EXP 	window1: mouseVisible = False
+293.1956 	EXP 	grid_lines_2: autoDraw = False
+293.1956 	EXP 	target_square_2: autoDraw = False
+293.1956 	EXP 	fixation_3: autoDraw = False
+293.1956 	EXP 	target_square_2: pos = array([0.2, 0.2])
+293.1956 	EXP 	grid_lines_2: autoDraw = True
+293.1956 	EXP 	target_square_2: autoDraw = True
+294.1789 	EXP 	fixation_3: autoDraw = True
+294.1956 	EXP 	target_square_2: autoDraw = False
+295.1789 	EXP 	fixation_3: autoDraw = False
+295.1827 	EXP 	New trial (rep=0, index=108): {'square': 6, 'location': [0.2, 0], 'corrAns': 1}
+295.1831 	EXP 	window1: mouseVisible = False
+295.1956 	EXP 	grid_lines_2: autoDraw = False
+295.1956 	EXP 	target_square_2: autoDraw = False
+295.1956 	EXP 	fixation_3: autoDraw = False
+295.1956 	EXP 	target_square_2: pos = array([0.2, 0. ])
+295.1956 	EXP 	grid_lines_2: autoDraw = True
+295.1956 	EXP 	target_square_2: autoDraw = True
+295.9960 	DATA 	Mouse: Left button down, pos=(872,583)
+296.1789 	EXP 	fixation_3: autoDraw = True
+296.1956 	EXP 	target_square_2: autoDraw = False
+296.2792 	DATA 	Mouse:  Left button up, pos=(872,583)
+297.1790 	EXP 	fixation_3: autoDraw = False
+297.1827 	EXP 	New trial (rep=0, index=109): {'square': 5, 'location': [0, 0], 'corrAns': None}
+297.1831 	EXP 	window1: mouseVisible = False
+297.1956 	EXP 	grid_lines_2: autoDraw = False
+297.1956 	EXP 	target_square_2: autoDraw = False
+297.1956 	EXP 	fixation_3: autoDraw = False
+297.1956 	EXP 	target_square_2: pos = array([0., 0.])
+297.1956 	EXP 	grid_lines_2: autoDraw = True
+297.1956 	EXP 	target_square_2: autoDraw = True
+298.1790 	EXP 	fixation_3: autoDraw = True
+298.1957 	EXP 	target_square_2: autoDraw = False
+299.1790 	EXP 	fixation_3: autoDraw = False
+299.1827 	EXP 	New trial (rep=0, index=110): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+299.1832 	EXP 	window1: mouseVisible = False
+299.1956 	EXP 	grid_lines_2: autoDraw = False
+299.1956 	EXP 	target_square_2: autoDraw = False
+299.1956 	EXP 	fixation_3: autoDraw = False
+299.1956 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+299.1956 	EXP 	grid_lines_2: autoDraw = True
+299.1956 	EXP 	target_square_2: autoDraw = True
+300.1790 	EXP 	fixation_3: autoDraw = True
+300.1956 	EXP 	target_square_2: autoDraw = False
+301.1790 	EXP 	fixation_3: autoDraw = False
+301.1828 	EXP 	New trial (rep=0, index=111): {'square': 5, 'location': [0, 0], 'corrAns': 1}
+301.1832 	EXP 	window1: mouseVisible = False
+301.1956 	EXP 	grid_lines_2: autoDraw = False
+301.1956 	EXP 	target_square_2: autoDraw = False
+301.1956 	EXP 	fixation_3: autoDraw = False
+301.1956 	EXP 	target_square_2: pos = array([0., 0.])
+301.1956 	EXP 	grid_lines_2: autoDraw = True
+301.1956 	EXP 	target_square_2: autoDraw = True
+302.1790 	EXP 	fixation_3: autoDraw = True
+302.1956 	EXP 	target_square_2: autoDraw = False
+303.1790 	EXP 	fixation_3: autoDraw = False
+303.1829 	EXP 	New trial (rep=0, index=112): {'square': 1, 'location': [-0.2, 0.2], 'corrAns': None}
+303.1834 	EXP 	window1: mouseVisible = False
+303.1957 	EXP 	grid_lines_2: autoDraw = False
+303.1957 	EXP 	target_square_2: autoDraw = False
+303.1957 	EXP 	fixation_3: autoDraw = False
+303.1957 	EXP 	target_square_2: pos = array([-0.2,  0.2])
+303.1957 	EXP 	grid_lines_2: autoDraw = True
+303.1957 	EXP 	target_square_2: autoDraw = True
+304.1790 	EXP 	fixation_3: autoDraw = True
+304.1957 	EXP 	target_square_2: autoDraw = False
+305.1790 	EXP 	fixation_3: autoDraw = False
+305.1828 	EXP 	New trial (rep=0, index=113): {'square': 7, 'location': [-0.2, -0.2], 'corrAns': None}
+305.1833 	EXP 	window1: mouseVisible = False
+305.1957 	EXP 	grid_lines_2: autoDraw = False
+305.1957 	EXP 	target_square_2: autoDraw = False
+305.1957 	EXP 	fixation_3: autoDraw = False
+305.1957 	EXP 	target_square_2: pos = array([-0.2, -0.2])
+305.1957 	EXP 	grid_lines_2: autoDraw = True
+305.1957 	EXP 	target_square_2: autoDraw = True
+306.1790 	EXP 	fixation_3: autoDraw = True
+306.1957 	EXP 	target_square_2: autoDraw = False
+307.1790 	EXP 	fixation_3: autoDraw = False
+307.1829 	EXP 	New trial (rep=0, index=114): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+307.1834 	EXP 	window1: mouseVisible = False
+307.1957 	EXP 	grid_lines_2: autoDraw = False
+307.1957 	EXP 	target_square_2: autoDraw = False
+307.1957 	EXP 	fixation_3: autoDraw = False
+307.1957 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+307.1957 	EXP 	grid_lines_2: autoDraw = True
+307.1957 	EXP 	target_square_2: autoDraw = True
+308.1790 	EXP 	fixation_3: autoDraw = True
+308.1957 	EXP 	target_square_2: autoDraw = False
+309.1790 	EXP 	fixation_3: autoDraw = False
+309.1828 	EXP 	New trial (rep=0, index=115): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+309.1833 	EXP 	window1: mouseVisible = False
+309.1957 	EXP 	grid_lines_2: autoDraw = False
+309.1957 	EXP 	target_square_2: autoDraw = False
+309.1957 	EXP 	fixation_3: autoDraw = False
+309.1957 	EXP 	target_square_2: pos = array([0.2, 0.2])
+309.1957 	EXP 	grid_lines_2: autoDraw = True
+309.1957 	EXP 	target_square_2: autoDraw = True
+310.1790 	EXP 	fixation_3: autoDraw = True
+310.1957 	EXP 	target_square_2: autoDraw = False
+311.1791 	EXP 	fixation_3: autoDraw = False
+311.1829 	EXP 	New trial (rep=0, index=116): {'square': 9, 'location': [0.2, -0.2], 'corrAns': 1}
+311.1833 	EXP 	window1: mouseVisible = False
+311.1957 	EXP 	grid_lines_2: autoDraw = False
+311.1957 	EXP 	target_square_2: autoDraw = False
+311.1957 	EXP 	fixation_3: autoDraw = False
+311.1957 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+311.1957 	EXP 	grid_lines_2: autoDraw = True
+311.1957 	EXP 	target_square_2: autoDraw = True
+311.9627 	DATA 	Mouse: Left button down, pos=(872,583)
+312.1791 	EXP 	fixation_3: autoDraw = True
+312.1957 	EXP 	target_square_2: autoDraw = False
+312.1961 	DATA 	Mouse:  Left button up, pos=(872,583)
+313.1791 	EXP 	fixation_3: autoDraw = False
+313.1850 	EXP 	New trial (rep=0, index=117): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+313.1858 	EXP 	window1: mouseVisible = False
+313.1958 	EXP 	grid_lines_2: autoDraw = False
+313.1958 	EXP 	target_square_2: autoDraw = False
+313.1958 	EXP 	fixation_3: autoDraw = False
+313.1958 	EXP 	target_square_2: pos = array([0.2, 0. ])
+313.1958 	EXP 	grid_lines_2: autoDraw = True
+313.1958 	EXP 	target_square_2: autoDraw = True
+314.1791 	EXP 	fixation_3: autoDraw = True
+314.1957 	EXP 	target_square_2: autoDraw = False
+315.1791 	EXP 	fixation_3: autoDraw = False
+315.1829 	EXP 	New trial (rep=0, index=118): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+315.1834 	EXP 	window1: mouseVisible = False
+315.1957 	EXP 	grid_lines_2: autoDraw = False
+315.1957 	EXP 	target_square_2: autoDraw = False
+315.1957 	EXP 	fixation_3: autoDraw = False
+315.1957 	EXP 	target_square_2: pos = array([0. , 0.2])
+315.1957 	EXP 	grid_lines_2: autoDraw = True
+315.1957 	EXP 	target_square_2: autoDraw = True
+316.1791 	EXP 	fixation_3: autoDraw = True
+316.1957 	EXP 	target_square_2: autoDraw = False
+317.1791 	EXP 	fixation_3: autoDraw = False
+317.1829 	EXP 	New trial (rep=0, index=119): {'square': 5, 'location': [0, 0], 'corrAns': None}
+317.1833 	EXP 	window1: mouseVisible = False
+317.1958 	EXP 	grid_lines_2: autoDraw = False
+317.1958 	EXP 	target_square_2: autoDraw = False
+317.1958 	EXP 	fixation_3: autoDraw = False
+317.1958 	EXP 	target_square_2: pos = array([0., 0.])
+317.1958 	EXP 	grid_lines_2: autoDraw = True
+317.1958 	EXP 	target_square_2: autoDraw = True
+318.1791 	EXP 	fixation_3: autoDraw = True
+318.1958 	EXP 	target_square_2: autoDraw = False
+319.1791 	EXP 	fixation_3: autoDraw = False
+319.1978 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+319.2124 	EXP 	grid_lines_2: autoDraw = False
+319.2124 	EXP 	target_square_2: autoDraw = False
+319.2124 	EXP 	fixation_3: autoDraw = False
+363.2551 	DATA 	Keypress: e
+363.2557 	EXP 	New trial (rep=0, index=1): OrderedDict([('RestT1', 1), ('TaskT1', 0)])
+363.2561 	EXP 	Created sequence: random, trialTypes=1, nReps=1, seed=None
+363.2564 	EXP 	New trial (rep=0, index=0): None
+363.2683 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+393.7271 	DATA 	Keypress: s
+393.7464 	EXP 	fixation_2: autoDraw = True
+661.7546 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+661.7650 	EXP 	fixation_2: autoDraw = False
+664.5912 	DATA 	Keypress: space
+665.6632 	DATA 	Keypress: r
+669.9032 	DATA 	Keypress: e
+669.9038 	EXP 	Created sequence: random, trialTypes=1, nReps=0, seed=None
+670.0049 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+670.0764 	EXP 	window1: mouseVisible = True
