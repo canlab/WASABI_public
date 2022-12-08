@@ -1,1 +1,0 @@
-Captain's Log: Ran sub-00003 and sub-00002 on bodysiteST2 , with mostly @Sreekar leading the way on data collection. Data collection was completed without a hitch. Attempted to run sub-00006 on bodySiteST2, but thermode 999999-01 failed with an 8007 error with no apparent problems with hardware connectivity (thermode was tested prior to the subject's arrival). 
