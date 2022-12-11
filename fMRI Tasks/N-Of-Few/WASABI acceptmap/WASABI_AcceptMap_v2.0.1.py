@@ -378,6 +378,7 @@ test_bodysite = {
     6: 'Right Leg',
     7: 'Right Face',
     8: 'Chest',
+    9: 'Abdomen',
     1002: 'Right Face',
     '999': 'Right Face'
 }

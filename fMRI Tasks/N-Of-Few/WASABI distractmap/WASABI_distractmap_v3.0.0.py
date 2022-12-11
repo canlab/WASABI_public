@@ -458,6 +458,7 @@ test_bodysite = {
     6: 'Right Leg',
     7: 'Right Face',
     8: 'Chest',
+    9: 'Abdomen',
     1002: 'Right Face',
     '999': 'Right Face'
 }
@@ -475,6 +476,7 @@ runOrder = {
     6: bodySites2,
     7: bodySites1,
     8: bodySites2,
+    9: bodySites2,
     1002: bodySites2,
     '999': bodySites1
 }
