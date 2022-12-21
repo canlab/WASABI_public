@@ -1,0 +1,99 @@
+2616.6031 	WARNING 	Requested an unavailable screen number - using first available.
+2618.6573 	EXP 	Created Begin = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='Begin', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+2619.1534 	EXP 	Created movie = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename=str(...), flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='movie', noAudio=False, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=method-wrapper(...), units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+2633.7989 	EXP 	Created movie = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename=str(...), flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='movie', noAudio=False, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=method-wrapper(...), units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+2639.3295 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.3, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+2639.3297 	EXP 	window1: mouseVisible = False
+2639.4140 	EXP 	movie: autoLog = True
+2639.4140 	EXP 	movie: movie = 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\kungfury.mp4'
+2639.4140 	EXP 	movie: size = array([1920., 1080.])
+2639.4140 	EXP 	movie: ori = 0
+2639.4140 	EXP 	movie: autoLog = True
+2639.4140 	EXP 	movie: movie = 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv'
+2639.4140 	EXP 	movie: size = array([1024.,  800.])
+2639.4140 	EXP 	movie: ori = 0
+2639.4140 	EXP 	Begin: autoDraw = True
+2786.2526 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+2786.2531 	EXP 	New trial (rep=0, index=0): OrderedDict([('runSeq', [OrderedDict([('moviefile', 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\kungfury.mp4')]), OrderedDict([('moviefile', 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\01_Inscapes_NoScannerSound_h264.wmv')])])])
+2786.2534 	EXP 	Created sequence: sequential, trialTypes=2, nReps=1, seed=None
+2786.2537 	EXP 	New trial (rep=0, index=0): OrderedDict([('moviefile', 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI hyperalignment\\stimuli\\videos\\kungfury.mp4')])
+2786.2912 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+2786.2931 	DATA 	Keypress: space
+2786.2980 	EXP 	Begin: autoDraw = False
+2789.6934 	DATA 	Keypress: s
+2803.8633 	DATA 	Keypress: 5
+2806.4239 	DATA 	Keypress: 5
+2806.4243 	DATA 	Keypress: 5
+2806.4246 	DATA 	Keypress: 5
+2806.4249 	DATA 	Keypress: 5
+2806.4252 	DATA 	Keypress: 5
+2806.6232 	DATA 	Keypress: 5
+2806.6236 	EXP 	Sound  started
+2806.6481 	EXP 	movie: autoDraw = True
+2807.0921 	DATA 	Keypress: 5
+2807.5511 	DATA 	Keypress: 5
+2808.0093 	DATA 	Keypress: 5
+2808.4672 	DATA 	Keypress: 5
+2808.9256 	DATA 	Keypress: 5
+2809.4092 	DATA 	Keypress: 5
+2809.8677 	DATA 	Keypress: 5
+2810.3256 	DATA 	Keypress: 5
+2810.7755 	DATA 	Keypress: 5
+2811.2417 	DATA 	Keypress: 5
+2811.6918 	DATA 	Keypress: 5
+2812.1512 	DATA 	Keypress: 5
+2812.6090 	DATA 	Keypress: 5
+2813.0677 	DATA 	Keypress: 5
+2813.5260 	DATA 	Keypress: 5
+2814.0089 	DATA 	Keypress: 5
+2814.4672 	DATA 	Keypress: 5
+2814.9258 	DATA 	Keypress: 5
+2815.3753 	DATA 	Keypress: 5
+2815.8424 	DATA 	Keypress: 5
+2816.2923 	DATA 	Keypress: 5
+2816.7503 	DATA 	Keypress: 5
+2817.2092 	DATA 	Keypress: 5
+2817.6670 	DATA 	Keypress: 5
+2818.1254 	DATA 	Keypress: 5
+2818.6089 	DATA 	Keypress: 5
+2819.0673 	DATA 	Keypress: 5
+2819.5256 	DATA 	Keypress: 5
+2819.9754 	DATA 	Keypress: 5
+2820.4425 	DATA 	Keypress: 5
+2820.8925 	DATA 	Keypress: 5
+2821.3512 	DATA 	Keypress: 5
+2821.8096 	DATA 	Keypress: 5
+2822.2676 	DATA 	Keypress: 5
+2822.7258 	DATA 	Keypress: 5
+2823.2089 	DATA 	Keypress: 5
+2823.6670 	DATA 	Keypress: 5
+2824.1258 	DATA 	Keypress: 5
+2824.5757 	DATA 	Keypress: 5
+2825.0418 	DATA 	Keypress: 5
+2825.4920 	DATA 	Keypress: 5
+2825.9509 	DATA 	Keypress: 5
+2826.4092 	DATA 	Keypress: 5
+2826.8678 	DATA 	Keypress: 5
+2827.3248 	DATA 	Keypress: 5
+2827.8089 	DATA 	Keypress: 5
+2828.2678 	DATA 	Keypress: 5
+2828.7262 	DATA 	Keypress: 5
+2829.1756 	DATA 	Keypress: 5
+2829.6428 	DATA 	Keypress: 5
+2830.0920 	DATA 	Keypress: 5
+2830.5509 	DATA 	Keypress: 5
+2831.0091 	DATA 	Keypress: 5
+2831.4669 	DATA 	Keypress: 5
+2831.9255 	DATA 	Keypress: 5
+2832.4091 	DATA 	Keypress: 5
+2832.8679 	DATA 	Keypress: 5
+2833.3257 	DATA 	Keypress: 5
+2833.7754 	DATA 	Keypress: 5
+2834.2420 	DATA 	Keypress: 5
+2834.6923 	DATA 	Keypress: 5
+2835.1511 	DATA 	Keypress: 5
+2835.6094 	DATA 	Keypress: 5
+2836.0671 	DATA 	Keypress: 5
+2836.5261 	DATA 	Keypress: 5
+2849.1256 	DATA 	Keypress: escape
+2849.9580 	EXP 	window1: mouseVisible = True

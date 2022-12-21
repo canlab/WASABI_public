@@ -1,0 +1,107 @@
+0.5532 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+9.5706 	WARNING 	User requested fullscreen with size [1920 1080], but screen is actually [1612, 810]. Using actual size
+11.3406 	EXP 	Created fixation_2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation_2', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+11.4076 	EXP 	Created Nbackinstructions = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='Nbackinstructions', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+11.4117 	EXP 	Created fixation_2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation_2', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+11.8336 	EXP 	Created grid_lines_2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image='grid.png', interpolate=True, mask=None, maskParams=None, name='grid_lines_2', opacity=1, ori=0.0, pos=array([0., 0.]), size=array([0.6, 0.6]), texRes=128, units='height', win=Window(...))
+11.8372 	EXP 	Created target_square_2 = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=-1.0, fillColor=array([1., 1., 1.]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([0, 0, 0]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1, name='target_square_2', opacity=0.5, ori=0.0, pos=array([0., 0.]), size=array([0.15, 0.15]), units='height', vertices=ndarray(...), win=Window(...))
+11.8408 	EXP 	Created fixation_3 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation_3', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+11.8416 	EXP 	window1: mouseVisible = True
+11.8417 	EXP 	window1: mouseVisible = False
+11.8423 	EXP 	Created sequence: sequential, trialTypes=2, nReps=1, seed=None
+11.8428 	EXP 	New trial (rep=0, index=0): OrderedDict([('RestT1', 1), ('TaskT1', 0)])
+11.8433 	EXP 	Created sequence: random, trialTypes=1, nReps=1, seed=None
+11.8436 	EXP 	New trial (rep=0, index=0): None
+11.8691 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+12.9597 	DATA 	Keypress: s
+12.9982 	EXP 	fixation_2: autoDraw = True
+17.9793 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+17.9982 	EXP 	fixation_2: autoDraw = False
+19.2317 	DATA 	Keypress: e
+19.2324 	EXP 	Created sequence: random, trialTypes=1, nReps=0, seed=None
+19.2328 	EXP 	New trial (rep=0, index=1): OrderedDict([('RestT1', 0), ('TaskT1', 1)])
+19.2332 	EXP 	Created sequence: random, trialTypes=1, nReps=0, seed=None
+19.2336 	EXP 	Created sequence: random, trialTypes=1, nReps=1, seed=None
+19.2339 	EXP 	New trial (rep=0, index=0): None
+19.2482 	EXP 	Nbackinstructions: autoDraw = True
+19.9373 	DATA 	Keypress: space
+19.9646 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+19.9816 	EXP 	Nbackinstructions: autoDraw = False
+20.6957 	DATA 	Keypress: s
+20.7150 	EXP 	fixation_2: autoDraw = True
+21.0229 	EXP 	Imported c:\Users\Dartmouth\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\WASABI Task-T1\N-back-2.xlsx as conditions, 120 conditions, 3 params
+21.0236 	EXP 	Created sequence: sequential, trialTypes=120, nReps=1, seed=None
+21.0240 	EXP 	New trial (rep=0, index=0): {'square': 5, 'location': [0, 0], 'corrAns': None}
+21.0244 	EXP 	window1: mouseVisible = False
+21.0483 	EXP 	fixation_2: autoDraw = False
+21.0483 	EXP 	target_square_2: pos = array([0., 0.])
+21.0483 	EXP 	grid_lines_2: autoDraw = True
+21.0483 	EXP 	target_square_2: autoDraw = True
+22.0316 	EXP 	fixation_3: autoDraw = True
+22.0482 	EXP 	target_square_2: autoDraw = False
+22.9673 	EXP 	New trial (rep=0, index=1): {'square': 2, 'location': [0, 0.2], 'corrAns': None}
+22.9678 	EXP 	window1: mouseVisible = False
+22.9816 	EXP 	grid_lines_2: autoDraw = False
+22.9816 	EXP 	target_square_2: autoDraw = False
+22.9816 	EXP 	fixation_3: autoDraw = False
+22.9816 	EXP 	target_square_2: pos = array([0. , 0.2])
+22.9816 	EXP 	grid_lines_2: autoDraw = True
+22.9816 	EXP 	target_square_2: autoDraw = True
+23.2653 	DATA 	Mouse: Left button down, pos=(688,463)
+23.3652 	DATA 	Mouse:  Left button up, pos=(688,463)
+23.9649 	EXP 	fixation_3: autoDraw = True
+23.9816 	EXP 	target_square_2: autoDraw = False
+24.9649 	EXP 	fixation_3: autoDraw = False
+24.9665 	EXP 	New trial (rep=0, index=2): {'square': 6, 'location': [0.2, 0], 'corrAns': None}
+24.9669 	EXP 	window1: mouseVisible = False
+24.9816 	EXP 	grid_lines_2: autoDraw = False
+24.9816 	EXP 	target_square_2: autoDraw = False
+24.9816 	EXP 	fixation_3: autoDraw = False
+24.9816 	EXP 	target_square_2: pos = array([0.2, 0. ])
+24.9816 	EXP 	grid_lines_2: autoDraw = True
+24.9816 	EXP 	target_square_2: autoDraw = True
+25.2319 	DATA 	Mouse: Left button down, pos=(688,463)
+25.3152 	DATA 	Mouse:  Left button up, pos=(688,463)
+25.9649 	EXP 	fixation_3: autoDraw = True
+25.9816 	EXP 	target_square_2: autoDraw = False
+26.9649 	EXP 	fixation_3: autoDraw = False
+26.9665 	EXP 	New trial (rep=0, index=3): {'square': 9, 'location': [0.2, -0.2], 'corrAns': None}
+26.9669 	EXP 	window1: mouseVisible = False
+26.9816 	EXP 	grid_lines_2: autoDraw = False
+26.9816 	EXP 	target_square_2: autoDraw = False
+26.9816 	EXP 	fixation_3: autoDraw = False
+26.9816 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+26.9816 	EXP 	grid_lines_2: autoDraw = True
+26.9816 	EXP 	target_square_2: autoDraw = True
+27.1819 	DATA 	Mouse: Left button down, pos=(688,463)
+27.2485 	DATA 	Mouse:  Left button up, pos=(688,463)
+27.9649 	EXP 	fixation_3: autoDraw = True
+27.9816 	EXP 	target_square_2: autoDraw = False
+28.9649 	EXP 	fixation_3: autoDraw = False
+28.9666 	EXP 	New trial (rep=0, index=4): {'square': 3, 'location': [0.2, 0.2], 'corrAns': None}
+28.9670 	EXP 	window1: mouseVisible = False
+28.9816 	EXP 	grid_lines_2: autoDraw = False
+28.9816 	EXP 	target_square_2: autoDraw = False
+28.9816 	EXP 	fixation_3: autoDraw = False
+28.9816 	EXP 	target_square_2: pos = array([0.2, 0.2])
+28.9816 	EXP 	grid_lines_2: autoDraw = True
+28.9816 	EXP 	target_square_2: autoDraw = True
+29.0486 	DATA 	Mouse: Left button down, pos=(688,463)
+29.1818 	DATA 	Mouse:  Left button up, pos=(688,463)
+29.9649 	EXP 	fixation_3: autoDraw = True
+29.9816 	EXP 	target_square_2: autoDraw = False
+30.9649 	EXP 	fixation_3: autoDraw = False
+30.9665 	EXP 	New trial (rep=0, index=5): {'square': 9, 'location': [0.2, -0.2], 'corrAns': 1}
+30.9669 	EXP 	window1: mouseVisible = False
+30.9816 	EXP 	grid_lines_2: autoDraw = False
+30.9816 	EXP 	target_square_2: autoDraw = False
+30.9816 	EXP 	fixation_3: autoDraw = False
+30.9816 	EXP 	target_square_2: pos = array([ 0.2, -0.2])
+30.9816 	EXP 	grid_lines_2: autoDraw = True
+30.9816 	EXP 	target_square_2: autoDraw = True
+31.1653 	DATA 	Mouse: Left button down, pos=(688,463)
+31.2485 	DATA 	Mouse:  Left button up, pos=(688,463)
+31.9649 	EXP 	fixation_3: autoDraw = True
+31.9816 	EXP 	target_square_2: autoDraw = False
+32.2985 	DATA 	Keypress: escape
+32.9885 	EXP 	window1: mouseVisible = True
