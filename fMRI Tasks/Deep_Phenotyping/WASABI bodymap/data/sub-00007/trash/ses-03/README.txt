@@ -1,1 +1,0 @@
-After calibrating the thermode earlier that day, we believe Medoc was on for too long directly before the session, causing it to crash during the first functional run. After 3 failed runs of troubleshooting (not having identified the problem yet) we ended up just running pinel and T1 instead of bodymap runs. Identified the problem post scan while on the phone with Michael. 

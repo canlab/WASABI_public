@@ -1,1 +1,0 @@
-sub-00002 (sub-SID001852) also completed Task-T1 scans on session 1 and session 3 but psychopy did not record his performance data.
