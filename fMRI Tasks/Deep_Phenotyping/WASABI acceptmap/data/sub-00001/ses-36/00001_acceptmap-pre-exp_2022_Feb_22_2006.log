@@ -1,0 +1,815 @@
+0.6074 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+15.8316 	EXP 	Created BodySiteInstructionText = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='BodySiteInstructionText', opacity=1, ori=0, pos=array([ 0. , -0.2]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1.6)
+15.8356 	EXP 	Created BodySiteImg = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=None, interpolate=True, mask=None, maskParams=None, name='BodySiteImg', opacity=1, ori=0.0, pos=array([0., 0.]), size=array([0.4, 0.4]), texRes=512, units='height', win=Window(...))
+15.8669 	EXP 	Created ExperienceInstructions = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='ExperienceInstructions', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1.75)
+15.8724 	EXP 	Created fixation = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='fixation', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+15.8724 	EXP 	window1: mouseVisible = False
+15.8761 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+15.8787 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+15.9021 	EXP 	Created intensityAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='intensityAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+15.9141 	EXP 	Created IntensityPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='IntensityPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text='How intense was that overall?', units='height', win=Window(...), wrapWidth=1)
+15.9142 	EXP 	window1: mouseVisible = False
+15.9162 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+15.9186 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+15.9476 	EXP 	Created ComfortAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='ComfortAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+15.9639 	EXP 	Created ComfortPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='ComfortPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text='How comfortable do you feel right now?', units='height', win=Window(...), wrapWidth=1)
+15.9640 	EXP 	window1: mouseVisible = False
+15.9660 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+15.9683 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+15.9856 	EXP 	Created ValenceAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='ValenceAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.0056 	EXP 	Created ValencePrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='ValencePrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.0057 	EXP 	window1: mouseVisible = False
+16.0077 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.0101 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.0256 	EXP 	Created AvoidAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='AvoidAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.0428 	EXP 	Created AvoidPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='AvoidPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.0429 	EXP 	window1: mouseVisible = False
+16.0450 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.0473 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.0764 	EXP 	Created RelaxAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='RelaxAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.0865 	EXP 	Created RelaxPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='RelaxPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text='How relaxed are you feeling right now?', units='height', win=Window(...), wrapWidth=1)
+16.0866 	EXP 	window1: mouseVisible = False
+16.0886 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.0909 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.1082 	EXP 	Created TaskAttentionAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='TaskAttentionAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.1268 	EXP 	Created TaskAttentionPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='TaskAttentionPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.1269 	EXP 	window1: mouseVisible = False
+16.1289 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.1312 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.1472 	EXP 	Created BoredomAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='BoredomAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.1580 	EXP 	Created BoredomPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='BoredomPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text='During the last scan, how bored were you?', units='height', win=Window(...), wrapWidth=1)
+16.1580 	EXP 	window1: mouseVisible = False
+16.1600 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.1623 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.1802 	EXP 	Created AlertnessAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='AlertnessAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.1912 	EXP 	Created AlertnessPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='AlertnessPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.1913 	EXP 	window1: mouseVisible = False
+16.1933 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.1956 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.2134 	EXP 	Created PosThxAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='PosThxAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.2305 	EXP 	Created PosThxPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='PosThxPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.2306 	EXP 	window1: mouseVisible = False
+16.2326 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.2349 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.2508 	EXP 	Created NegThxAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='NegThxAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.2666 	EXP 	Created NegThxPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='NegThxPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.2666 	EXP 	window1: mouseVisible = False
+16.2686 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.2709 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.2871 	EXP 	Created SelfAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='SelfAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.3019 	EXP 	Created SelfPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='SelfPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.3020 	EXP 	window1: mouseVisible = False
+16.3039 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.3062 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.3239 	EXP 	Created OtherAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='OtherAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.3374 	EXP 	Created OtherPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='OtherPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.3374 	EXP 	window1: mouseVisible = False
+16.3394 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.3416 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.3597 	EXP 	Created ImageryAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='ImageryAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.3782 	EXP 	Created ImageryPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='ImageryPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.3783 	EXP 	window1: mouseVisible = False
+16.3803 	EXP 	Created unnamed Rect = Rect(__class__=<class 'psychopy.visual.rect.Rect'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([ 1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed Rect', opacity=1, ori=0.0, pos=array([-0.375, -0.1  ]), size=array([0.75, 0.4 ]), units='height', vertices=ndarray(...), win=Window(...))
+16.3826 	EXP 	Created unnamed ShapeStim = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=0, fillColor=array([-1, -1, -1]), fillColorSpace='rgb', fillRGB=UNKNOWN, interpolate=True, lineColor=array([-1, -1, -1]), lineColorSpace='rgb', lineRGB=UNKNOWN, lineWidth=1.5, name='unnamed ShapeStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1., 1.]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+16.4005 	EXP 	Created PresentAnchors = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, autoLog=True, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image=str(...), interpolate=True, mask=None, maskParams=None, name='PresentAnchors', opacity=1, ori=0.0, pos=array([ 0.  , -0.09]), size=array([1.5, 0.4]), texRes=512, units='height', win=Window(...))
+16.4222 	EXP 	Created PresentPrompt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='PresentPrompt', opacity=1, ori=0, pos=array([0. , 0.3]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+16.4263 	EXP 	window1: mouseVisible = False
+16.5829 	EXP 	BodySiteInstructionText: text = 'Experimenter: \nPlease place the thermode on the: \nleft arm'
+16.5829 	EXP 	BodySiteInstructionText: autoDraw = True
+16.5829 	EXP 	BodySiteImg: image = 'c:\\Users\\Dartmouth\\Documents\\GitHub\\canlab\\WASABI_public\\fMRI Tasks\\WASABI acceptmap\\stimuli\\cue\\LeftArm.png'
+16.5829 	EXP 	BodySiteImg: pos = (0, 0.2)
+16.5829 	EXP 	BodySiteImg: autoDraw = True
+18.9947 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-0.5, -0.5, -0.5]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+18.9964 	DATA 	Keypress: space
+18.9993 	EXP 	BodySiteInstructionText: autoDraw = False
+18.9993 	EXP 	BodySiteImg: autoDraw = False
+19.8304 	DATA 	Keypress: s
+21.3503 	DATA 	Keypress: 5
+24.1247 	DATA 	Keypress: 5
+24.1251 	DATA 	Keypress: 5
+24.1254 	DATA 	Keypress: 5
+24.1258 	DATA 	Keypress: 5
+24.1262 	DATA 	Keypress: 5
+24.1265 	DATA 	Keypress: 5
+24.1269 	DATA 	Keypress: 5
+24.1272 	DATA 	Keypress: 5
+24.1276 	DATA 	Keypress: 5
+24.1279 	DATA 	Keypress: 5
+24.1282 	DATA 	Keypress: 5
+24.1286 	DATA 	Keypress: 5
+24.1289 	DATA 	Keypress: 5
+24.1293 	DATA 	Keypress: 5
+24.1296 	DATA 	Keypress: 5
+24.1299 	DATA 	Keypress: 5
+24.1302 	DATA 	Keypress: 5
+24.1306 	DATA 	Keypress: 5
+24.1497 	EXP 	ExperienceInstructions: text = 'Experience the following sensations as they come.'
+29.1896 	DATA 	Keypress: 5
+29.2000 	EXP 	fixation: autoDraw = True
+31.4532 	DATA 	Keypress: lwindows
+34.1996 	EXP 	fixation: autoDraw = False
+34.1996 	EXP 	fixation: autoDraw = True
+47.1832 	EXP 	fixation: autoDraw = False
+47.1832 	EXP 	fixation: autoDraw = True
+52.1687 	EXP 	window1: mouseVisible = False
+52.1833 	EXP 	fixation: autoDraw = False
+52.1833 	EXP 	fixation: autoDraw = False
+52.1833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.1833 	EXP 	unnamed Rect: width = 0.75
+52.1833 	EXP 	unnamed Rect: pos = [-0.375, -0.1]
+52.1833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.1833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.1833 	EXP 	unnamed Rect: width = 0.75
+52.1833 	EXP 	unnamed Rect: autoDraw = True
+52.1833 	EXP 	unnamed ShapeStim: autoDraw = True
+52.1833 	EXP 	intensityAnchors: autoDraw = True
+52.1833 	EXP 	IntensityPrompt: autoDraw = True
+52.2169 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.2169 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.2169 	EXP 	unnamed Rect: width = 0.75
+52.2333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.2333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.2333 	EXP 	unnamed Rect: width = 0.75
+52.2500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.2500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.2500 	EXP 	unnamed Rect: width = 0.75
+52.2666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.2666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.2666 	EXP 	unnamed Rect: width = 0.75
+52.2833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.2833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.2833 	EXP 	unnamed Rect: width = 0.75
+52.2999 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.2999 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.2999 	EXP 	unnamed Rect: width = 0.75
+52.3166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.3166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.3166 	EXP 	unnamed Rect: width = 0.75
+52.3332 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.3332 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.3332 	EXP 	unnamed Rect: width = 0.75
+52.3499 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.3499 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.3499 	EXP 	unnamed Rect: width = 0.75
+52.3666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.3666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.3666 	EXP 	unnamed Rect: width = 0.75
+52.3833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.3833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.3833 	EXP 	unnamed Rect: width = 0.75
+52.3999 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.3999 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.3999 	EXP 	unnamed Rect: width = 0.75
+52.4166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.4166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.4166 	EXP 	unnamed Rect: width = 0.75
+52.4333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.4333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.4333 	EXP 	unnamed Rect: width = 0.75
+52.4499 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.4499 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.4499 	EXP 	unnamed Rect: width = 0.75
+52.4666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.4666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.4666 	EXP 	unnamed Rect: width = 0.75
+52.4833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.4833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.4833 	EXP 	unnamed Rect: width = 0.75
+52.4999 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.4999 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.4999 	EXP 	unnamed Rect: width = 0.75
+52.5166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.5166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.5166 	EXP 	unnamed Rect: width = 0.75
+52.5333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.5333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.5333 	EXP 	unnamed Rect: width = 0.75
+52.5500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.5500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.5500 	EXP 	unnamed Rect: width = 0.75
+52.5666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.5666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.5666 	EXP 	unnamed Rect: width = 0.75
+52.5833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.5833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.5833 	EXP 	unnamed Rect: width = 0.75
+52.6000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.6000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.6000 	EXP 	unnamed Rect: width = 0.75
+52.6166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.6166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.6166 	EXP 	unnamed Rect: width = 0.75
+52.6333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.6333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.6333 	EXP 	unnamed Rect: width = 0.75
+52.6500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.6500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.6500 	EXP 	unnamed Rect: width = 0.75
+52.6666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.6666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.6666 	EXP 	unnamed Rect: width = 0.75
+52.6833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.6833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.6833 	EXP 	unnamed Rect: width = 0.75
+52.7000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.7000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.7000 	EXP 	unnamed Rect: width = 0.75
+52.7166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.7166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.7166 	EXP 	unnamed Rect: width = 0.75
+52.7333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.7333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.7333 	EXP 	unnamed Rect: width = 0.75
+52.7500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.7500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.7500 	EXP 	unnamed Rect: width = 0.75
+52.7666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.7666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.7666 	EXP 	unnamed Rect: width = 0.75
+52.7833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.7833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.7833 	EXP 	unnamed Rect: width = 0.75
+52.8000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.8000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.8000 	EXP 	unnamed Rect: width = 0.75
+52.8166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.8166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.8166 	EXP 	unnamed Rect: width = 0.75
+52.8333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.8333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.8333 	EXP 	unnamed Rect: width = 0.75
+52.8499 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.8499 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.8499 	EXP 	unnamed Rect: width = 0.75
+52.8666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.8666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.8666 	EXP 	unnamed Rect: width = 0.75
+52.8832 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.8832 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.8832 	EXP 	unnamed Rect: width = 0.75
+52.9000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.9000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.9000 	EXP 	unnamed Rect: width = 0.75
+52.9166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.9166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.9166 	EXP 	unnamed Rect: width = 0.75
+52.9333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.9333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.9333 	EXP 	unnamed Rect: width = 0.75
+52.9500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.9500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.9500 	EXP 	unnamed Rect: width = 0.75
+52.9666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.9666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.9666 	EXP 	unnamed Rect: width = 0.75
+52.9833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+52.9833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+52.9833 	EXP 	unnamed Rect: width = 0.75
+53.0000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.0000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.0000 	EXP 	unnamed Rect: width = 0.75
+53.0166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.0166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.0166 	EXP 	unnamed Rect: width = 0.75
+53.0333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.0333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.0333 	EXP 	unnamed Rect: width = 0.75
+53.0500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.0500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.0500 	EXP 	unnamed Rect: width = 0.75
+53.0666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.0666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.0666 	EXP 	unnamed Rect: width = 0.75
+53.0833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.0833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.0833 	EXP 	unnamed Rect: width = 0.75
+53.1000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.1000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.1000 	EXP 	unnamed Rect: width = 0.75
+53.1166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.1166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.1166 	EXP 	unnamed Rect: width = 0.75
+53.1333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.1333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.1333 	EXP 	unnamed Rect: width = 0.75
+53.1500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.1500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.1500 	EXP 	unnamed Rect: width = 0.75
+53.1666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.1666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.1666 	EXP 	unnamed Rect: width = 0.75
+53.1833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.1833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.1833 	EXP 	unnamed Rect: width = 0.75
+53.2000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.2000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.2000 	EXP 	unnamed Rect: width = 0.75
+53.2166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.2166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.2166 	EXP 	unnamed Rect: width = 0.75
+53.2333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.2333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.2333 	EXP 	unnamed Rect: width = 0.75
+53.2500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.2500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.2500 	EXP 	unnamed Rect: width = 0.75
+53.2666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.2666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.2666 	EXP 	unnamed Rect: width = 0.75
+53.2833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.2833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.2833 	EXP 	unnamed Rect: width = 0.75
+53.3000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.3000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.3000 	EXP 	unnamed Rect: width = 0.75
+53.3166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.3166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.3166 	EXP 	unnamed Rect: width = 0.75
+53.3333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.3333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.3333 	EXP 	unnamed Rect: width = 0.75
+53.3500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.3500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.3500 	EXP 	unnamed Rect: width = 0.75
+53.3666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.3666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.3666 	EXP 	unnamed Rect: width = 0.75
+53.3833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.3833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.3833 	EXP 	unnamed Rect: width = 0.75
+53.4000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.4000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.4000 	EXP 	unnamed Rect: width = 0.75
+53.4166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.4166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.4166 	EXP 	unnamed Rect: width = 0.75
+53.4333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.4333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.4333 	EXP 	unnamed Rect: width = 0.75
+53.4500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.4500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.4500 	EXP 	unnamed Rect: width = 0.75
+53.4666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.4666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.4666 	EXP 	unnamed Rect: width = 0.75
+53.4833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.4833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.4833 	EXP 	unnamed Rect: width = 0.75
+53.5000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.5000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.5000 	EXP 	unnamed Rect: width = 0.75
+53.5166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.5166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.5166 	EXP 	unnamed Rect: width = 0.75
+53.5333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.5333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.5333 	EXP 	unnamed Rect: width = 0.75
+53.5500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.5500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.5500 	EXP 	unnamed Rect: width = 0.75
+53.5666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.5666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.5666 	EXP 	unnamed Rect: width = 0.75
+53.5833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.5833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.5833 	EXP 	unnamed Rect: width = 0.75
+53.6000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.6000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.6000 	EXP 	unnamed Rect: width = 0.75
+53.6166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.6166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.6166 	EXP 	unnamed Rect: width = 0.75
+53.6333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.6333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.6333 	EXP 	unnamed Rect: width = 0.75
+53.6500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.6500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.6500 	EXP 	unnamed Rect: width = 0.75
+53.6666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.6666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.6666 	EXP 	unnamed Rect: width = 0.75
+53.6833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.6833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.6833 	EXP 	unnamed Rect: width = 0.75
+53.7000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.7000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.7000 	EXP 	unnamed Rect: width = 0.75
+53.7166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.7166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.7166 	EXP 	unnamed Rect: width = 0.75
+53.7333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.7333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.7333 	EXP 	unnamed Rect: width = 0.75
+53.7500 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.7500 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.7500 	EXP 	unnamed Rect: width = 0.75
+53.7667 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.7667 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.7667 	EXP 	unnamed Rect: width = 0.75
+53.7833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.7833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.7833 	EXP 	unnamed Rect: width = 0.75
+53.8000 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.8000 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.8000 	EXP 	unnamed Rect: width = 0.75
+53.8166 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.8166 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.8166 	EXP 	unnamed Rect: width = 0.75
+53.8333 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.8333 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.8333 	EXP 	unnamed Rect: width = 0.75
+53.8499 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.8499 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.8499 	EXP 	unnamed Rect: width = 0.75
+53.8666 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.8666 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.8666 	EXP 	unnamed Rect: width = 0.75
+53.8833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.8833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.8833 	EXP 	unnamed Rect: width = 0.75
+53.9322 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.9322 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.9322 	EXP 	unnamed Rect: width = 0.75
+53.9729 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.9729 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.9729 	EXP 	unnamed Rect: width = 0.75
+53.9904 	EXP 	unnamed Rect: pos = (-0.375, 0)
+53.9904 	EXP 	unnamed Rect: size = (0.75, 0.4)
+53.9904 	EXP 	unnamed Rect: width = 0.75
+54.0526 	EXP 	unnamed Rect: pos = (-0.375, 0)
+54.0526 	EXP 	unnamed Rect: size = (0.75, 0.4)
+54.0526 	EXP 	unnamed Rect: width = 0.75
+54.0833 	EXP 	unnamed Rect: pos = (-0.375, 0)
+54.0833 	EXP 	unnamed Rect: size = (0.75, 0.4)
+54.0833 	EXP 	unnamed Rect: width = 0.75
+54.1000 	EXP 	unnamed Rect: pos = (-0.44907407407407407, 0)
+54.1000 	EXP 	unnamed Rect: size = (0.6018518518518519, 0.4)
+54.1000 	EXP 	unnamed Rect: width = 0.6018518518518519
+54.1166 	EXP 	unnamed Rect: pos = (-0.44814814814814813, 0)
+54.1166 	EXP 	unnamed Rect: size = (0.6037037037037037, 0.4)
+54.1166 	EXP 	unnamed Rect: width = 0.6037037037037037
+54.1333 	EXP 	unnamed Rect: pos = (-0.44675925925925924, 0)
+54.1333 	EXP 	unnamed Rect: size = (0.6064814814814815, 0.4)
+54.1333 	EXP 	unnamed Rect: width = 0.6064814814814815
+54.1500 	EXP 	unnamed Rect: pos = (-0.4458333333333333, 0)
+54.1500 	EXP 	unnamed Rect: size = (0.6083333333333334, 0.4)
+54.1500 	EXP 	unnamed Rect: width = 0.6083333333333334
+54.1666 	EXP 	unnamed Rect: pos = (-0.44212962962962965, 0)
+54.1666 	EXP 	unnamed Rect: size = (0.6157407407407407, 0.4)
+54.1666 	EXP 	unnamed Rect: width = 0.6157407407407407
+54.1833 	EXP 	unnamed Rect: pos = (-0.43657407407407406, 0)
+54.1833 	EXP 	unnamed Rect: size = (0.6268518518518519, 0.4)
+54.1833 	EXP 	unnamed Rect: width = 0.6268518518518519
+54.2000 	EXP 	unnamed Rect: pos = (-0.425462962962963, 0)
+54.2000 	EXP 	unnamed Rect: size = (0.649074074074074, 0.4)
+54.2000 	EXP 	unnamed Rect: width = 0.649074074074074
+54.2166 	EXP 	unnamed Rect: pos = (-0.41759259259259257, 0)
+54.2166 	EXP 	unnamed Rect: size = (0.6648148148148149, 0.4)
+54.2166 	EXP 	unnamed Rect: width = 0.6648148148148149
+54.2333 	EXP 	unnamed Rect: pos = (-0.412962962962963, 0)
+54.2333 	EXP 	unnamed Rect: size = (0.674074074074074, 0.4)
+54.2333 	EXP 	unnamed Rect: width = 0.674074074074074
+54.2500 	EXP 	unnamed Rect: pos = (-0.4101851851851852, 0)
+54.2500 	EXP 	unnamed Rect: size = (0.6796296296296296, 0.4)
+54.2500 	EXP 	unnamed Rect: width = 0.6796296296296296
+54.2666 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.2666 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.2666 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.2833 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.2833 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.2833 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.2999 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.2999 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.2999 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.3166 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.3166 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.3166 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.3333 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.3333 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.3333 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.3500 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.3500 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.3500 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.3665 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.3665 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.3665 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.3833 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.3833 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.3833 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4000 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4000 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4000 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4166 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4166 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4166 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4333 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4333 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4333 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4500 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4500 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4500 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4666 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4666 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4666 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4833 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4833 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4833 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.4999 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.4999 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.4999 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.5166 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.5166 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.5166 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.5333 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.5333 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.5333 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.5499 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.5499 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.5499 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.5666 	EXP 	unnamed Rect: pos = (-0.40925925925925927, 0)
+54.5666 	EXP 	unnamed Rect: size = (0.6814814814814815, 0.4)
+54.5666 	EXP 	unnamed Rect: width = 0.6814814814814815
+54.5832 	EXP 	unnamed Rect: pos = (-0.4087962962962963, 0)
+54.5832 	EXP 	unnamed Rect: size = (0.6824074074074074, 0.4)
+54.5832 	EXP 	unnamed Rect: width = 0.6824074074074074
+54.5999 	EXP 	unnamed Rect: pos = (-0.4087962962962963, 0)
+54.5999 	EXP 	unnamed Rect: size = (0.6824074074074074, 0.4)
+54.5999 	EXP 	unnamed Rect: width = 0.6824074074074074
+54.6166 	EXP 	unnamed Rect: pos = (-0.4087962962962963, 0)
+54.6166 	EXP 	unnamed Rect: size = (0.6824074074074074, 0.4)
+54.6166 	EXP 	unnamed Rect: width = 0.6824074074074074
+54.6333 	EXP 	unnamed Rect: pos = (-0.4097222222222222, 0)
+54.6333 	EXP 	unnamed Rect: size = (0.6805555555555556, 0.4)
+54.6333 	EXP 	unnamed Rect: width = 0.6805555555555556
+54.6500 	EXP 	unnamed Rect: pos = (-0.4115740740740741, 0)
+54.6500 	EXP 	unnamed Rect: size = (0.6768518518518518, 0.4)
+54.6500 	EXP 	unnamed Rect: width = 0.6768518518518518
+54.6666 	EXP 	unnamed Rect: pos = (-0.41435185185185186, 0)
+54.6666 	EXP 	unnamed Rect: size = (0.6712962962962963, 0.4)
+54.6666 	EXP 	unnamed Rect: width = 0.6712962962962963
+54.6833 	EXP 	unnamed Rect: pos = (-0.4203703703703704, 0)
+54.6833 	EXP 	unnamed Rect: size = (0.6592592592592592, 0.4)
+54.6833 	EXP 	unnamed Rect: width = 0.6592592592592592
+54.7000 	EXP 	unnamed Rect: pos = (-0.4291666666666667, 0)
+54.7000 	EXP 	unnamed Rect: size = (0.6416666666666666, 0.4)
+54.7000 	EXP 	unnamed Rect: width = 0.6416666666666666
+54.7166 	EXP 	unnamed Rect: pos = (-0.43796296296296294, 0)
+54.7166 	EXP 	unnamed Rect: size = (0.6240740740740741, 0.4)
+54.7166 	EXP 	unnamed Rect: width = 0.6240740740740741
+54.7333 	EXP 	unnamed Rect: pos = (-0.44953703703703707, 0)
+54.7333 	EXP 	unnamed Rect: size = (0.6009259259259259, 0.4)
+54.7333 	EXP 	unnamed Rect: width = 0.6009259259259259
+54.7499 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.7499 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.7499 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.7665 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.7665 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.7665 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.7833 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.7833 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.7833 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.8000 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.8000 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.8000 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.8166 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.8166 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.8166 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.8333 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.8333 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.8333 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.8500 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.8500 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.8500 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.8666 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.8666 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.8666 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.8833 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.8833 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.8833 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.9000 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.9000 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.9000 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.9166 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.9166 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.9166 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.9333 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.9333 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.9333 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.9500 	EXP 	unnamed Rect: pos = (-0.45416666666666666, 0)
+54.9500 	EXP 	unnamed Rect: size = (0.5916666666666667, 0.4)
+54.9500 	EXP 	unnamed Rect: width = 0.5916666666666667
+54.9666 	EXP 	unnamed Rect: pos = (-0.4537037037037037, 0)
+54.9666 	EXP 	unnamed Rect: size = (0.5925925925925926, 0.4)
+54.9666 	EXP 	unnamed Rect: width = 0.5925925925925926
+54.9833 	EXP 	unnamed Rect: pos = (-0.4537037037037037, 0)
+54.9833 	EXP 	unnamed Rect: size = (0.5925925925925926, 0.4)
+54.9833 	EXP 	unnamed Rect: width = 0.5925925925925926
+55.0000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.0000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.0000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.0166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.0166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.0166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.0333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.0333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.0333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.0500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.0500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.0500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.0666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.0666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.0666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.0833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.0833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.0833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.1000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.1000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.1000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.1166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.1166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.1166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.1333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.1333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.1333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.1500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.1500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.1500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.1666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.1666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.1666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.1833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.1833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.1833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.2000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.2000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.2000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.2166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.2166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.2166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.2333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.2333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.2333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.2500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.2500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.2500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.2666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.2666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.2666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.2833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.2833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.2833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.3000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.3000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.3000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.3166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.3166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.3166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.3333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.3333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.3333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.3500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.3500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.3500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.3666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.3666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.3666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.3833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.3833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.3833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.4000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.4000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.4000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.4166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.4166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.4166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.4333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.4333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.4333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.4500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.4500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.4500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.4666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.4666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.4666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.4833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.4833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.4833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.5000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.5000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.5000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.5167 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.5167 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.5167 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.5333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.5333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.5333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.5500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.5500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.5500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.5667 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.5667 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.5667 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.5833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.5833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.5833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.6000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.6000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.6000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.6166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.6166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.6166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.6333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.6333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.6333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.6500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.6500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.6500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.6666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.6666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.6666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.6833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.6833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.6833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.7000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.7000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.7000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.7166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.7166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.7166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.7333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.7333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.7333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.7500 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.7500 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.7500 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.7666 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.7666 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.7666 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.7833 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.7833 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.7833 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.8000 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.8000 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.8000 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.8166 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.8166 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.8166 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.8333 	EXP 	unnamed Rect: pos = (-0.4532407407407407, 0)
+55.8333 	EXP 	unnamed Rect: size = (0.5935185185185186, 0.4)
+55.8333 	EXP 	unnamed Rect: width = 0.5935185185185186
+55.8500 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.8500 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.8500 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.8666 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.8666 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.8666 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.8833 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.8833 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.8833 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9000 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.9000 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.9000 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9166 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.9166 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.9166 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9333 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.9333 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.9333 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9500 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.9500 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.9500 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9666 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.9666 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.9666 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9833 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+55.9833 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+55.9833 	EXP 	unnamed Rect: width = 0.5944444444444444
+55.9838 	DATA 	Keypress: escape
+56.0000 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.0000 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.0000 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.0168 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.0168 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.0168 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.0335 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.0335 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.0335 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.0502 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.0502 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.0502 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.0667 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.0667 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.0667 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.0833 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.0833 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.0833 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.1000 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.1000 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.1000 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.1166 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.1166 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.1166 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.1333 	EXP 	unnamed Rect: pos = (-0.4527777777777778, 0)
+56.1333 	EXP 	unnamed Rect: size = (0.5944444444444444, 0.4)
+56.1333 	EXP 	unnamed Rect: width = 0.5944444444444444
+56.7433 	EXP 	window1: mouseVisible = True
