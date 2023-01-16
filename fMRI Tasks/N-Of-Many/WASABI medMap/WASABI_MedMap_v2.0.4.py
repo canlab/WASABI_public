@@ -463,12 +463,12 @@ for runs in runRange:
         ## Conditioning parameters; Ideally this should be read from the participant's file
         # Changes in 2.0.4: maximize difference between control(HighHeat) and placebo (HighHeat-2) 
         if expInfo['second(2) or third(3) day']=='2':
-            if runs==0 or runs==1 or runs==4 or runs==5:
+            if runs==0 or runs==1 or runs==6 or runs==7:
                 temperature = participant_settingsHeat[bodySites[runs]]
                 thermodeCommand=thermode_temp2program[temperature]
                 ConditionName="Control"
                 # Highest tolerable temperature
-            if runs==2 or runs==3 or runs==6 or runs==7:
+            if runs==2 or runs==3 or runs==4 or runs==5:
                 # temperature = 44 # Not hot enough
                 temperature = float(participant_settingsHeat[bodySites[runs]])-2
                 thermodeCommand=thermode_temp2program[temperature]
