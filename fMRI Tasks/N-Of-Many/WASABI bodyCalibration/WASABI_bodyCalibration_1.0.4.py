@@ -113,12 +113,12 @@ def round_to(n, precision):
 def round_to_halfdegree(n):
     return round_to(n, 0.5)
 
-from datetime import date
+from datetime import datetime
 
 def calculate_age(born):
     b_date = datetime.strptime(born, '%m/%d/%Y')
     return (datetime.today() - b_date).days/365
- 
+
 visual.ImageStim.rescale = rescale
 
 """
