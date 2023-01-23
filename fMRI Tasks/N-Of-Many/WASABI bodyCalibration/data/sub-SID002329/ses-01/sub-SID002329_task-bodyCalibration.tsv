@@ -1,0 +1,15 @@
+	repetition	body_site	temperature	pain	intensity	tolerance
+0	1	Right Leg	48.0	-1.0		1.0
+1	2	Right Leg	48.5	-1.0		1.0
+2	3	Right Leg	48.5	-1.0		1.0
+3	4	Right Leg	48.5	-1.0		1.0
+4	5	Right Leg	48.5	-1.0		1.0
+5	6	Right Leg	48.5	-1.0		1.0
+6	7	Right Leg	48.5	-1.0		1.0
+7	1	Left Arm	48.0	1.0	32.65432098765432	1.0
+8	2	Left Arm	48.5	1.0	44.382716049382715	1.0
+9	3	Left Arm	48.5	1.0	45.123456790123456	1.0
+10	4	Left Arm	48.5	1.0	54.382716049382715	1.0
+11	5	Left Arm	48.5	1.0	59.62962962962962	1.0
+12	6	Left Arm	48.5	1.0	75.49382716049384	1.0
+13	7	Left Arm	48.5	1.0	40.67901234567901	1.0
