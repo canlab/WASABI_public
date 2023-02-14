@@ -1,0 +1,2 @@
+	date	DBIC_id	age	dob	sex	handedness	calibration_order	leftarm_ht	rightarm_ht	leftleg_ht	rightleg_ht	leftface_ht	rightface_ht	chest_ht	abdomen_ht	leftarm_i	rightarm_i	leftleg_i	rightleg_i	leftface_i	rightface_i	chest_i	abdomen_i	Eligible
+0	2023_Feb_13_1833	2588	18.926027397260274	03/16/2004	F	R	['Left Face', 'Chest', 'Left Leg', 'Right Leg', 'Abdomen', 'Right Arm', 'Left Arm', 'Right Face']	47.0	46.5	45.5	45.5	48.0	48.0	46.0	46.5	48.37962962962963	50.884773662551446	44.75308641975309	42.5	44.73765432098766	42.79835390946502	41.54320987654321	42.28395061728395	-3
