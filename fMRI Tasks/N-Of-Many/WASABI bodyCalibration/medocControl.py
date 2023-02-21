@@ -20,6 +20,7 @@ class ThermodeConfig():
     address = '10.64.1.10' # DBIC
 #    address = '192.168.1.127'
 #    address = '192.168.1.2'
+    # address = '169.254.118.203'
 #    address = '192.168.0.114' # Testing Room C
     port = 20121
     debug = 1
