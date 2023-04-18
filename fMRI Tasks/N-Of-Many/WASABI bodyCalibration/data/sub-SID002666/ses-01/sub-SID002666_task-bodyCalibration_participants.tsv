@@ -1,0 +1,2 @@
+	date	DBIC_id	age	dob	sex	handedness	calibration_order	leftarm_ht	rightarm_ht	leftleg_ht	rightleg_ht	leftface_ht	rightface_ht	chest_ht	abdomen_ht	leftarm_i	rightarm_i	leftleg_i	rightleg_i	leftface_i	rightface_i	chest_i	abdomen_i
+0	2023_Apr_18_1329	2666	21.92054794520548	05/22/2001	m	right	['Left Face', 'Right Face', 'Right Leg', 'Abdomen', 'Left Arm', 'Right Arm', 'Left Leg', 'Chest']	48.5	48.5	48.5	48.5	48.5	48.5	48.5	48.5	52.3559670781893	46.769547325102884	36.440329218106996	41.028806584362144	48.7037037037037	26.574074074074076	13.45679012345679	10.61728395061728
