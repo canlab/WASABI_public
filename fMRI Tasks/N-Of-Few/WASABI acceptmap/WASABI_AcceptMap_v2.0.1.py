@@ -1463,6 +1463,9 @@ for runs in range(len(bodySites)):
         # ------Prepare to start Routine "IntensityRating"-------
         continueRoutine = True
         routineTimer.add(ratingTime)
+
+        if thermode_exists == 1:
+            sendCommand('stop')
         # update component parameters for each repeat
         # keep track of which components have finished
         IntensityMouse = event.Mouse(win=win, visible=False) # Re-initialize IntensityMouse
