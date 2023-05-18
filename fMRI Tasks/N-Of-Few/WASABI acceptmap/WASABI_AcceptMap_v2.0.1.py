@@ -403,7 +403,7 @@ runOrder = {
 bodySites = runOrder[expInfo['subject number']]
 
 # If bodysites and run order need to be manually set for the participant uncomment below and edit:
-# bodySites = ["Left Leg"]
+# bodySites = ['Left Face', test_bodysite[expInfo['subject number']], 'Left Face']
 
 expInfo['body_site_order'] = str(bodySites)
 expInfo['expName'] = expName
@@ -1464,8 +1464,8 @@ for runs in range(len(bodySites)):
         continueRoutine = True
         routineTimer.add(ratingTime)
 
-        if thermode_exists == 1:
-            sendCommand('stop')
+        # if thermode_exists == 1:
+        #     sendCommand('stop')
         # update component parameters for each repeat
         # keep track of which components have finished
         IntensityMouse = event.Mouse(win=win, visible=False) # Re-initialize IntensityMouse
