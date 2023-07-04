@@ -631,6 +631,7 @@ for runs in range(len(bodySites)):
                     rating_sound.play()
                     nback_bids=nback_bids.append(showText(win, "0-back Instruction", "ready...\n0-back", fontSize=0.15, time=5, biopacCode=zeroback_instructions), ignore_index=True)
 
+
                 """ 
                 14ii. Pre-Trial Fixation Cross
                 """
@@ -777,7 +778,7 @@ for runs in range(len(bodySites)):
                         jitter3=1
                     else:
                         jitter3 = random.choice([5,7,9])
-                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter3, biopacCode=postfixation), ignore_index=True)
+                    nback_bids=nback_bids.append(showFixation(win, "Post-Q-Jitter", type='big', time=jitter2, biopacCode=postfixation), ignore_index=True)
 
     """
     16. Begin post-run self-report questions
