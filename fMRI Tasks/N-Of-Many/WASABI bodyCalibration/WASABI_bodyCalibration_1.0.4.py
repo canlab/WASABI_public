@@ -246,7 +246,6 @@ bodyCalibration_bids_trial = []
 
 averaged_data = []
 
-
 """
 5. Initialize Trial-level Components
 """

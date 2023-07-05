@@ -109,7 +109,6 @@ if debug == 1:
     'DBIC Number': '99',
     'dob (mm/dd/yyyy)': '06/20/1988',
     'sex': 'm',
-    'original (1) or new (2)': '1',
     'session': '99',
     'handedness': 'r', 
     'scanner': 'MS',
@@ -121,7 +120,6 @@ else:
     'DBIC Number': '',
     'dob (mm/dd/yyyy)': '', 
     'sex': '',
-    'original (1) or new (2)': '',
     'session': '',
     'handedness': '', 
     'scanner': '',
@@ -132,35 +130,37 @@ else:
 
 expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
-expInfo['expName'] = expName
 
 RegulateInstruction = "Focus on your breath.\n\nFeel your body float.\n\nAccept the following sensations as they come.\n\nTransform negative sensations into positive."
 
-if expInfo['original (1) or new (2)'] == '1':
-    expName = 'acceptmapTEST-orig'
-    task_ID=8
-elif expInfo['original (1) or new (2)'] == '2':
-    expName = 'acceptmapTEST-new' 
-    task_ID=9
 InstructionText = RegulateInstruction
 instructioncode = regulate_instructions
 InstructionCondition = "Regulation Instruction"
 ConditionName = "Regulation Phase"
 
 """
-3. Configure the Body-Site for this run
+3. Configure the parameters for each run
 """
 
 bodySites1 = ['Right Arm', 'Left Arm', 'Right Arm', 'Left Arm']
 bodySites2 = ['Left Arm', 'Right Arm', 'Left Arm', 'Right Arm'] 
 
-if expInfo['subject number'] % 2 == 0:
+if random.choice([True, False]): # Randomly select the order
     bodySites = bodySites1
 else:
     bodySites = bodySites2
 
 expInfo['body_site_order'] = str(bodySites)
-expInfo['expName'] = expName
+
+test1 = ['acceptmapTEST-orig', 'acceptmapTEST-orig', 'acceptmapTEST-new', 'acceptmapTEST-new']
+test2 = ['acceptmapTEST-new', 'acceptmapTEST-new', 'acceptmapTEST-orig', 'acceptmapTEST-orig'] 
+
+if random.choice([True, False]): # Randomly select the order
+    test = test1
+else:
+    test = test2
+
+expInfo['expName'] = 'acceptmapTEST'
 
 """ 
 4. Setup the Window
@@ -177,11 +177,12 @@ else:
 """
 5. Prepare Experimental Dictionaries for Body-Site Cues and Medoc Temperature Programs
 """
+cueImg = os.sep.join([stimuli_dir, "cue", "thermode.png"])
 ## Check gender for Chest cue
 Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
-if expInfo['gender'] in {"M", "m", "Male", "male"}:
+if expInfo['sex'] in {"M", "m", "Male", "male"}:
     Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestM.png"])
-elif expInfo['gender'] in {"F", "f", "Female", "female"}:
+elif expInfo['sex'] in {"F", "f", "Female", "female"}:
     Chest_imgPath = os.sep.join([stimuli_dir,"cue","ChestF.png"])
 bodysite_word2img = {"Left Face": os.sep.join([stimuli_dir,"cue","LeftFace.png"]), 
                           "Right Face": os.sep.join([stimuli_dir,"cue","RightFace.png"]), 
@@ -212,19 +213,12 @@ with open("thermode1_programs.txt") as f:
 """
 6. Prepare files to write
 """
-sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['subject number'])), 'ses-%02d' % (int(expInfo['session'])))
+sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
 varNames = ['SID', 'date', 'sex', 'session', 'handedness', 'scanner', 'onset', 'duration', 'repetition', 'rating', 'body_site', 'keys', 'temperature', 'condition' 'rt', 'mouseclick', 'biopac_channel']
 acceptmap_bids=pd.DataFrame(columns=varNames)
-
-# Create python lists to later concatenate or convert into pandas dataframes
-acceptmap_bids_trial = []
-# acceptmap_bids = []
-
-acceptmap_bids_total = []
-acceptmap_bids_trial = []
 
 """
 5. Initialize Trial-level Components
@@ -232,7 +226,7 @@ acceptmap_bids_trial = []
 # General Instructional Text
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
-end_msg = 'Please wait for instructions from the experimenter'
+end_msg = 'Please wait for instructions from the experimenter. \n Experimenter press [e] to continue.'
 
 # Rating question text
 painText="Was that painful?"
@@ -240,10 +234,12 @@ trialIntensityText="How intense was the heat stimulation?"
 
 totalTrials = 16 # Figure out how many trials would be equated to 5 minutes
 stimtrialTime = 13 # This becomes very unreliable with the use of poll_for_change().
+ratingTime = 5
 
 if debug == 1:
     stimtrialTime = 1 # This becomes very unreliable with the use of poll_for_change().
     totalTrials = 1
+    # ratingTime = 1
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
 
@@ -279,7 +275,7 @@ win.mouseVisible = False
 """
 6. Welcome Instructions
 """
-showText(win, "Instructions", InstructionText, biopacCode=instructions, noRecord=True)
+showText(win, "Instructions", 'Welcome to the scan\nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue.', biopacCode=instructions, noRecord=True)
 
 if expInfo['run']>1:
     runRange=range(expInfo['run']-1, 8)
@@ -289,9 +285,9 @@ else:
 
 for runs in runRange:
     # Set Skin-Site to prevent burns:
-    if (runs==1 or runs==2):
+    if (runs==0 or runs==1):
             skinSite='1'
-    elif (runs==3 or runs==4):
+    elif (runs==2 or runs==3):
             skinSite='2'
     else:
             skinSite='99'
@@ -330,17 +326,19 @@ for runs in runRange:
     10. Start Trial Loop
     """
     for r in range(totalTrials): # 16 repetitions
+
         """
         11. Show the Instructions prior to the First Trial
         """
-        if expInfo['original (1) or new (2)'] == '2':
-            rating_sound.play()
-            acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "Expectancy", expText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=expectancy_rating), ignore_index=True)
-            rating_sound.stop()        
-        
         if r == 0:      # First trial
             acceptmap_bids=acceptmap_bids.append(showText(win, InstructionCondition, InstructionText, fontSize=0.15, time=5, biopacCode=instructioncode), ignore_index=True)
-
+       
+        if test[runs] == 'acceptmapTEST-new':  
+            rating_sound.play()
+            acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "Expectancy", expText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=expectancy_rating), ignore_index=True)
+            rating_sound.stop()
+            acceptmap_bids=acceptmap_bids.append(showImg(win, "ExpectancyCue", imgPath=cueImg, imgPos=(0, 0), time=5, biopacCode=expectancy_cue), ignore_index=True)      
+       
         # Select Medoc Thermal Program
         if thermode_exists == 1:
             sendCommand('select_tp', thermodeCommand)
@@ -369,7 +367,7 @@ for runs in runRange:
             sendCommand('trigger') # Trigger the thermode
 
         acceptmap_bids=acceptmap_bids.append(showFixation(win, "Heat-Stimulation", type='big', time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
-        acceptmap_bids['temperature'].iloc[-9:-1]=temperature
+        acceptmap_bids['temperature'].iloc[-4:-1]=temperature
   
         """
         14. Post-Heat Fixation Cross
@@ -454,7 +452,6 @@ for runs in runRange:
                 except RuntimeError as error:
                     print('ERROR:', error)
 
-
     """
     17. Save data into .TSV formats and Tying up Loose Ends
     """ 
@@ -468,7 +465,7 @@ for runs in runRange:
     acceptmap_bids['body_site']=bodySites[runs]
     acceptmap_bids['skin_site']=skinSite
     
-    acceptmap_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
+    acceptmap_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), test[runs], bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
     
     acceptmap_bids.to_csv(acceptmap_bidsfilename, sep="\t")
     acceptmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.

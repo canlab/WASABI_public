@@ -39,8 +39,6 @@ pip install pyglet==1.4.1
 
 06/29/2022: Update from 2.0.0, based on Tor's suggestion to add a audio-ding to alert participants to make ratings.
 
-
-
 0a. Import Libraries
 """
 

@@ -46,8 +46,9 @@ debug = 0
 cheat=0
 autorespond = 0
 # Device togglers
+scanner_exists = 0
 biopac_exists = 0
-thermode_exists = 1
+thermode_exists = 0
 eyetracker_exists = 0
 
 stimTime=15
@@ -59,13 +60,16 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 start_msg = 'Please wait. \nThe scan will begin shortly. \n Experimenter press [s] to continue.'
 s_text='[s]-press confirmed.'
 in_between_run_msg = 'Thank you.\n Please wait for the next scan to start \n Experimenter press [e] to continue.'
-end_msg = 'Please wait for instructions from the experimenter'
+end_msg = 'Please wait for instructions from the experimenter. \n Experimenter press [e] to continue.'
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
-fmriStart=None # Set to None until confirmRunStart() is called.
-
+if scanner_exists==1:
+    fmriStart=None # Set to None until confirmRunStart() is called.
+else:
+    fmriStart = globalClock.getTime() # Otherwise, start the clock right away.
+    
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
 
@@ -427,7 +431,7 @@ EDIT BELOW FOR YOUR STUDY (if you use the Medoc Thermode)
 #     Toggling each of the FIO 8 channels directly: biopac.setFIOState(fioNum = 0:7, state=1)
 #     Another command that may work: biopac.setData(byte)
 
-task_ID=3
+task_ID=2
 task_start=4
 
 eyetrackerCalibration=52
@@ -477,15 +481,11 @@ present_rating = 37
 between_run_msg=38
 end_task = 39
 
-# Hyperalignment movie
-kungfury1=40
-kungfury2=41
+# Acceptmap
+experience_instructions=40
+regulate_instructions=41
+expectancy_cue=44
 
-# Distractmap
-zeroback_instructions=42
-twoback_instructions=43
-zeroback_cue=44
-twoback_cue=45
 
 # Medoc parameters _________________________________________________
 # Set up a dictionary for all the configured Medoc programs for the main thermode
