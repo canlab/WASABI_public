@@ -132,11 +132,20 @@ expInfo['date'] = data.getDateStr()  # add a simple timestamp
 expInfo['psychopyVersion'] = psychopyVersion
 
 RegulateInstruction = "Focus on your breath.\n\nFeel your body float.\n\nAccept the following sensations as they come.\n\nTransform negative sensations into positive."
+ExperienceInstruction = "Experience the following sensations as they come."
 
-InstructionText = RegulateInstruction
-instructioncode = regulate_instructions
-InstructionCondition = "Regulation Instruction"
-ConditionName = "Regulation Phase"
+##### MAKE A SWITCH
+
+# InstructionText = RegulateInstruction
+# instructioncode = regulate_instructions
+# InstructionCondition = "Regulation Instruction" 
+# ConditionName = "Regulation Phase"
+
+InstructionText = ExperienceInstruction
+instructioncode = experience_instructions
+InstructionCondition = "Experience Instruction"
+ConditionName = "Experience Phase"
+
 
 """
 3. Configure the parameters for each run
@@ -160,7 +169,7 @@ if random.choice([True, False]): # Randomly select the order
 else:
     test = test2
 
-expInfo['expName'] = 'acceptmapTEST'
+expInfo['expName'] = '-experience' ##### MAKE A SWITCH 
 
 """ 
 4. Setup the Window
@@ -367,7 +376,7 @@ for runs in runRange:
             sendCommand('trigger') # Trigger the thermode
 
         acceptmap_bids=acceptmap_bids.append(showFixation(win, "Heat-Stimulation", type='big', time=stimtrialTime, biopacCode=BiopacChannel), ignore_index=True)
-        acceptmap_bids['temperature'].iloc[-4:-1]=temperature
+        acceptmap_bids['temperature'].iloc[-1]=temperature
   
         """
         14. Post-Heat Fixation Cross
@@ -465,7 +474,7 @@ for runs in runRange:
     acceptmap_bids['body_site']=bodySites[runs]
     acceptmap_bids['skin_site']=skinSite
     
-    acceptmap_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), test[runs], bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
+    acceptmap_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), test[runs]+expInfo['expName'], bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
     
     acceptmap_bids.to_csv(acceptmap_bidsfilename, sep="\t")
     acceptmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.
