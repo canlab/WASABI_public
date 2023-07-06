@@ -134,13 +134,13 @@ expInfo['psychopyVersion'] = psychopyVersion
 RegulateInstruction = "Focus on your breath.\n\nFeel your body float.\n\nAccept the following sensations as they come.\n\nTransform negative sensations into positive."
 ExperienceInstruction = "Experience the following sensations as they come."
 
-if (int(expInfo['DBIC Number'])%2==1 and int(expInfo['session'])==2) or (int(expInfo['DBIC Number'])%2==1 and int(expInfo['session'])==1):
+if (int(expInfo['DBIC Number'])%2==0 and int(expInfo['session'])==2) or (int(expInfo['DBIC Number'])%2==1 and int(expInfo['session'])==1):
     InstructionText = ExperienceInstruction
     instructioncode = experience_instructions
     InstructionCondition = "Experience Instruction"
     ConditionName = "Experience Phase"
     ConditionSuffix = '-experience'
-else
+else:
     InstructionText = RegulateInstruction
     instructioncode = regulate_instructions
     InstructionCondition = "Regulation Instruction" 
