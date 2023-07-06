@@ -134,18 +134,18 @@ expInfo['psychopyVersion'] = psychopyVersion
 RegulateInstruction = "Focus on your breath.\n\nFeel your body float.\n\nAccept the following sensations as they come.\n\nTransform negative sensations into positive."
 ExperienceInstruction = "Experience the following sensations as they come."
 
-##### MAKE A SWITCH
-
-# InstructionText = RegulateInstruction
-# instructioncode = regulate_instructions
-# InstructionCondition = "Regulation Instruction" 
-# ConditionName = "Regulation Phase"
-
-InstructionText = ExperienceInstruction
-instructioncode = experience_instructions
-InstructionCondition = "Experience Instruction"
-ConditionName = "Experience Phase"
-
+if (int(expInfo['DBIC Number'])%2==1 and int(expInfo['session'])==2) or (int(expInfo['DBIC Number'])%2==1 and int(expInfo['session'])==1):
+    InstructionText = ExperienceInstruction
+    instructioncode = experience_instructions
+    InstructionCondition = "Experience Instruction"
+    ConditionName = "Experience Phase"
+    ConditionSuffix = '-experience'
+else
+    InstructionText = RegulateInstruction
+    instructioncode = regulate_instructions
+    InstructionCondition = "Regulation Instruction" 
+    ConditionName = "Regulation Phase"
+    ConditionSuffix = '-regulate'
 
 """
 3. Configure the parameters for each run
@@ -169,7 +169,7 @@ if random.choice([True, False]): # Randomly select the order
 else:
     test = test2
 
-expInfo['expName'] = '-experience' ##### MAKE A SWITCH 
+expInfo['expName'] = ConditionSuffix
 
 """ 
 4. Setup the Window
@@ -340,7 +340,7 @@ for runs in runRange:
         11. Show the Instructions prior to the First Trial
         """
         if r == 0:      # First trial
-            acceptmap_bids=acceptmap_bids.append(showText(win, InstructionCondition, InstructionText, fontSize=0.15, time=5, biopacCode=instructioncode), ignore_index=True)
+            acceptmap_bids=acceptmap_bids.append(showText(win, InstructionCondition, InstructionText, fontSize=0.05, time=5, biopacCode=instructioncode), ignore_index=True)
        
         if test[runs] == 'acceptmapTEST-new':  
             rating_sound.play()
