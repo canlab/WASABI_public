@@ -1,0 +1,21 @@
+{
+    "bold": {
+         "datatype": "func",
+         "session": "02",
+         "suffix": "bold"
+     },
+     "t1w": {
+         "datatype": "anat",
+         "session": "02",
+         "acquisition": "MPRAGEXp3X08mm",
+         "run": "02",
+         "suffix": "T1w"
+      },
+      "roi":{
+         "datatype": "anat",
+         "session": "02",
+         "suffix": "roi",
+         "acquisition": "MPRAGEXp3X08mm",
+         "run": "02"
+      }
+ }

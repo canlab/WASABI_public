@@ -1,0 +1,9 @@
+{
+   "bold": {
+        "datatype": "func"
+        "suffix": "bold"
+    },
+    "fmap": {
+        "datatype": "fmap"
+    }
+}
