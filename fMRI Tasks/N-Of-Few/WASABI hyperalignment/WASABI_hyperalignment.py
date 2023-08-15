@@ -919,7 +919,7 @@ for thisRunLoop in runLoop:
 
 if eyetracker_exists==1:
     sourceEDF_filename = "S%dR%s.EDF" % (int(expInfo['subject number']), 3)
-    destinationEDF = os.path.join(sub_dir, "S%dR%s.EDF" % (int(exp5Info['subject number']), 3))
+    destinationEDF = os.path.join(sub_dir, "S%dR%s.EDF" % (int(expInfo['subject number']), 3))
     sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
     startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
 
