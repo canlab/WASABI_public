@@ -11,7 +11,7 @@
 #SBATCH --partition=standard
 #SBATCH --time=7-01:00:00
 #SBATCH --mail-type=FAIL,END
-#SBATCH --array=1-5
+#SBATCH --array=1-4
 ##SBATCH --nodelist=n04
 #SBATCH --exclude=s[01-09,11-12,14,16-30]
 #SBATCH --requeue
@@ -26,7 +26,7 @@ SUBJ=SID001852
 cd $SLURM_SUBMIT_DIR
 # Set SLURM_ARRAY_TASK_ID to 1 if not already set. Useful if not being run as a scheduled SLURM job.
 SLURM_ARRAY_TASK_ID=${SLURM_ARRAY_TASK_ID:-1}
-SESSION=(ses-06 ses-08 ses-03 ses-09 ses-10)
+SESSION=(ses-06 ses-08 ses-09 ses-10)
 SES=${SESSION[$SLURM_ARRAY_TASK_ID-1]}
 
 # Error handling function
