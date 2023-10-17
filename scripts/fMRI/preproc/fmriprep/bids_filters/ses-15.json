@@ -1,0 +1,11 @@
+{
+   "bold": {
+        "datatype": "func",
+        "session": ["15"],
+        "suffix": "bold"
+    },
+    "fmap": {
+        "datatype": "fmap",
+	"session": ["15"]
+    }
+}
