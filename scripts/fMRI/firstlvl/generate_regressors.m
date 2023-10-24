@@ -63,7 +63,7 @@ function conditions = generate_regressors(BIDSroot, task, sid, sess, stim_dat, n
     %   duration: {{[1 1 1 1 ...]}}
 
     % Example:
-    unique_conditions = unique(stim_dat.condition); % assuming 'condition' is a column in your stim_dat table
+    unique_conditions = unique(stim_dat.trial_type); % assuming 'trial_type' is a column in your stim_dat table
     conditions_struct = struct;
     for i = 1:length(unique_conditions)
         condition_name = unique_conditions{i};
@@ -74,7 +74,7 @@ function conditions = generate_regressors(BIDSroot, task, sid, sess, stim_dat, n
     %% 2. Fill-out the SPM style design-obj
     numberOfTrials = height(stim_dat);
     for trial = 1:numberOfTrials
-        condition_name = stim_dat.condition{trial};
+        condition_name = stim_dat.trial_type{trial};
         conditions_struct.(condition_name).onset{1} = [conditions_struct.(condition_name).onset{1}, stim_dat.onset(trial)];
         conditions_struct.(condition_name).duration{1} = [conditions_struct.(condition_name).duration{1}, stim_dat.duration(trial)];
     end
