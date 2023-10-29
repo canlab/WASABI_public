@@ -121,7 +121,7 @@ expInfo = {
 'session': '',
 'handedness': '', 
 'scanner': '',
-'run': '10'
+'run': '1'
 }
 
 # Load the subject's calibration file and ensure that it is valid
