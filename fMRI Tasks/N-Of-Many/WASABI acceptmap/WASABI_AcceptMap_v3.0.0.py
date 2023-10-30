@@ -224,8 +224,8 @@ else:
 """
 if expInfo['body sites']=="":
 
-    bodySites1 = ['Left Leg', 'Chest']
-    bodySites2 = ['Chest', 'Left Leg'] 
+    bodySites1 = ['Left Leg', 'Chest', 'Left Leg', 'Chest']
+    bodySites2 = ['Chest', 'Left Leg', 'Chest', 'Left Leg'] 
 
 
     if int(expInfo['DBIC Number'])%2==0:
@@ -463,6 +463,8 @@ for runs in runRange:
         acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
         painRating=acceptmap_bids['value'].iloc[-1]
         acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
+        acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "AcceotBinary", acceptText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
+        
         rating_sound.stop()
 
         """

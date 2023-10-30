@@ -48,7 +48,7 @@ autorespond = 0
 # Device togglers
 scanner_exists = 0
 biopac_exists = 0
-thermode_exists = 1
+thermode_exists = 0
 eyetracker_exists = 0
 
 stimTime=15
