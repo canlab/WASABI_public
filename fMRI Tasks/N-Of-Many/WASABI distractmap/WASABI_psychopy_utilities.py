@@ -1362,6 +1362,10 @@ def nback(win, name, answers, fixation='+', feedback=False, cheat=False, nofMRI=
         
         # -------Run Routine "Nback_Trial"-------
         global fmriStart
+        
+        if (nofMRI==True) or (fmriStart is None):
+            fmriStart=0
+
         onset = globalClock.getTime() - fmriStart
         while continueRoutine and routineTimer.getTime() > 0:
             # gotValidClick = False
