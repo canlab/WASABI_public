@@ -17,7 +17,6 @@ Some measures have been taken to minimize experimental latency. PTB/Psychopy sty
 Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) files for each run per subject, (UTF-8 encoding). 
 Following this format:
 all data headers are in lower snake_case.
-
 The design is as follows:
 1. Start with a 48 degree stimulation trial (to be thrown away)
 2. If not painful, increase the temperature by .5 degrees (max at 48.5)
@@ -172,7 +171,8 @@ InstructionText = "Experience the following sensations as they come."
 5. Configure the Body-Site for each run
 """
 if expInfo['body sites']=="":
-    bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+    # bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
+    bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Right Leg", "Abdomen"]
     random.shuffle(bodySites)
 else:
     bodySites=list(expInfo['body sites'].split(", "))
