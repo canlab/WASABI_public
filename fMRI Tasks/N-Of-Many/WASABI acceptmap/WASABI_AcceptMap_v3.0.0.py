@@ -324,7 +324,7 @@ if debug == 1:
 defaultKeyboard = keyboard.Keyboard()
 
 # 06/29/2022: Tor suggested we add an audio ding
-rating_sound=mySound=sound.Sound('B', octave=5, stereo=1, secs=.5)  
+rating_sound=sound.Sound('B', octave=5, stereo=1, secs=.5)  
 ## When you want to play the sound, run this line of code:
 # rating_sound.play()
 

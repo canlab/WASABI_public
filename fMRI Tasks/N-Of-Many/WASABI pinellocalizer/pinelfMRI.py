@@ -15,10 +15,16 @@ import random, copy, time
 import pandas as pd
 import serial
 
-#prefs.general['audioLib'] = ['pyo']
+# prefs.general['audioLib'] = ['pyo']
+# prefs.general['audioLib'] = ['PTB']
+# prefs.general['audioDevice'] = 13
+# prefs.general['audioLib'] = []
 from psychopy import sound, visual, data, event, core, gui, logging, clock
+from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
+                                STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
 
-biopac_exists = 1
+
+biopac_exists = 0
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
@@ -279,6 +285,7 @@ config_dialog = gui.Dlg(title="Experiment Info")
 # config_dialog = psy.gui.Dlg(title="Experiment Info")
 config_dialog.addField("Subject ID: ")
 config_dialog.addField("Session: ")
+config_dialog.addField("Run: ")
 config_dialog.addField("Test? 1=yes; 0=no: ")
 config_dialog.show()
 
@@ -291,21 +298,22 @@ exists_dialog.addText('File name already exists. Are you sure you want to overwr
 if config_dialog.OK:
     subID = config_dialog.data[0]
     session = config_dialog.data[1]
-    test = int(config_dialog.data[2])  # make sure this is int
+    run = config_dialog.data[2]
+    test = int(config_dialog.data[3])  # make sure this is int
 else:
     sys.exit("Canceled at configuration dialog.")
 
 # create file w/subId in name
 # change this so that filename is from teh gui- and needs extension. so if not . in
 if test == int(1):
-    fName = 'sub-%05d_task-pinel_ses-%02d_TEST.tsv' % (int(subID),int(session))
+    fName = 'sub-SID%06d_task-pinellocalizer_ses-%02d_run-%02d_events_TEST.tsv' % (int(subID),int(session),int(run))
 elif test == int(0):
-    fName = 'sub-%05d_task-pinel_ses-%02d.tsv' % (int(subID),int(session))
+    fName = 'sub-SID%06d_task-pinellocalizer_ses-%02d_run-%02d_events.tsv' % (int(subID),int(session),int(run))
 
 # SET EXPERIMENT GLOBALS
 base_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(base_dir)
-data_dir = os.path.join(base_dir, 'data', 'sub-%05d' % (int(subID)), 'ses-%02d' % (int(session)))
+data_dir = os.path.join(base_dir, 'data', 'sub-SID%06d' % (int(subID)), 'ses-%02d' % (int(session)))
 stim_dir = os.path.join(base_dir, 'stim')
 
 # triggers
@@ -442,13 +450,13 @@ ho_pic2 = os.path.join(stim_dir, 'checherboardHpb.bmp')
 
 # create image objects for checkerboards
 ho_check1 = visual.ImageStim(window, image=ho_pic1, name=os.path.split(ho_pic1)[-1],
-                             pos=(0.0, 0.0))  # this stim changes too much for autologging to be useful
+                             pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
 ho_check2 = visual.ImageStim(window, image=ho_pic2, name=os.path.split(ho_pic2)[-1],
-                             pos=(0.0, 0.0))  # this stim changes too much for autologging to be useful
+                             pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
 vert_check1 = visual.ImageStim(window, image=vert_pic1, name=os.path.split(vert_pic1)[-1],
-                               pos=(0.0, 0.0))  # this stim changes too much for autologging to be useful
+                               pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
 vert_check2 = visual.ImageStim(window, image=vert_pic2, name=os.path.split(vert_pic2)[-1],
-                               pos=(0.0, 0.0))  # this stim changes too much for autologging to be useful
+                               pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
 check = [vert_check1, vert_check2, ho_check1, ho_check2]  # list of stimuli objects for the images
 
 # onset type
@@ -630,8 +638,10 @@ for key, task in task_order.items():
         rotationRate = 0.1  # revs per sec
         flashPeriod = 0.1  # seconds for one B-W cycle (ie 1/Hz)
 
-        preztime = clock.getTime() - experimentStart
+        preztime = clock.getTime() - experimentStart        
         trial_start = clock.getTime()
+        print(f"Trial start time: {trial_start}")
+        
         timer.add(checker_dur)  # add 1.3 to the timer
         while timer.getTime() < 0:
 
@@ -654,9 +664,18 @@ for key, task in task_order.items():
                     stim = check[3]
 
                 stim.draw()
+                
+                # Record the time just before the flip
+                pre_flip_time = clock.getTime()
+                
                 window.flip()
+                
+                # Record the time just after the flip
+                post_flip_time = clock.getTime()
+                print(f"Flip interval: {post_flip_time - pre_flip_time}")
 
             duration = clock.getTime() - trial_start
+            print(f"Trial duration: {duration}")
 
         # Present SOA from ITIs List
         Text.text = '+'

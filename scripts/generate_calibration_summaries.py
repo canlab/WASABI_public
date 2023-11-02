@@ -29,9 +29,15 @@ from datetime import datetime
 import glob
 import re
 
+# Set the options
+pd.set_option('display.max_rows', None)       # None means show all rows
+pd.set_option('display.max_columns', None)    # None means show all columns
+pd.set_option('display.max_colwidth', None)   # None means show full width of columns
+pd.set_option('display.width', None)          # None means auto-detect the display width
+
 
 __author__ = "Michael Sun"
-__version__ = "1.0.4"
+__version__ = "1.0.0"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
@@ -89,22 +95,43 @@ def genCalibrationSummaries(sub_dir):
     # 2. sub-SID00XXXX_task-bodyCalibration_participants.tsv
     # These 2 files should be output in the same directory.
     
-    flist=glob.glob(sub_dir+r"\*_events.tsv")                               # Collect a list of all the event files
-    run = [int(f) for f in flist]
+    # Generate *bodyCalibration.tsv
+    
+    # Assume sub_dir is already defined and points to the correct directory
+    flist = glob.glob(sub_dir + r"\*_events.tsv")
 
-    # Extracting data from a list of filenames
-    bodysites=[]
-    runs=[]
-    for file in flist:
-        runs.append(int(re.search('run-(.*)_events.tsv', file).group(1)))
-        bodysites.append(re.search('acq-(.*)_run', file).group(1))
-    # reorder runs by bodysite
-    bodysites=[x for _, x in sorted(zip(runs, bodysites))]
-    flist=[x for _, x in sorted(zip(runs, flist))]
+    # Debugging: Print all filenames to ensure they are being found
+    print("All filenames found:", flist)
 
-    data=pd.read_csv(flist[0],sep='\t')                                     # read in the tsv
-    for file in flist[1:]:                                                     # For each file
-        data=pd.concat([data,pd.read_csv(file,sep='\t')])                # read in the tsv
+    # Extract the run numbers and bodysites from the filenames
+    runs = [int(re.search('run-(\d+)_', file).group(1)) for file in flist]
+    bodysites = [re.search('acq-(.*?)_run', file).group(1) for file in flist]
+
+    # Debugging: Print the extracted run numbers and bodysites
+    print("Extracted run numbers:", runs)
+    print("Extracted bodysites:", bodysites)
+
+    # Sort runs and bodysites together
+    sorted_runs_bodysites = sorted(zip(runs, bodysites))
+
+    # Debugging: Print the sorted runs and bodysites
+    print("Sorted runs and bodysites:", sorted_runs_bodysites)
+
+    # Now extract the sorted runs and bodysites
+    sorted_runs, sorted_bodysites = zip(*sorted_runs_bodysites)
+
+    # Sort flist using the sorted order of runs
+    sorted_flist = [file for run, file in sorted(zip(runs, flist))]
+
+    # Debugging: Print the sorted flist
+    print("Sorted file list:", sorted_flist)
+    
+    # Initialize DataFrame
+    data=pd.read_csv(sorted_flist[0],sep='\t')          # read in the tsv
+    
+    for file in sorted_flist[1:]:                       # For each file
+        temp_data = pd.read_csv(file, sep='\t')
+        data=pd.concat([data,temp_data])                # read in the tsv
 
     date=np.unique(data['date'])[0]
     SID=np.unique(data['SID'])[0]
@@ -112,60 +139,77 @@ def genCalibrationSummaries(sub_dir):
     sex=np.unique(data['sex'])[0]
     handedness=np.unique(data['handedness'])[0]
 
-    
-    repetition=         # Gather every condition==PainBinary
-    body_site=          # Gather every body_site
-    temperature=        # Gather every temperature
-    pain=               # Gather every condition=PainBinary
-    intensity=          # Gather every condition==IntensityRating
-    tolerance=          # Gather every ToleranceRating
+    body_site= data['body_site'].dropna() # Gather every body_site
+    # Create a temporary DataFrame for body_sites with their first occurrence indices
+    repetition = body_site.to_frame(name='body_site').groupby('body_site').cumcount() + 1
+    temperature= data['temperature'].dropna() # Gather every temperature
+    pain= data.loc[data['condition'] == 'PainBinary', 'value']# Gather every condition=PainBinary
+    intensity= data.loc[data['condition'] == 'IntensityRating', 'value']# Gather every condition==IntensityRating
+    intensity=intensity.drop(intensity.index[7::8]) # Drop every 8th observation (i.e. every 8th IntensityRating)
+    tolerance= data.loc[data['condition'] == 'ToleranceRating', 'value'] # Gather every ToleranceRating
 
-    bids_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s.tsv' % (int(data['SID']), 'bodyCalibration')
-    bids_df=pd.DataFrame(pd.DataFrame(bodyCalibration_bids_total, columns = ['repetition', 'body_site', 'temperature', 'pain', 'intensity', 'tolerance']))
+    bids_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s.tsv' % (int(SID), 'bodyCalibration')
+    bids_df = pd.DataFrame({
+        'repetition': pd.Series(repetition).reset_index(drop=True),
+        'body_site': pd.Series(body_site).reset_index(drop=True),
+        'temperature': pd.Series(temperature).reset_index(drop=True),
+        'pain': pd.Series(pain).reset_index(drop=True),
+        'intensity': pd.Series(intensity).reset_index(drop=True),
+        'tolerance': pd.Series(tolerance).reset_index(drop=True)
+    })
+    bids_df.to_csv(bids_filename, sep='\t', index=False)
 
-
-
-
-    
-    write_location=loc
-    w=open(write_location, 'a')
-
-    os.chdir(sub_dir) #gets the path of the directory the python script is sitting in
-    rootdir = os.getcwd()
-
-    # for rootdir, dirs, files in os.walk(rootdir): #collects all files and subdirectory in current directory
-    #     for subdir in dirs: #runs on only subdirectory
-    #         directory=os.path.join(rootdir, subdir) #gets path of current subdirectory
-    #         for filename in os.listdir(directory): #gets all files in subdirectory and runs through them
-    #             if filename[-4:len(filename)] != '.tsv': #if file is not a .tsv file, prints to console (for debugging)
-    #                 print(filename,': is not a run')
-    #                 continue
-    #             read_tsv(filename)
-
-
-
+    # Generate *bodyCalibration_participants.tsv
     averaged_data=[]
-    averaged_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s_participants.tsv' % (int(expInfo['DBIC Number']), expName)
-    averaged_data.extend([bids_df['date'], bids_df['DBIC Number'], calculate_age(bids_df['date']), bids_df['date'], bids_df['sex'], bids_df['handedness'], bids_df['body_site'],
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()), 
-                        round_to_halfdegree(bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['temperature'].mean()),
-                        bids_df.loc[(bids_df['body_site']=='Left Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Arm') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
-                        bids_df.loc[(bids_df['body_site']=='Left Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Leg') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
-                        bids_df.loc[(bids_df['body_site']=='Left Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Right Face') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), 
-                        bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean(), bids_df.loc[(bids_df['body_site']=='Abdomen') & (bids_df['repetition']!=1) & (bids_df['pain']==1) & (bids_df['tolerance']==1)]['intensity'].mean()])
+    averaged_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s_participants.tsv' % (int(SID),'bodyCalibration')
+    
+    # Define the body sites you are interested in
+    body_sites = [
+        'Left Arm', 'Right Arm', 'Left Leg', 'Right Leg', 
+        'Left Face', 'Right Face', 'Chest', 'Abdomen'
+    ]
+    
+    # Initialize an empty list for the averaged data
+    averaged_data = {
+        'date': date,
+        'DBIC Number': SID,
+        # 'age': calculate_age(date),
+        # 'dob': dob,  # dob seems to be the same as date here, which might be incorrect
+        'sex': sex,
+        'handedness': handedness,
+        'calibration_order': sorted_bodysites  # This assumes bodysites is a pre-calculated list or value
+    }
+    
+    # Loop over each body site and calculate the average temperature and intensity
+    for site in body_sites:
+        condition = (bids_df['body_site'] == site) & \
+                    (bids_df['repetition'] != 1) & \
+                    (bids_df['pain'] == 1) & \
+                    (bids_df['tolerance'] == 1)
+                    
+        averaged_data[f'{site.lower()}_ht'] = round_to_halfdegree(bids_df.loc[condition]['temperature'].mean())
+        averaged_data[f'{site.lower()}_i'] = bids_df.loc[condition]['intensity'].mean()
 
-    averaged_df = pd.DataFrame(data = [averaged_data], columns = ['date','DBIC_id','age','dob','sex','handedness','calibration_order',
-                                                        'leftarm_ht','rightarm_ht','leftleg_ht','rightleg_ht','leftface_ht','rightface_ht','chest_ht','abdomen_ht',
-                                                        'leftarm_i','rightarm_i','leftleg_i','rightleg_i','leftface_i','rightface_i','chest_i','abdomen_i'])
+    # Convert the dictionary to a DataFrame
+    averaged_df = pd.DataFrame([averaged_data])
 
-    w.close()
+    # Specify the column order if necessary
+    column_order = [
+        'date', 
+        'DBIC Number', 
+        # 'age', 
+        # 'dob', 
+        'sex', 
+        'handedness', 
+        'calibration_order'
+    ] + [f'{site.lower()}_ht' for site in body_sites] + [f'{site.lower()}_i' for site in body_sites]
 
+    averaged_df = averaged_df[column_order]
+    
+    # Save the participant summary
+    averaged_filename = os.path.join(sub_dir, f'sub-{SID}_task-bodyCalibration_participants.tsv')
+    averaged_df = pd.DataFrame([averaged_data])
+    averaged_df.to_csv(averaged_filename, sep='\t', index=False)
 
 # Should run something like this:
 # Python cannot handle Windows filepaths 
