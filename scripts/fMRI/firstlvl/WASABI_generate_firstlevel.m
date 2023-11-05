@@ -35,8 +35,15 @@
 % % FUNCS.runs=runs;
 % FUNCS.funcs;
 
+
 fmriprep_derivdir='\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\derivatives'
 bidsroot='\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\1080_wasabi'
+if isunix
+    fmriprep_derivdir=strrep(fmriprep_derivdir, '\', '/')
+    bidsroot=strrep(bidsroot, '\', '/')
+end
+
+space='MNI152NLin2009cAsym'
 
 function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
     % Step 1: Put in a firstlvl_derivdir full path.
@@ -64,19 +71,18 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
     subs = p.Results.subs;
 
     % Defaults for tasks
-    if isempty(task)
-        tasks = dir(fullfile(bidsroot, 'task-*'));
-        tasks = extractBetween({tasks.name}, 'task-', '_');
-        if isempty(tasks)
-            error('No tasks identified.');
-        end
+    tasks = dir(fullfile(bidsroot, 'task-*'));
+    tasks = extractBetween({tasks.name}, 'task-', '_');
+    if isempty(tasks(contains(tasks, task)))
+        error(['No tasks identified with keyword ' task]);
     else
-        tasks = {task}; % If task is specified, use it directly
+        tasks=task;
     end
+
 
     % Default for subs if not provided
     if isempty(subs)
-        subs = canlab_list_subjects(fullfile(firstlvl_derivdir), 'sub-*');
+        subs = canlab_list_subjects(firstlvl_derivdir, 'sub-*');
     end
 
     % Define the list of allowed templateflow standard spaces
@@ -97,81 +103,43 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
         sessions=canlab_list_subjects(fullfile(firstlvl_derivdir, subs{sub}), 'ses-*');
         for ses=1:numel(sessions)
             disp(['Processing images for ', subs{sub}, ' ', sessions{ses}]);
-            
-            % List out all of the functional scans in the MNI Space for each task
-            
-            % ses_funcs = dir('*MNI*preproc_bold.nii.gz');
-            % movemap_funcs = dir('*task-movemap*MNI*preproc_bold.nii.gz');                   % List out all of the functional scans in MNI space
-            % bodymap_funcs = dir('*task-bodymap*MNI*preproc_bold.nii.gz');                   % List out all of the functional scans in MNI space
-            % pinel_funcs = dir('*task-pinel*MNI*preproc_bold.nii.gz');                       % List out all of the functional scans in MNI space
-            % distractmap_funcs = dir('*task-distractmap*MNI*preproc_bold.nii.gz');           % List out all of the functional scans in MNI space
-            % acceptmap_funcs = dir('*task-acceptmap*MNI*preproc_bold.nii.gz');               % List out all of the functional scans in MNI space
-            % hyperalignment_funcs = dir('*task-hyperalignment*MNI*preproc_bold.nii.gz');     % List out all of the functional scans in MNI space
-            
+
             % For each subject: All funcs in the session:
-            ses_funcs = filenames(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, '**', ['*' space, '*desc-preproc_bold.nii.gz']));
+            % ses_funcs = filenames(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, '**', ['*' space, '*desc-preproc_bold.nii.gz']));
+            ses_funcs = dir(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, '**', ['*' space, '*desc-preproc_bold.nii.gz']));
+            ses_funcs = fullfile({ses_funcs(:).folder}', {ses_funcs(:).name}');
             
-            
-            
-            ses_funcs(find(contains(ses_funcs, task)))
-
-
             % Plot Session-Montage Comparison
             % For sessions involving multiple runs, Use plot montage to compare the runs for any potential troubleshooting
-            if(size(ses_funcs, 1) > 1 & ~exist([subs{sub}, '_', sessions{ses}, '_run-comparison-plot.fig'], 'file'))
+            if(size(ses_funcs, 1) > 1 && ~exist([subs{sub}, '_', sessions{ses}, '_run-comparison-plot.fig'], 'file'))
                 % ses_objs=create_fmridat_fromdir(ses_funcs); % This command takes a long time remotely. Best to run this directly on the cluster.
-                ses_objs=fmri_data(ses_funcs{1});
-                fmri_data('\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\derivatives\canlab_firstlvl\sub-SID000002\ses-01\func\run-01\sub-SID000002_ses-01_task-movemap_acq-mb8_run-01_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz')
+                try
+                    ses_objs=fmri_data(ses_funcs);
+                catch
+                    error(['Unable to generate fmri_data objects from ' ses_funcs '. Perhaps they are symlinks generated from a different operating system.'])
+                end
                 % Hopefully this is now implemented into fmri_data/plot()
                 
                 if size(ses_objs.image_names, 1) > 1
                     ses_objs=id_images_per_session(ses_objs);
-                    plot(ses_objs, 'montages', 'noorthviews', 'nooutliers') % Would be better if we can relabel these?
+                    plot(ses_objs, 'montages', 'noorthviews', 'nooutliers')
                     fig = gcf;
                     exportgraphics(fig, fullfile(firstlvl_derivdir, subs{sub}, sessions{ses},[subs{sub}, '_', sessions{ses}, '_run-comparison-plot.png']));
                     savefig(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, [subs{sub}, '_', sessions{ses}, '_run-comparison-plot.fig']));
                 end
             end
+            close all
             
             % For each subject's session:
             
             % DSGN_process_job(tasks)
             for t = 1:numel(tasks)
-                funcs=dir(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses},'func', '**', ['*',tasks{t},'*']));
+                funcs=dir(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses},'func', '**', ['*',tasks{t},'*desc-preproc_bold*']));
+                
                 if ~isempty(funcs) % If there are scans the pertain to the task
                     % 1. Generate a DSGN structure for that task and make a folder to
                     % house the .mat file it will reside in.
                     DSGN=generateDSGN(funcs);
-                    if ~isfolder(DSGN.modeldir)
-                        mkdir(DSGN.modeldir);
-                    end
-            
-                    % 2. Create and fmri_data object from those task scans, and compare
-                    % the mean EPIs across each run for the task
-                    for k=1:length(funcs)
-                        msg = [char(extractBetween(funcs(k), 'sub-','_ses')), '''s Session ', char(extractBetween(funcs(k), 'ses-','_task')), ', Run number ', char(extractBetween(movemap_funcs(k), 'run-','_space')), ' is a ', tasks{t}, '.'];
-                        disp(msg);
-                    end
-                    disp([num2str(length(funcs)), ''' functional ', tasks{t}, ' run(s).']);
-                    func_objs=create_fmridat_fromdir(funcs);
-            
-                    func_objs.images_per_session = [];
-                    for k=1:size(func_objs.image_names, 1)
-                        func_objs=id_images_per_session(func_objs);
-                        disp(['Run ', num2str(k), ': ', func_objs.image_names(k,:), ' has ', num2str(sum(contains(cellstr(func_objs.fullpath),strtrim(func_objs.image_names(k,:))))), ' images.']);
-                    end
-                    plot(func_objs, 'montages', 'noorthviews', 'nooutliers') % Would be better if we can relabel these? New changes to plot should have better labels
-                    fig = gcf;
-            
-                    % 3. Generate a metadata table
-                    % Metadata table should contain...list of DSGNs? 
-    
-            
-                    % 4. Save all your files
-                    save(fullfile(DSGN.modeldir,[tasks{t},'DSGN.mat']),'DSGN');
-                    save([tasks{t}, '_objs'], [tasks{t}, '_objs'], '-v7.3');
-                    savefig(fig, [subs{sub}, '_', sessions{ses}, '_', tasks{t},'_run-comparison-plot.fig']);
-                    exportgraphics(fig, [subs{sub}, '_', sessions{ses}, '_', tasks{t},'_run-comparison-plot.png']);
             
                 else
                     % If there is no matching task, then display this message:
@@ -180,7 +148,6 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
                 end
             
                 close all;
-            
             
             end
         end
