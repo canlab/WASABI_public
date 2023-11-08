@@ -172,7 +172,8 @@ InstructionText = "Experience the following sensations as they come."
 """
 if expInfo['body sites']=="":
     # bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-    bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Right Leg", "Abdomen"]
+    # bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Right Leg", "Abdomen"]
+    bodySites = ["Left Leg", "Chest"]
     random.shuffle(bodySites)
 else:
     bodySites=list(expInfo['body sites'].split(", "))
