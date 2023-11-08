@@ -171,9 +171,7 @@ InstructionText = "Experience the following sensations as they come."
 5. Configure the Body-Site for each run
 """
 if expInfo['body sites']=="":
-    # bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
-    # bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Right Leg", "Abdomen"]
-    bodySites = ["Left Leg", "Chest"]
+    bodySites = ["Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Chest", "Abdomen"]
     random.shuffle(bodySites)
 else:
     bodySites=list(expInfo['body sites'].split(", "))
@@ -237,7 +235,6 @@ bodyCalibration_bids=pd.DataFrame(columns=varNames)
 
 # Create python lists to later concatenate or convert into pandas dataframes
 bodyCalibration_bids_total = []
-bodyCalibration_bids_trial = []
 
 averaged_data = []
 
