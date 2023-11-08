@@ -121,7 +121,7 @@ expInfo = {
 'session': '',
 'handedness': '', 
 'scanner': '',
-'run': '10'
+'run': '1'
 }
 
 # Load the subject's calibration file and ensure that it is valid
@@ -222,8 +222,8 @@ expInfo['run']=int(expInfo['run'])
 """
 if expInfo['body sites']=="":
 
-    bodySites1 = ['Left Leg', 'Chest']
-    bodySites2 = ['Chest', 'Left Leg'] 
+    bodySites1 = ['Left Leg', 'Chest','Left Leg', 'Chest']
+    bodySites2 = ['Chest', 'Left Leg','Chest', 'Left Leg'] 
 
 
     if int(expInfo['DBIC Number'])%2==0:

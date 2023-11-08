@@ -17,7 +17,6 @@ Some measures have been taken to minimize experimental latency. PTB/Psychopy sty
 Data is written in BIDS 1.4.1 format, as separate tab-separated-value (.tsv) files for each run per subject, (UTF-8 encoding). 
 Following this format:
 all data headers are in lower snake_case.
-
 The design is as follows:
 1. Start with a 48 degree stimulation trial (to be thrown away)
 2. If not painful, increase the temperature by .5 degrees (max at 48.5)
@@ -236,7 +235,6 @@ bodyCalibration_bids=pd.DataFrame(columns=varNames)
 
 # Create python lists to later concatenate or convert into pandas dataframes
 bodyCalibration_bids_total = []
-bodyCalibration_bids_trial = []
 
 averaged_data = []
 

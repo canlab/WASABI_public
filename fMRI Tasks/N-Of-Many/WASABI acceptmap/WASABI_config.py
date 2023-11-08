@@ -46,10 +46,10 @@ debug = 0
 cheat=0
 autorespond = 0
 # Device togglers
-scanner_exists = 0
-biopac_exists = 0
+scanner_exists = 1
+biopac_exists = 1
 thermode_exists = 1
-eyetracker_exists = 0
+eyetracker_exists = 1
 
 stimTime=15
 nbackTrials=8   # Number of nback trials per nback round.

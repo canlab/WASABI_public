@@ -389,6 +389,7 @@ while turns <= turnLimit and score <= 70:
     NbackInstructions.setText(NbackInstructionText11)
     NbackInstructions.setAutoDraw(True)
     win.flip()
+    
     mouse = event.Mouse(win=win, visible=False)
     while(mouse.getPressed()[0] != 1):
         ClickPrompt.setText(ClickToStartText)

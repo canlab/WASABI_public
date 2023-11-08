@@ -1,0 +1,175 @@
+function WASABI_genfirstlvlDSGNs(bidsdir, subs, varargin)
+    % Input validation
+    if ~ischar(bidsdir) || ~isdir(bidsdir)
+        error('Invalid bidsdir. Please provide a valid directory path.');
+    end
+    
+    if ~iscell(subs)
+        error('Invalid subs argument. Please provide a cell array of subject IDs.');
+    end
+
+    for sub_idx = 1:numel(subs)
+        sub = subs{sub_idx};
+        sessions = canlab_list_subjects(fullfile(bidsdir, sub), 'ses-*');
+
+        for sess_idx = 1:numel(sessions)
+            sess = sessions{sess_idx};
+            disp(['Processing images for ', sub, '_', sess]);
+
+            tasks = dir(fullfile(bidsdir, sub, sess, 'func', 'task-*'));
+            tasks = erase({tasks.name}, {'task-', '.json'});
+
+            % Plot Session-Montage Comparison
+            plot_session_montage(bidsdir, sub, sess, tasks);
+
+            % Process each task
+            for t = 1:numel(tasks)
+                task = tasks{t};
+
+                % Check if varargin is provided and if the current task matches
+                if nargin > 2
+                    if ~any(strcmpi(task, varargin))
+                        continue; % Skip the task if not in varargin
+                    end
+                end
+
+                funcs = dir(fullfile(bidsdir, sub, sess, 'func', ['*task-', task, '*MNI*preproc_bold.nii.gz']));
+
+                % Check if there are scans that pertain to the task
+                if ~isempty(funcs)
+                    % 1. Generate a DSGN structure for that task and create a folder for it
+                    DSGN = generate_DSGN(funcs);
+                    if ~isfolder(DSGN.modeldir)
+                        mkdir(DSGN.modeldir);
+                    end
+
+                    % 2. Create an fmri_data object from those task scans and compare the mean EPIs across each run
+                    func_objs = create_fmridat_fromdir(funcs);
+                    func_objs = id_images_per_session(func_objs);
+                    plot_func_objs(func_objs, sub, sess, task);
+
+                    % 3. Generate a metadata table (if required)
+                    metadata_table = table();
+                    for k = 1:size(func_objs.image_names, 1)
+                        run_name = func_objs.image_names(k, :);
+                        num_images = func_objs.images_per_session(k);
+                        metadata_table = [metadata_table; table({run_name}, {sub}, {sess}, k, num_images)];
+                    end
+
+                    DSGN.metadata.table = metadata_table;
+                    
+                    % 4. Save all files
+                    save(fullfile(DSGN.modeldir, [task, 'DSGN.mat']), 'DSGN');
+                    save([task, '_objs'], [task, '_objs'], '-v7.3');
+                else
+                    % If there is no matching task, then display this message:
+                    disp(['No ', task, ' runs in this session.']);
+                end
+            end
+        end
+    end
+end
+
+function plot_session_montage(bidsdir, sub, sess, tasks)
+    ses_funcs = dir(fullfile(bidsdir, sub, sess, 'func', '*MNI*preproc_bold.nii.gz'));
+    
+    if size(ses_funcs, 1) > 1 && ~exist(fullfile(bidsdir, [sub, '_', sess, '_run-comparison-plot.fig']), 'file')
+        ses_objs = create_fmridat_fromdir(ses_funcs);
+        if size(ses_objs.image_names, 1) > 1
+            ses_objs = id_images_per_session(ses_objs);
+            plot(ses_objs, 'montages', 'noorthviews', 'nooutliers');
+            fig = gcf;
+            exportgraphics(fig, fullfile(bidsdir, [sub, '_', sess, '_run-comparison-plot.png']));
+            savefig(fig, fullfile(bidsdir, [sub, '_', sess, '_run-comparison-plot.fig']));
+        end
+    end
+end
+
+function DSGN = generate_DSGN(funcs)
+    % Placeholder for DSGN generation logic
+    % ...
+    DSGN = struct(); % Replace with actual DSGN structure
+    DSGN.modeldir = 'path/to/model/directory'; % Replace with actual directory
+end
+
+
+function plot_func_objs(func_objs, sub, sess, task)
+    plot(func_objs, 'montages', 'noorthviews', 'nooutliers');
+    fig = gcf;
+    savefig(fig, fullfile(bidsdir, [sub, '_', sess, '_', task, '_run-comparison-plot.fig']));
+    exportgraphics(fig, fullfile(bidsdir, [sub, '_', sess, '_', task, '_run-comparison-plot.png']));
+end
+
+
+% function DAT = create_fmridat_fromdir(dir_obj)
+%     names = {};
+%     for i=1:length(dir_obj)
+%         % Ensure we are concatenating only .nii files and unzipping .nii.gz files first
+%         [filepath, filename, fileext]=fileparts(dir_obj(i).name);
+%         if contains(fileext,'.gz') && ~exist(fullfile(filepath,filename))
+%             tic
+%             gunzip(fullfile(dir_obj(i).folder,dir_obj(i).name), dir_obj(i).folder);
+%             toc
+%             % Wait for the file to fully unzip
+%             while ~exist(fullfile(fullfile(dir_obj(i).folder,filename)))
+%                 pause(1);
+%             end
+%         end
+%         names{end+1} = [dir_obj(i).folder, filesep, erase(dir_obj(i).name,'.gz')];
+%     end
+%     DAT = fmri_data(names);
+% end
+
+function DAT = create_fmridat_fromdir(dir_obj)
+    num_files = length(dir_obj);
+    names = cell(num_files, 1);
+
+    for i = 1:num_files
+        [filepath, filename, fileext] = fileparts(dir_obj(i).name);
+        full_file_path = fullfile(dir_obj(i).folder, dir_obj(i).name);
+
+        % Ensure we are working with only .nii files and unzipping .nii.gz files first
+        if strcmpi(fileext, '.gz') && ~exist(fullfile(filepath, filename), 'file')
+            try
+                gunzip(full_file_path, dir_obj(i).folder);
+                % Wait for the file to fully unzip
+                while ~exist(fullfile(filepath, filename), 'file')
+                    pause(1);
+                end
+            catch
+                error(['Error unzipping file: ', full_file_path]);
+            end
+        end
+
+        names{i} = fullfile(filepath, [filename, '.nii']); % Add the '.nii' extension
+    end
+
+    % Load the fmri_data object
+    try
+        DAT = fmri_data(names);
+    catch
+        error('Error creating fmri_data object.');
+    end
+end
+
+
+function fmri_data = id_images_per_session(fmri_data)
+    % Problem with this right now is that different nifti images can have a different number of images.
+    fmri_data.images_per_session = [];
+    for k=1:size(fmri_data.image_names, 1)
+        fmri_data.images_per_session = [fmri_data.images_per_session sum(contains(cellstr(fmri_data.fullpath),strtrim(fmri_data.image_names(k,:))))];
+        disp(['Run ', num2str(k), ': ', fmri_data.image_names(k,:), ' has ', num2str(sum(contains(cellstr(fmri_data.fullpath),strtrim(fmri_data.image_names(k,:))))), ' images.']);
+    end
+end
+
+% function fmri_data = id_images_per_session(fmri_data)
+%     num_runs = size(fmri_data.image_names, 1);
+%     fmri_data.images_per_session = zeros(num_runs, 1);
+% 
+%     for k = 1:num_runs
+%         run_name = fmri_data.image_names(k, :);
+%         num_images = sum(contains(cellstr(fmri_data.fullpath), strtrim(run_name)));
+%         fmri_data.images_per_session(k) = num_images;
+%         disp(['Run ', num2str(k), ': ', run_name, ' has ', num2str(num_images), ' images.']);
+%     end
+% end
