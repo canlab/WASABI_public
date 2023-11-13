@@ -36,7 +36,15 @@
 % FUNCS.funcs;
 
 
-fmriprep_derivdir='\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\derivatives'
+%% Debugging
+if ~ismac() & ~ispc()
+    root = '/dartfs-hpc/rc/lab/C/CANlab/';
+    addpath(genpath([root, '/modules/spm12']));
+    addpath(genpath([root, '/labdata/projects/WASABI/software']));  % I put all of my tools in this folder.
+end
+
+derivdir='\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\derivatives'
+fmriprep_derivdir='\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\derivatives\fmriprep'
 bidsroot='\\dartfs-hpc\rc\lab\C\CANlab\labdata\data\WASABI\1080_wasabi'
 if isunix
     fmriprep_derivdir=strrep(fmriprep_derivdir, '\', '/')
@@ -44,20 +52,36 @@ if isunix
 end
 
 space='MNI152NLin2009cAsym'
+tasks={'bodymap' 'movemap' 'acceptmap' 'distractmap' 'pinellocalizer'}
 
-function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
+firstlvl_derivdir = fullfile(fileparts(fmriprep_derivdir), 'canlab_firstlvl')
+
+subs = canlab_list_subjects(firstlvl_derivdir, 'sub-*');
+
+spike_def='fmriprep';
+spike_def='CANlab';
+
+
+t=1
+sub=1
+ses=3
+
+sessions=canlab_list_subjects(fullfile(firstlvl_derivdir, subs{sub}), 'ses-*');
+
+function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, spike_def, omit_spike_trials, spikes_percent_threshold, vif_thresh, movement_reg_quadratic, subjs2analyze, dvars_threshold, spike_additional_vols, pmod_polynom, pmod_name, pmod_ortho_off, pmod_type, plotdesign, plotmontages, input_threshold, thresh_type, k, mask, varargin)
     % Step 1: Put in a firstlvl_derivdir full path.
     % Step 2: 
 
     if ~exist(fmriprep_derivdir, 'dir')
         error('No fmriprep directory named fmriprep...Cannot find or create firstlvl_derivdir. Run canlab_prep_bidsdir() first to create a first level directory.');
     else
-        firstlvl_derivdir = fullfile(fmriprep_derivdir, 'canlab_firstlvl')
+        firstlvl_derivdir = fullfile(fileparts(fmriprep_derivdir), 'canlab_firstlvl')
         if ~exist(firstlvl_derivdir, 'dir')
             warning('no canlab_firstlvl directory found. Creating one from fmriprep derivatives.')
             canlab_prep_bidsdir(fmriprepdir, 'datatype', 'func', 'outdir', firstlvl_derivdir);
         end
     end
+
 
     % Parse varargin for task, space, and subs
     p = inputParser;
@@ -76,7 +100,11 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
     if isempty(tasks(contains(tasks, task)))
         error(['No tasks identified with keyword ' task]);
     else
-        tasks=task;
+        if ~iscell(task)
+            tasks={task};
+        else
+            tasks=task;
+        end
     end
 
 
@@ -98,58 +126,96 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, varargin)
         error('The specified space "%s" is not one of the allowed templateflow standard spaces.', space);
     end
 
+    % MANDATORY REQUIRED
+    spike_def = 'fMRIprep';
+    spike_def = 'CANlab';
+    omit_spike_trials = 'no';
+    spikes_percent_threshold=0.15;
+    vif_thresh=2;
+    movement_reg_quadratic = true; % change to false if you don't want to add quadratic terms for movement parameters and their first-order derivatives
+    
+    % REQUIRED IF YOU HAVE PARAMETRIC MODULATORS
+    pmods.pmod_polynom = 1;
+    pmods.pmod_name = 'rating';
+    pmods.pmod_ortho_off = false;
+    pmods.pmod_type = 'parametric_standard';
+    
+    % SPIKE OPTIONS
+    spikes.dvars_threshold = 2; % REQUIRED if spike_def = 'CANlab'
+    spikes.spike_additional_vols=0; % OPTIONAL, NOT RECOMMENDED TO TURN ON
 
-    for sub = 1:numel(subs)
-        sessions=canlab_list_subjects(fullfile(firstlvl_derivdir, subs{sub}), 'ses-*');
-        for ses=1:numel(sessions)
-            disp(['Processing images for ', subs{sub}, ' ', sessions{ses}]);
+    % OPTIONAL
+    subjs2analyze = {}; % enter subjects separated by comma if you only want to analyze selected subjects e.g. {'sub-01','sub-02'}; THIS IS NOT YET FULLY IMPLEMENTED HENCE LEAVE CELL ARRAY EMPTY OR COMMENT OUT OR DO NOT SPECIFY FIELD AT ALL
+    bySubject = true; % true if you want to fit many sessions within subject, one subject at a time.
 
-            % For each subject: All funcs in the session:
-            % ses_funcs = filenames(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, '**', ['*' space, '*desc-preproc_bold.nii.gz']));
-            ses_funcs = dir(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, '**', ['*' space, '*desc-preproc_bold.nii.gz']));
-            ses_funcs = fullfile({ses_funcs(:).folder}', {ses_funcs(:).name}');
-            
-            % Plot Session-Montage Comparison
-            % For sessions involving multiple runs, Use plot montage to compare the runs for any potential troubleshooting
-            if(size(ses_funcs, 1) > 1 && ~exist([subs{sub}, '_', sessions{ses}, '_run-comparison-plot.fig'], 'file'))
-                % ses_objs=create_fmridat_fromdir(ses_funcs); % This command takes a long time remotely. Best to run this directly on the cluster.
-                try
-                    ses_objs=fmri_data(ses_funcs);
-                catch
-                    error(['Unable to generate fmri_data objects from ' ses_funcs '. Perhaps they are symlinks generated from a different operating system.'])
-                end
-                % Hopefully this is now implemented into fmri_data/plot()
-                
-                if size(ses_objs.image_names, 1) > 1
-                    ses_objs=id_images_per_session(ses_objs);
-                    plot(ses_objs, 'montages', 'noorthviews', 'nooutliers')
-                    fig = gcf;
-                    exportgraphics(fig, fullfile(firstlvl_derivdir, subs{sub}, sessions{ses},[subs{sub}, '_', sessions{ses}, '_run-comparison-plot.png']));
-                    savefig(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses}, [subs{sub}, '_', sessions{ses}, '_run-comparison-plot.fig']));
-                end
-            end
-            close all
-            
-            % For each subject's session:
-            
+    % OPTIONS FOR PLOTTTING, AND THRESHOLDING AND MASKING FIRST LEVEL IMAGES FOR DISPLAY
+    display.plotruncomparison = true;
+    display.plotdesign = true; % NOT RECOMMENDED TO TURN OFF
+    display.plotmontages = true; % NOT RECOMMENDED TO TURN OFF
+    display.input_threshold = 0.005;
+    display.thresh_type = 'unc';
+    display.k = 25;
+    display.mask = which('gray_matter_mask_sparse.img');
+    
+    % THE ABOVE OPTIONS CAN BE CONSIDERED LABGAS DEFAULTS, BUT MAY BE
+    % STUDY-SPECIFIC, SO DISCUSS WITH LUKAS IF IN DOUBT!
+    if strcmpi(spike_def,'CANlab')==1 && ~isfield(spikes,'dvars_threshold')
+        error('spike_def option %s requires specification of spikes.dvars_threshold, please specify before proceeding', mandatory.spike_def)
+    end
+
+
+
+
+
+    if bySubject
+        for sub = 1:numel(subs)
+            sessions=canlab_list_subjects(fullfile(firstlvl_derivdir, subs{sub}), 'ses-*');
+
             % DSGN_process_job(tasks)
-            for t = 1:numel(tasks)
-                funcs=dir(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses},'func', '**', ['*',tasks{t},'*desc-preproc_bold*']));
+            for ses=14:numel(sessions)
+                for t = 1:numel(tasks)
+
+                    % This line collects functional images from a single subject's session
+                    funcs=dir(fullfile(firstlvl_derivdir, subs{sub}, sessions{ses},'func', '**', ['*',tasks{t},'*desc-preproc_bold*']));
+                    
+                    if ~isempty(funcs) % If there are scans that pertain to the task
+                        % 1. Generate a DSGN structure for that task.
+                        % If running one subject's session at a time, print some feedback:
+                        [subject, session, run, ~] = getBIDSSubSesRunTask(funcs(1).name);
+                        disp(['Currently processing sub-', subject, '_ses-',session,'_run-',run, '_task-', tasks{t}]);
+                        DSGN=generateDSGN(funcs, firstlvl_derivdir, fmriprep_derivdir, tasks{t}, spike_def, 1);
+                    else
+                        % If there is no matching task, then display this message:
+                        disp(['No ', tasks{t}, ' runs for ', subs{sub}, ' session ', num2str(ses)]);
                 
-                if ~isempty(funcs) % If there are scans the pertain to the task
-                    % 1. Generate a DSGN structure for that task and make a folder to
-                    % house the .mat file it will reside in.
-                    DSGN=generateDSGN(funcs);
-            
-                else
-                    % If there is no matching task, then display this message:
-                    disp(['No ', tasks{t}, ' runs in this session.']);
-            
+                    end
+                
+                    close all;
                 end
             
-                close all;
-            
             end
+        end
+
+
+    else
+        % DSGN_process_job(tasks)
+        for t = 1:numel(tasks)
+            % This line would collect functional images from every subject
+            funcs=dir(fullfile(firstlvl_derivdir, '**','func', '**', ['*',tasks{t},'*desc-preproc_bold*']));
+            
+            if ~isempty(funcs) % If there are scans that pertain to the task
+                % Generate a DSGN structure for that task.
+                % Print some feedback:
+                disp(['Currently processing task-', tasks{t}]);
+                DSGN=generateDSGN(funcs, firstlvl_derivdir, fmriprep_derivdir, tasks{t}, spike_def, 1);
+            else
+                % If there is no matching task, then display this message:
+                disp(['No ', tasks{t}, ' runs detected in this study.']);
+        
+            end
+        
+            close all;
+        
         end
     end
 

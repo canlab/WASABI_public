@@ -101,7 +101,7 @@ function DSGN = generate_contrasts(task, DSGN)
                 {{'.*hot' '.*warm' '.*imagine'}, 'ImagineU', [-1 -1 2]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'SensationU', [1 1 -2]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'AversionU', [1 -2 1]}
-            };
+            }
 
         case 'movemap'
             task_contrasts.movemap = { 
@@ -121,25 +121,25 @@ function DSGN = generate_contrasts(task, DSGN)
                 {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'rightlegU', [-1 -1 -1 -1 -1 7 -1 -1]}
                 {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'chestU', [-1 -1 -1 -1 -1 -1 7 -1]}
                 {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'abdomenU', [-1 -1 -1 -1 -1 -1 -1 7]}
-                {{{'left.*'} {'right.*'}}, 'L_v_R Move', [1 -1]}
-            };
+                {{'left.*'} {'right.*'}}, 'L_v_R Move', [1 -1]};
+            }
         case 'acceptmap'
             task_contrasts.acceptmap = { 
                 {{'.*leftface'}, 'avgLeftface', [1]} 
                 {{'.*rightface'}, 'avgRightface', [1]} 
-            };
+            }
 
         case 'distractmap'
             task_contrasts.distractmap = { 
                 {{'.*leftface'}, 'avgLeftface', [1]} 
                 {{'.*rightface'}, 'avgRightface', [1]} 
-            };
+            }
 
         case 'pinellocalizer'
             task_contrasts.pinellocalizer = { 
                 {{'.*leftface'}, 'avgLeftface', [1]} 
                 {{'.*rightface'}, 'avgRightface', [1]} 
-            };
+            }
 
     end
 

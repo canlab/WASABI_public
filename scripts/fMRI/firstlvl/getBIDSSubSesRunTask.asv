@@ -1,0 +1,12 @@
+function [sub, ses, run, task] = getBIDSSubSesRunTask(bids_filename)
+    % Extracts sub, ses, run, and task values from a bids filename or cell
+    % array of bids filenames
+    % 11/7/2023: Michael Sun, Ph.D.
+
+    sub = char(extractBetween(bids_filename, "sub-", "_ses"));
+    ses = char(extractBetween(bids_filename, "ses-", "_task"));
+    run = char(extractBetween(bids_filename, "run-", "_"));
+    task = char(extractBetween(bids_filename, "task-", "_"));
+
+    
+end
