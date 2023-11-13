@@ -24,7 +24,7 @@ from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
 
 
-biopac_exists = 0
+biopac_exists = 1
 """
 0c. Prepare Devices: Biopac Psychophysiological Acquisition
 """  
@@ -354,7 +354,7 @@ else:
 # SETUP DEVICES
 if test == 1:
     winSize = testWinSize
-    fullScr = True
+    fullScr = False
     screen = 0
 else:
     winSize = expWinSize
@@ -450,13 +450,13 @@ ho_pic2 = os.path.join(stim_dir, 'checherboardHpb.bmp')
 
 # create image objects for checkerboards
 ho_check1 = visual.ImageStim(window, image=ho_pic1, name=os.path.split(ho_pic1)[-1],
-                             pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
+                             pos=(0.0, 0.0), size=(2,2))  # this stim changes too much for autologging to be useful
 ho_check2 = visual.ImageStim(window, image=ho_pic2, name=os.path.split(ho_pic2)[-1],
-                             pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
+                             pos=(0.0, 0.0), size=(2,2))  # this stim changes too much for autologging to be useful
 vert_check1 = visual.ImageStim(window, image=vert_pic1, name=os.path.split(vert_pic1)[-1],
-                               pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
+                               pos=(0.0, 0.0), size=(2,2))  # this stim changes too much for autologging to be useful
 vert_check2 = visual.ImageStim(window, image=vert_pic2, name=os.path.split(vert_pic2)[-1],
-                               pos=(0.0, 0.0), size=window.size)  # this stim changes too much for autologging to be useful
+                               pos=(0.0, 0.0), size=(2,2))  # this stim changes too much for autologging to be useful
 check = [vert_check1, vert_check2, ho_check1, ho_check2]  # list of stimuli objects for the images
 
 # onset type
@@ -640,7 +640,6 @@ for key, task in task_order.items():
 
         preztime = clock.getTime() - experimentStart        
         trial_start = clock.getTime()
-        print(f"Trial start time: {trial_start}")
         
         timer.add(checker_dur)  # add 1.3 to the timer
         while timer.getTime() < 0:
@@ -664,18 +663,9 @@ for key, task in task_order.items():
                     stim = check[3]
 
                 stim.draw()
-                
-                # Record the time just before the flip
-                pre_flip_time = clock.getTime()
-                
                 window.flip()
-                
-                # Record the time just after the flip
-                post_flip_time = clock.getTime()
-                print(f"Flip interval: {post_flip_time - pre_flip_time}")
 
             duration = clock.getTime() - trial_start
-            print(f"Trial duration: {duration}")
 
         # Present SOA from ITIs List
         Text.text = '+'
@@ -684,12 +674,15 @@ for key, task in task_order.items():
             window.callOnFlip(biopac.setData, biopac, 0)
             window.callOnFlip(biopac.setData, biopac, word2biopaccode['fixation'])
         window.flip()
+        
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
             pass
 
     # if type is audio file
     elif "audio" in key:
+        # Record the time just before the flip
+        pre_flip_time = clock.getTime()
         name = os.path.split(task)[-1]
         # audio press right task
         if "press_right" in task:
@@ -757,6 +750,7 @@ for key, task in task_order.items():
             timer.add(duration)  # is this supposed to be .8 or 1.3
             while timer.getTime() < 0:
                 pass
+        print('Audio Duration: %s' % duration)
         
         # Present SOA
         Text.text = '+'
@@ -771,6 +765,9 @@ for key, task in task_order.items():
 
     # "visual" in key - ex sentences, subtraction, press left/right, blank
     else:
+        # Record the time just before the flip
+        pre_flip_time = clock.getTime()
+        
         name = str(task)
         # if blank
         if "blank" in task:
@@ -784,7 +781,7 @@ for key, task in task_order.items():
                 pass
             duration = clock.getTime() - trial_start
 
-        else:
+        else:            
             preztime = clock.getTime() - experimentStart
             trial_start = clock.getTime()
             i = 0
@@ -824,6 +821,11 @@ for key, task in task_order.items():
             window.callOnFlip(biopac.setData, biopac, 0)
             window.callOnFlip(biopac.setData, biopac, word2biopaccode['fixation'])
         window.flip()
+        
+        # Record the time just after the flip
+        post_flip_time = clock.getTime()
+        print(f"Flip interval: {post_flip_time - pre_flip_time}")
+        
         timer.add(ITIs[ITI_counter] - duration)
         while timer.getTime() < 0:
             pass
