@@ -1,16 +1,206 @@
 function run_firstlevel_DSGN(firstlvl_dir, task, sub, sess, events_dat, noise_dat, R, mdl_path, varargin)
-    DSGN_objs=dir(fullfile(firstlvl_dir, '**/firstlvl/bodymap*/*.mat'))
     
-    % Remove DSGN Objects you don't want to process.
-    files=fullfile({DSGN_objs(:).folder}', {DSGN_objs(:).name}');
+
+    % check whether spm subdirs are on path, add if needed
     
-    for i = 1:length(files)
-        load(files(i));
-    %     DSGN=DSGN.(erase(DSGN_objs(i).name, '.mat'))
-        % DSGN=DSGN.DSGN;
+    spmcanonicaldir = fullfile(spmrootdir,'canonical');
+        if sum(contains(matlabpath,spmcanonicaldir)) == 0
+            addpath(spmcanonicaldir,'-end');
+            warning('\nadding %s to end of Matlab path',spmcanonicaldir)
+        end
+    spmconfigdir = fullfile(spmrootdir,'config');
+        if sum(contains(matlabpath,spmconfigdir)) == 0
+            addpath(spmconfigdir,'-end');
+            warning('\nadding %s to end of Matlab path',spmconfigdir)
+        end
+    spmmatlabbatchdir = fullfile(spmrootdir,'matlabbatch');
+        if sum(contains(matlabpath,spmmatlabbatchdir)) == 0
+            addpath(spmmatlabbatchdir,'-end');
+            warning('\nadding %s to end of Matlab path',spmmatlabbatchdir)
+        end
+    spmtoolboxdir = fullfile(spmrootdir,'toolbox');
+        if sum(contains(matlabpath,spmtoolboxdir)) == 0
+            addpath(spmtoolboxdir,'-end');
+            warning('\nadding %s to end of Matlab path',spmtoolboxdir)
+        end
+        
+    % check whether CANlab Github repos are cloned and on Matlab path, clone and/or add if needed
     
-        canlab_glm_subject_levels(DSGN, 'overwrite')
-    %     canlab_glm_subject_levels(DSGN, 'onlycons')
+      % CANLABCORE
+        canlabcoredir = fullfile(githubrootdir,'CanlabCore');
+            if ~isfolder(canlabcoredir) % canlabcore not yet cloned
+              canlabcoreurl = "https://github.com/canlab/CanlabCore.git";
+              canlabcoreclonecmd = ['git clone ' canlabcoreurl];
+              cd(githubrootdir);
+              [status,cmdout] = system(canlabcoreclonecmd);
+              disp(cmdout);
+                  if status == -0
+                      addpath(genpath(canlabcoredir,'-end'));
+                      warning('\ngit succesfully cloned %s to %s and added repo to Matlab path',canlabcoreurl, canlabcoredir)
+                  else
+                      error('\ncloning %s into %s failed, please try %s in linux terminal before proceeding, or use Gitkraken',canlabcoreurl,canlabcoredir,canlabcoreclonecmd)
+                  end
+              cd(rootdir);
+              clear status cmdout
+            elseif ~exist('fmri_data.m','file') % canlabcore cloned but not yet on Matlab path
+                addpath(genpath(canlabcoredir),'-end');
+            end
+            
+      % CANLABPRIVATE
+        canlabprivdir = fullfile(githubrootdir,'CanlabPrivate');
+            if ~isfolder(canlabprivdir) % canlabprivate not yet cloned
+              canlabprivurl = "https://github.com/canlab/CanlabPrivate.git";
+              canlabprivclonecmd = ['git clone ' canlabprivurl];
+              cd(githubrootdir);
+              [status,cmdout] = system(canlabprivclonecmd);
+              disp(cmdout);
+                  if status == -0
+                      addpath(genpath(canlabprivdir,'-end'));
+                      warning('\ngit succesfully cloned %s to %s and added repo to Matlab path',canlabprivurl, canlabprivdir)
+                  else
+                      error('\ncloning %s into %s failed, please try %s in linux terminal before proceeding, or use Gitkraken',canlabprivurl,canlabprivdir,canlabprivclonecmd)
+                  end
+              cd(rootdir);
+              clear status cmdout
+            elseif ~exist('power_calc.m','file') % canlabprivate cloned but not yet on Matlab path
+                addpath(genpath(canlabprivdir),'-end');
+            end
+
     
+
+
+
+
+        fprintf('\nRunning on subject directory %s\n',DSGN.subjects{sub});
+        canlab_glm_subject_levels(DSGN,'subjects',DSGN.subjects(sub),'overwrite','nolinks','noreview');
+        
+        if isfield(DSGN,'singletrials')
+        
+        load(fullfile(subjfirstdir,'SPM.mat'));
+        betas = SPM.xX.name;
+        
+            for cond = 1:size(DSGN.singletrials{1},2)
+                if DSGN.singletrials{1}{cond}
+                    betas_cond{cond} = betas(contains(betas,DSGN.conditions{1}{cond}));
+                end
+            end
+            
+        betas_ofint = {}; % preallocate
+        trial=1;
+        
+            while trial <= size(betas_cond,2)
+                betas_ofint = [betas_ofint,betas_cond{trial}];
+                trial=trial+1;
+            end
+            
+        clear trial
+            
+        weights = cell(1,size(betas_ofint,2)); % preallocate
+        connames = cell(1,size(betas_ofint,2)); % preallocate
+        
+            for trial = 1:size(betas_ofint,2)
+                weights{trial} = strcmp(betas_ofint{trial},betas);
+                weights{trial} = double(weights{trial});
+                connames{trial} = betas_ofint{trial};
+                betas_ofint{trial} = {{betas_ofint{trial}}};
+            end
+
+        [matlabbatch,connames,contrast_vectors] = canlab_spm_contrast_job_single_trials_lukasvo(subjfirstdir,betas_ofint,'weights',weights,'names',connames,'nodelete');
+
+        end
+
+        
+    %% DIAGNOSE FIRST LEVEL MODEL
+    
+    if LaBGAS_options.display.plotdesign || LaBGAS_options.display.plotmontages
+    
+        subjfirstdiagnosedir = fullfile(subjfirstdir,'diagnostics');
+            if ~exist(subjfirstdiagnosedir,'dir')
+                mkdir(subjfirstdiagnosedir);
+            end
+
+        cd(subjfirstdiagnosedir);
+
+        diagnose_struct = struct('useNewFigure',false,'maxHeight',800,'maxWidth',1600,...
+            'format','html','outputDir',subjfirstdiagnosedir,...
+            'showCode',true);
+
+        % STUDY-SPECIFIC: replace LaBGAScore with name of study-specific script in code below
+        publish('LaBGAScore_firstlevel_s3_diagnose_model.m',diagnose_struct)
+        delete('High_pass_filter_analysis.png','Variance_Inflation.png','LaBGAScore_firstlevel_s3_diagnose_model.png'); % getting rid of some redundant output images due to the use of publish()
+        
     end
+    
+    cd(rootdir);
+
+    %% VIFS AND DESIGN
+    % -------------------------------------------------------------------------
+
+    vifs = scn_spm_design_check(subjfirstdir,'events_only','vif_thresh',LaBGAS_options.mandatory.vif_thresh);
+    drawnow, snapnow
+    save('vifs','vifs');
+    close all
+
+    %% FIRST LEVEL MAPS
+    % -------------------------------------------------------------------------
+    
+    if LaBGAS_options.display.plotmontages
+    
+        load(fullfile(subjfirstdir,'SPM.mat'));
+    
+        tmapnames = dir(fullfile(subjfirstdir,'spmT_*.nii'));
+        tmapspaths = cell(1,size(tmapnames,1));
+        tmapsobj = cell(1,size(tmapnames,1));
+        montages = cell(1,size(tmapnames,1));
+    
+        [~,maskname,maskext] = fileparts(LaBGAS_options.display.mask);
+        mask = [maskname,maskext];
+        mask_img = fmri_mask_image(LaBGAS_options.display.mask,'noverbose');
+        target = fullfile(tmapnames(1).folder,tmapnames(1).name);
+        mask_img = resample_space(mask_img,target); % resample mask space to T-map space
+        mask_img.dat(mask_img.dat > 0) = 1; % binarize resampled mask
+    
+        fprintf('\nShowing results at p < %s %s, k = %s, mask = %s\n',num2str(LaBGAS_options.display.input_threshold),LaBGAS_options.display.thresh_type,num2str(LaBGAS_options.display.k),mask); 
+    
+            for tmap = 1:size(tmapnames,1)
+                tmapspaths{tmap} = fullfile(tmapnames(tmap).folder,tmapnames(tmap).name);
+                tmapsobj{tmap} = statistic_image('image_names',tmapspaths{tmap},'type','T','dfe',SPM.xX.erdf);
+                tmapsobj{tmap} = threshold(tmapsobj{tmap},LaBGAS_options.display.input_threshold,LaBGAS_options.display.thresh_type,'k',LaBGAS_options.display.k,'mask',mask_img);
+                create_figure('fmridisplay');
+                wh_montage = 5;
+                axis off
+                figtitle = DSGN.contrastnames{tmap};
+                o3 = canlab_results_fmridisplay([],'outline','linewidth',0.5,'montagetype','compact','overlay','mni_icbm152_t1_tal_nlin_sym_09a_brainonly.img');
+                o3 = addblobs(o3,tmapsobj{tmap},'splitcolor',{[.1 .8 .8] [.1 .1 .8] [.9 .4 0] [1 1 0]});
+                [o3,title_handle] = title_montage(o3,wh_montage,figtitle);
+                set(title_handle,'FontSize',18);
+                fighan = activate_figures(o3);
+                f3 = fighan{1};
+                f3.Tag = figtitle;
+                f3.WindowState = 'maximized';
+                drawnow,snapnow
+                close(f3)
+                clear figtitle o3 title_handle fighan f3
+            end
+            
+    end
+    
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    DSGN_objs=dir(fullfile(firstlvl_dir, '**/firstlvl/bodymap*/*.mat'))
+        
+        % Remove DSGN Objects you don't want to process.
+        files=fullfile({DSGN_objs(:).folder}', {DSGN_objs(:).name}');
+        
+        for i = 1:length(files)
+            load(files(i));
+        %     DSGN=DSGN.(erase(DSGN_objs(i).name, '.mat'))
+            % DSGN=DSGN.DSGN;
+        
+            canlab_glm_subject_levels(DSGN, 'overwrite')
+        %     canlab_glm_subject_levels(DSGN, 'onlycons')
+        
+        end
 end

@@ -1,4 +1,4 @@
-function [contrasts, contrastweights, contrastnames] = generate_contrasts(task)
+function DSGN = generate_contrasts(task, DSGN)
     % GENERATE_CONTRASTS Generate SPM-style contrasts for different tasks in your study
     % 
     % Usage:
@@ -18,9 +18,13 @@ function [contrasts, contrastweights, contrastnames] = generate_contrasts(task)
     % Author: Michael Sun, Ph.D.
     % Date: 10/24/2023
 
-    contrasts = {};
-    contrastweights = {};
-    contrastnames = {};
+    DSGN.contrasts = {};
+    DSGN.contrastweights = {};
+    DSGN.contrastnames = {};
+    DSGN.regmatching = 'regexp'; % regular experession mode to match keywords you provide in cell arrays below with beta regressor names stored in the SPM.Vbeta.descrip field of your first level SPM.mat file
+    % DSGN.defaultsuffix = '\*bf\(1\)$'; % adds this suffix to each keyword, which is SPM parlance for 'convolved with basis function 1'.
+    % DSGN.noscale = true; % default: false; if true, turn off scaling of contrasts to sum up to zero or one, not recommended if you have unequal amounts of run between subjects, unless you concatenate
+    
     
     %% USER TODO:
     % Define the contrast information for each of your tasks
@@ -42,6 +46,105 @@ function [contrasts, contrastweights, contrastnames] = generate_contrasts(task)
     
     % ... (define contrasts for other tasks)
 
+    
+    % CONTRASTS
+    
+    % OPTIONAL FIELDS
+    
+    % flexible definition of contrasts - for more info
+    % - help canlab_spm_contrast_job_luka
+    % - https://github.com/canlab/CanlabCore/blob/master/CanlabCore/GLM_Batch_tools/canlab_glm_example_DSGN_setup.txt
+    
+
+
+    % Example: {{contrast}, 'contrastname', [contrast_matrix]}
+
+%     task_contrasts.lukasStudy={
+%             % Unmodulated Contrasts
+%             {{'.*sucrose{1}\s[^x]'}, 'sucrose unmodulated', [1]}
+%             {{'.*erythritol{1}\s[^x]'}, 'erythritol unmodulated', [1]}
+%             {{'.*sucralose{1}\s[^x]'}, 'sucralose unmodulated', [1]}
+%             {{'.*water{1}\s[^x]'}, 'water unmodulated', [1]}
+%             {{{'.*sucrose{1}\s[^x]'} {'.*water{1}\s[^x]'}}, 'sucrose unmodulated vs water unmodulated', [1 -1]}
+%             {{{'.*erythritol{1}\s[^x]'} {'.*water{1}\s[^x]'}}, 'erythritol unmodulated vs water unmodulated', [1 -1]}
+%             {{{'.*sucralose{1}\s[^x]'} {'.*water{1}\s[^x]'}}, 'sucralose unmodulated vs water unmodulated', [1 -1]}
+%             {{{'.*sucrose{1}\s[^x]'} {'.*sucralose{1}\s[^x]'}}, 'sucrose unmodulated vs sucralose unmodulated', [1 -1]}
+%             {{{'.*sucrose{1}\s[^x]'} {'.*erythritol{1}\s[^x]'}}, 'sucrose unmodulated vs erythritol unmodulated', [1 -1]}
+%             {{{'.*erythritol{1}\s[^x]'} {'.*sucralose{1}\s[^x]'}}, 'erythritol unmodulated vs sucralose unmodulated', [1 -1]}
+%             % Modulated Contrasts
+%             {{'.*liking_sucrose'}, 'sucrose modulated', [1]}
+%             {{'.*liking_erythritol'}, 'erythritol modulated', [1]}
+%             {{'.*liking_sucralose'}, 'sucralose modulated', [1]}
+%             {{'.*liking_water'}, 'water modulated', [1]}
+%             {{{'.*liking_sucrose'} {'.*liking_water'}}, 'sucrose modulated vs water modulated', [1 -1]}
+%             {{{'.*liking_erythritol'} {'.*liking_water'}}, 'erythritol modulated vs water modulated', [1 -1]}
+%             {{{'.*liking_sucralose'} {'.*liking_water'}}, 'sucralose modulated vs water modulated', [1 -1]}
+%             {{{'.*liking_sucrose'} {'.*liking_sucralose'}}, 'sucrose modulated vs sucralose modulated', [1 -1]}
+%             {{{'.*liking_sucrose'} {'.*liking_erythritol'}}, 'sucrose modulated vs erythritol modulated', [1 -1]}
+%             {{{'.*liking_erythritol'} {'.*liking_sucralose'}}, 'erythritol modulated vs sucralose modulated', [1 -1]}
+%         }
+
+
+    switch task
+        case 'bodymap'
+            task_contrasts.bodymap={ 
+                {{'.*hot'}, 'Hot', [1]} 
+                {{'.*warm'}, 'Warm', [1]} 
+                {{'.*imagine'}, 'Imagine', [1]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'Sensation', [1 1 0]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'Aversion', [1 0 1]}
+                {{{'.*hot'} {'.*warm'}}, 'HotvsWarm', [1 -1]}
+                {{{'.*hot'} {'.*imagine'}}, 'HotvsImagine', [1 -1]}
+                {{{'.*warm'} {'.*imagine'}}, 'WarmvsImagine', [1 -1]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'HotU', [2 -1 -1]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'WarmU', [-1 2 -1]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'ImagineU', [-1 -1 2]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'SensationU', [1 1 -2]}
+                {{'.*hot' '.*warm' '.*imagine'}, 'AversionU', [1 -2 1]}
+            };
+
+        case 'movemap'
+            task_contrasts.movemap = { 
+                {{'leftface.*'}, 'Leftface', [1]}
+                {{'rightface.*'}, 'Rightface', [1]}
+                {{'leftarm.*'}, 'Leftarm', [1]}
+                {{'rightarm.*'}, 'Rightarm', [1]}
+                {{'leftleg.*'}, 'Leftleg', [1]}
+                {{'rightleg.*'}, 'Rightleg', [1]}
+                {{'chest.*'}, 'Chest', [1]}
+                {{'abdomen.*'} 'Abdomen', [1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'leftfaceU', [7 -1 -1 -1 -1 -1 -1 -1]}        
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'rightfaceU', [-1 7 -1 -1 -1 -1 -1 -1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'leftarmU', [-1 -1 7 -1 -1 -1 -1 -1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'rightarmeU', [-1 -1 -1 7 -1 -1 -1 -1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'leftlegU', [-1 -1 -1 -1 7 -1 -1 -1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'rightlegU', [-1 -1 -1 -1 -1 7 -1 -1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'chestU', [-1 -1 -1 -1 -1 -1 7 -1]}
+                {{'leftface.*' 'rightface'.* 'leftarm.*' 'rightarm.*' 'leftleg.*' 'rightleg.*' 'chest.*' 'abdomen.*'}, 'abdomenU', [-1 -1 -1 -1 -1 -1 -1 7]}
+                {{{'left.*'} {'right.*'}}, 'L_v_R Move', [1 -1]}
+            };
+        case 'acceptmap'
+            task_contrasts.acceptmap = { 
+                {{'.*leftface'}, 'avgLeftface', [1]} 
+                {{'.*rightface'}, 'avgRightface', [1]} 
+            };
+
+        case 'distractmap'
+            task_contrasts.distractmap = { 
+                {{'.*leftface'}, 'avgLeftface', [1]} 
+                {{'.*rightface'}, 'avgRightface', [1]} 
+            };
+
+        case 'pinellocalizer'
+            task_contrasts.pinellocalizer = { 
+                {{'.*leftface'}, 'avgLeftface', [1]} 
+                {{'.*rightface'}, 'avgRightface', [1]} 
+            };
+
+    end
+
+
+
     if isempty(fieldnames(task_contrasts))
         error('No tasks defined, please define your tasks first to generate contrasts.');
     end
@@ -54,12 +157,12 @@ function [contrasts, contrastweights, contrastnames] = generate_contrasts(task)
         
         for i = 1:num_contrasts
             contrast_info = task_data{i};
-            contrasts{end+1} = contrast_info{1};
-            contrastnames{end+1} = contrast_info{2};
+            DSGN.contrasts{end+1} = contrast_info{1};
+            DSGN.contrastnames{end+1} = contrast_info{2};
             if isempty(contrast_info{3})
-                contrastweights{end+1} = ones(1, length(contrast_info{1}));
+                DSGN.contrastweights{end+1} = ones(1, length(contrast_info{1}));
             else
-                contrastweights{end+1} = contrast_info{3};
+                DSGN.contrastweights{end+1} = contrast_info{3};
             end
         end
     else
