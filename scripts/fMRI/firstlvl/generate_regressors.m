@@ -1,4 +1,4 @@
-function [condition_names, onsets, durations, pmods] = generate_regressors(task, events_dat, noise_dat, R, spike_def, mdl_path, varargin)
+function [condition_names, onsets, durations, pmods] = generate_regressors(func_fname, events_fname, noise_fname, mdl_path, varargin)
     % GENERATE_REGRESSORS Generate regressors for first-level modeling in SPM.
     %
     % This function generates regressors for specified tasks in BIDS datasets.
@@ -27,17 +27,17 @@ function [condition_names, onsets, durations, pmods] = generate_regressors(task,
     % Author: Michael Sun, Ph.D.
     % Date: 10/24/2023
 
+    % Housekeeping
     p = inputParser;
-    addRequired(p, 'task', @ischar);
-    addRequired(p, 'events_dat', @istable);
+    addRequired(p, 'func_fname', @ischar);
+    addRequired(p, 'events_dat', @is);
     addRequired(p, 'noise_dat', @istable);
-    addRequired(p, 'R', @isnumeric);
     addRequired(p, 'mdl_path', @ischar);
     % Add optional ons_dur parameter with default column names 'onset' and 'duration'
     addParameter(p, 'ons_dur', {{'onset', 'duration'}}, @(x) iscell(x) && all(cellfun(@(y) iscell(y) && length(y) == 2, x)));
     
     % Parse the inputs
-    parse(p, task, events_dat, noise_dat, R, mdl_path, varargin{:});
+    parse(p, events_dat, noise_dat, mdl_path, varargin{:});
  
     % Retrieve ons_dur argument
     ons_dur={{'onset', 'duration'}};
@@ -45,9 +45,10 @@ function [condition_names, onsets, durations, pmods] = generate_regressors(task,
         ons_dur{i} = p.Results.ons_dur{i-1};
     end
 
-
     [sub, ses, run, ~]=getBIDSSubSesRunTask(mdl_path);
+    events_dat=importBIDSfile(events_fname);
 
+    % Begin extracting regressors:
     for i = 1:numel(ons_dur)
         % Check if onset and duration columns exist
         if ~ismember(ons_dur{i}{1}, events_dat.Properties.VariableNames)
@@ -127,7 +128,6 @@ function [condition_names, onsets, durations, pmods] = generate_regressors(task,
         end
     end
 
-
     %% 3. Save condition structs
     condition_names = fieldnames(conditions_struct);
     onsets={};
@@ -141,11 +141,12 @@ function [condition_names, onsets, durations, pmods] = generate_regressors(task,
     end
     
     %% 5. create noise vector design
-    % Assuming that noise_dat is a table and R is a matrix
-    [R, R_added, R_hdr] = create_noise_vector(noise_dat, R, mdl_path, spike_def);
+    % Input noise regressor options into noiseopts if desired.
+    [R, R_hdr, n_spikes, n_spike_pct] = create_noise_regressors(func_fname, noise_fname);
+    save(fullfile(mdl_path, 'noise_model.mat'), 'R', 'R_hdr', 'n_spikes', 'n_spike_pct');
 
     %% 6. Export noise plots
-    export_noise_plots(R_added, R_hdr, mdl_path, sub, ses, run, task);
+    export_noise_plots(func_fname, R, R_hdr);
 
     %% 7. PMods
     % Configure pmods
@@ -156,120 +157,39 @@ end
     
 
 %% Helper Functions:
-% These noise functions follow the typical first-level workflow of the
-% CANLab, which regressed out CSF but not white-matter, and accounts for 24
-% motion regressors (i.e., x,y,z,pitch,yaw,roll,and derivatives). Edit
-% below if you have different needs:
-
-
-function [R, R_added, R_hdr] = create_noise_vector(noise_dat, R, mdl_path, spike_def)
-    R_nuisance = [];
-    R_hdr = {};
-    noise_hdr = noise_dat.Properties.VariableNames;
-
-    % Collect all header indices with specified nuisance regressors
-    
-    % ==CANLAB Standard 1st-Level Nuisance Covariates==
-    % 1a. Top k Anatomical Component-Based Noise Correction (aCompCorr) Covariates
-    %   aCompCorr is a method to reduce noise in fMRI.
-    %   acompcor_idx=find(contains(noise_dat.Properties.VariableNames,'a_comp_cor'));
-    %   acompcor_idx=acompcor_idx(1:min(10, end)); % This grabs the top 10 components.
-
-    % 1b. CSF and/or White Matter
-    csf_idx=find(contains(noise_dat.Properties.VariableNames,'csf'));
-    csf_idx=csf_idx(1);
-    R_nuisance = [R_nuisance, csf_idx];
-    R_hdr{end+1}='csf';
-
-    % wm_idx=find(contains(noise_dat.Properties.VariableNames,'white_matter'));
-    % wm_idx=wm_idx(1);
-    % R_nuisance = [R_nuisance, wm_idx];
-    % R_hdr{end+1}='wm';
-
-    % 1c. (6, 12, or 24) Movement Parameters
-    
-    % 6 Movement Parameters
-    % search_strings = {'trans_x', 'trans_y', 'trans_z','rot_x','rot_y','rot_z'};
-    % m_idx = find(cellfun(@(x) any(strcmp(x, search_strings)), noise_hdr));
-    % R_hdr=[R_hdr, {'trans_x', 'trans_y', 'trans_z','rot_x','rot_y','rot_z'}];
-
-    % 12 Movement Parameters
-    % search_strings = {'trans_x', 'trans_y', 'trans_z','rot_x','rot_y','rot_z', ...
-    % 'trans_x_derivative1', 'trans_y_derivative1', 'trans_z_derivative1', ...
-    % 'rot_x_derivative1','rot_y_derivative1','rot_z_derivative1'};
-    % m_idx = find(cellfun(@(x) any(strcmp(x, search_strings)), noise_hdr));
-    % R_hdr=[R_hdr, {'trans_x', 'trans_y', 'trans_z','rot_x','rot_y','rot_z', ...
-    % 'trans_x_derivative1', 'trans_y_derivative1', 'trans_z_derivative1', ...
-    % 'rot_x_derivative1','rot_y_derivative1','rot_z_derivative1'}];
-    
-    % 24 Movement Parameters
-    xindex = find(strcmp(noise_hdr, 'trans_x') == 1);
-    m_idx = [xindex:xindex + 23];
-    R_nuisance = [R_nuisance, m_idx];
-    R_hdr=[R_hdr, noise_hdr([xindex:xindex + 23])];
-    
-    % 1d. If we allow fmriprep to define our rmssd and dvars, here's what
-    % we might do:
-    if strcmpi(spike_def, 'fmriprep')
-        dvars_idx=find(strcmpi(noise_dat.Properties.VariableNames,'dvars'));
-        % fd_idx=find(strcmpi(noise_dat.Properties.VariableNames,'framewise_displacement'));
-        rmsd_idx=find(strcmpi(noise_dat.Properties.VariableNames,'rmsd'));
-        % mout_idx=find(contains(noise_dat.Properties.VariableNames,'motion_outlier'));
-        % R_nuisance = [R_nuisance, dvars_idx, fd_idx, rmsd_idx, mout_idx];
-        % R_hdr=[R_hdr, noise_hdr([dvars_idx, fd_idx, rmsd_idx, mout_idx])];
-        R_nuisance = [R_nuisance, dvars_idx, rmsd_idx];
-        R_hdr=[R_hdr, noise_hdr([dvars_idx, rmsd_idx])];
-
-    end
-
-    % 1e. Average-interpolation over any nan-values
-    for n = R_nuisance
-        this_col = noise_dat{:, n};
-        noise_dat{isnan(this_col), n} = nanmean(this_col); 
-    end
-
-    % 2. If spike_def was 'CANlab', concatenate with the RMSSD/DVARS and spike regressors and return the R noise matrix
-    R_added=noise_dat{:, R_nuisance};
-    R = [R, R_added];
-    R = unique(R', 'rows', 'stable')';  % remove any redundant rows. Keep the same order of regressors otherwise.
-
-    % 3. Save the nuisance regressors.
-    save(fullfile(mdl_path, 'noise_model.mat'), 'R');
-end
-
-function export_noise_plots(R_added, R_hdr, mdl_path, sub, ses, task, run)
-    % This function assumes that R_nuisance is a matrix with regressor
-    % values and R_hdr is a cell array of regressor names.
+function export_noise_plots(func_fname, R, R_hdr)
+    % This function assumes that R is a matrix with noise regressor
+    % values and R_hdr is a cell array of the noise regressor names.
 
     % Define motion-related regressor names
     motion_keywords = {'trans', 'rot', 'dvars', 'framewise_displacement', 'rmsd', 'motion'};
+    spike_keywords = {'spike'};
     
     % Find indices of motion-related and nuisance regressors
     motion_reg_indices = contains(R_hdr, motion_keywords);
-    nuisance_reg_indices = ~motion_reg_indices;
+    spike_reg_indices = contains(R_hdr, spike_keywords);
+    nuisance_reg_indices = ~motion_reg_indices & ~spike_reg_indices;
 
     % Plot nuisance regressors
     figure;
-    plot(R_added(:, nuisance_reg_indices));
+    plot(R(:, nuisance_reg_indices));
     legend(R_hdr(nuisance_reg_indices), 'Interpreter', 'none');
     title('Nuisance regressors');
     fig = gcf;
-    exportgraphics(fig, fullfile(mdl_path, ['sub-', sub, '_ses-', ses, '_task-', task, '_run-', run, '_nuisance_regressor_plot.png']));
-    savefig(fullfile(mdl_path, ['sub-', sub, '_ses-', ses, '_task-', task, '_run-', run, '_nuisance_regressor_plot.fig']));
+    exportgraphics(fig, fullfile(fileparts(func_fname), '_nuisance_regressor_plot.png'));
+    savefig(fullfile(fileparts(func_fname), '_nuisance_regressor_plot.fig'));
 
     % Plot motion regressors
     figure;
-    plot(R_added(:, motion_reg_indices));
+    plot(R(:, motion_reg_indices));
     legend(R_hdr(motion_reg_indices), 'Interpreter', 'none');
     title('Movement regressors');
     fig = gcf;
-    exportgraphics(fig, fullfile(mdl_path, ['sub-', sub, '_ses-', ses, '_task-', task, '_run-', run, '_movement_regressor_plot.png']));
-    savefig(fullfile(mdl_path, ['sub-', sub, '_ses-', ses, '_task-', task, '_run-', run, '_movement_regressor_plot.fig']));
+    exportgraphics(fig, fullfile(fileparts(func_fname), '_movement_regressor_plot.png'));
+    savefig(fullfile(fileparts(func_fname), '_movement_regressor_plot.fig'));
 
     close all;
 end
-
-
 
 function result = calculate_duration_from_expression(expression, events_dat)
     % This function calculates a new duration column based on an expression

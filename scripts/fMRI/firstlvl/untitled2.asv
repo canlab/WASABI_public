@@ -1,0 +1,511 @@
+function [R, R_hdr] = create_noise_regressors(func, noise_dat, spikes, varargin)
+    % Initialize input parser
+    p = inputParser;
+
+    % Define default values
+    defaultSpikeDef = 'CANlab'; % can be 'fmriprep'
+    defaultUseACompCorr = false;  % Can be boolean or numeric indicating how many acompcor components to use
+    defaultUseCsf = true;
+    defaultUseWm = false;
+    defaultMovementParams = '24';
+
+    % Set up parsing schema
+    addRequired(p, 'func');
+    addRequired(p, 'noise_dat');
+    addRequired(p, 'spikes');
+    addParameter(p, 'spikedef', defaultSpikeDef, @ischar);
+    addParameter(p, 'acompcorr', defaultUseACompCorr, @islogical);
+    addParameter(p, 'csf', defaultUseCsf, @islogical);
+    addParameter(p, 'wm', defaultUseWm, @islogical);
+    addParameter(p, 'mp', defaultMovementParams, @ischar);
+
+    % Parse the input
+    parse(p, func, noise_dat, spikes, varargin{:});
+
+    % Extract the parsed results
+    spike_def = p.Results.SpikeDef;
+    use_aCompCorr = p.Results.acompcorr;
+    use_csf = p.Results.UseCsf;
+    use_wm = p.Results.UseWm;
+    movement_params = p.Results.MovementParams;
+
+    R = []; % Initialize the R Matrix
+    R_hdr = []; % Initialize the R Matrix
+    noise_hdr = noise_dat.Properties.VariableNames;
+
+    % replace NaNs in first row with Os
+    wh_replace = ismissing(noise_dat(1,:));
+    if any(wh_replace)
+        noise_dat{1, wh_replace} = zeros(1, sum(wh_replace)); % make array of zeros of the right size
+    end
+
+    % 1a. aCompCorr
+    if use_aCompCorr
+        if islogical(use_aCompCorr) && use_aCompCorr
+            num_components = 10; % Default number of components if only 'true' is specified
+        else
+            num_components = use_aCompCorr; % Use specified number of components
+        end
+        acompcor_idx = find(contains(noise_hdr, 'a_comp_cor'));
+        acompcor_idx = acompcor_idx(1:min(num_components, length(acompcor_idx)));
+        R = [R, acompcor_idx];
+        R_hdr = [R_hdr, noise_hdr(acompcor_idx)];
+    end
+
+    % 1b. CSF 
+    if use_csf
+        csf_idx = find(contains(noise_hdr, 'csf'), 1);
+        R = [R, csf_idx];
+        R_hdr{end+1} = 'csf';
+    end
+
+    % 1c. White Matter
+    if use_wm
+        wm_idx = find(contains(noise_hdr, 'white_matter'), 1);
+        R = [R, wm_idx];
+        R_hdr{end+1} = 'wm';
+    end
+
+    % 1d. Movement Parameters
+    switch movement_params
+        case {6, '6'}
+            m_idx = find(cellfun(@(x) any(strcmp(x, {'trans_x', 'trans_y', 'trans_z', 'rot_x', 'rot_y', 'rot_z'})), noise_hdr));
+            R_hdr = [R_hdr, noise_hdr(m_idx)];
+        case {12, '12'}
+            m_idx = find(cellfun(@(x) any(strcmp(x, {'trans_x', 'trans_y', 'trans_z', 'rot_x', 'rot_y', 'rot_z', ...
+                                                      'trans_x_derivative1', 'trans_y_derivative1', 'trans_z_derivative1', ...
+                                                      'rot_x_derivative1', 'rot_y_derivative1', 'rot_z_derivative1'})), noise_hdr));
+            R_hdr = [R_hdr, noise_hdr(m_idx)];
+        case {24, '24'}
+            xindex = find(strcmp(noise_hdr, 'trans_x') == 1);
+            m_idx = xindex:(xindex + 23);
+            R_hdr = [R_hdr, noise_hdr(m_idx)];
+    end
+    R = [R, m_idx];
+
+    noise_dat = noise
+    switch spike_def
+        case 'fmriprep'
+            % dvars_idx=find(strcmpi(noise_dat.Properties.VariableNames,'dvars'));
+            % % fd_idx=find(strcmpi(noise_dat.Properties.VariableNames,'framewise_displacement'));
+            % rmsd_idx=find(strcmpi(noise_dat.Properties.VariableNames,'rmsd'));
+            % % R_nuisance = [R_nuisance, dvars_idx, fd_idx, rmsd_idx, mout_idx];
+            % % R_hdr=[R_hdr, noise_hdr([dvars_idx, fd_idx, rmsd_idx, mout_idx])];
+            % R_nuisance = [R_nuisance, dvars_idx, rmsd_idx];
+            % R_hdr=[R_hdr, noise_hdr([dvars_idx, rmsd_idx])];
+
+            % define regressors in fMRIprep output
+            spike_cols = contains(noise_hdr,'motion_outlier');
+            Rspikes=noise_dat(:,spike_cols);
+            Rspikes.spikes=sum(Rspikes{:,1:end},2);
+            volume_idx = [1:height(noise_dat)]; 
+            spikes = volume_idx(Rspikes.spikes==1);
+
+            % flag user-specified number of volumes after each spike
+            % Motion can create artifacts lasting longer than the single image we
+            % usually account for using spike id scripts. we're also going to flag the
+            % following TRs, the number of which is defined by the user. If
+            % 'spikes.spike_additional_vols' remains unspecified, everything will proceed as
+            % it did before, meaning spikes will be identified and flagged in the
+            % creation of nuisance regressors without considering the following TRs
+            % Add them if user requested, for both nuisance_covs and dvars_spikes_regs
+            if spikes.spike_additional_vols ~= 0
+                additional_spikes_regs = zeros(height(noise_dat),size(spikes,2)*spikes.spike_additional_vols);
+                % This loop will create a separate column with ones in each row (TR) 
+                % we would like to consider a nuisance regressor
+                for spike = 1:size(spikes,2) 
+                    additional_spikes_regs(spikes(spike)+1 : spikes(spike)+spikes.spike_additional_vols,(spike*spikes.spike_additional_vols-(spikes.spike_additional_vols-1)):(spike*spikes.spike_additional_vols)) = eye(spikes.spike_additional_vols);
+                end
+                clear spike
+
+                % if any spikes went beyond the end, trim it down
+                additional_spikes_regs = additional_spikes_regs(1:height(noise_dat),:);
+                % add the additional spikes to the larger matrix
+                noise_dat = [noise_dat array2table(additional_spikes_regs)];
+            end
+
+            if spikes.spike_additional_vols ~= 0
+                % if any spikes went beyond the end, trim it down
+                additional_spikes_regs = additional_spikes_regs(1:height(noise_dat),:);
+                % add the additional spikes to the larger matrix
+                noise_dat = [noise_dat array2table(additional_spikes_regs)];
+            end
+
+            % remove redundant spike regressors
+            noise_hdr = noise_dat.Properties.VariableNames;
+            spike_cols = contains(noise_hdr,'motion_outlier');
+            additional_spike_cols = contains(noise_hdr,'additional_spikes'); 
+            [duplicate_rows, ~] = find(sum(noise_dat{:, spike_cols | additional_spike_cols}, 2)>1);
+                for row = 1:length(duplicate_rows) % This loop sets duplicate values to zero; drops them later (to keep indices the same during the loop)
+                    [~,curr_cols] = find(noise_dat{duplicate_rows(row),:}==1);
+                    noise_dat{duplicate_rows(row), curr_cols(2:end)} = 0;
+                end
+                clear row
+            noise_dat = noise_dat(1:height(noise_dat), any(table2array(noise_dat)));
+    
+        case 'CANlab'
+            disp('Generating RMSSD/DVARS with CANlab Default Specifications...')
+            % R_spikes=[];
+            % [D2, D2_expected, pval, wh_outlier_uncorr, wh_outlier_corr] = mahal(func, 'noplot');
+            % outlier_index=find(wh_outlier_uncorr==1);     % You can toggle between the two: corrected or uncorrected outliers.
+            % % outlier_index=find(wh_outlier_corr==1);
+            % if length(outlier_index)>0
+            %    for covi=1:length(outlier_index)
+            %       A=zeros(1,size(image.dat,2));
+            %       A(outlier_index(covi))=1;   %%%%% Outlier regressor e.g [0 0 0 0 0 0 1 0 0 0 0 0 ....]
+            %       R_spikes=[R_spikes A'];
+            %    end
+            % end
+            % rmssd_file=fullfile(funcs(i).folder, ['sub-' sub '_ses-' ses '_task-' task '_run-' run '_rmssd-movie.tiff']);
+            % if isfile(rmssd_file)
+            %     [rmssd, R_dvars] = rmssd_movie(image, 'nomovie');
+            % else
+            %     [rmssd, R_dvars] = rmssd_movie(image, 'writetofile', 'movieoutfile', rmssd_file);
+            % end
+            % R = [R_spikes R_dvars];
+
+            % unzip & define raw image file
+            if contains(func, '.gz')
+                gunzip(func); % raw images are needed when LaBGAS_options.mandatory.spike_def = CANlab, which calls a function that is incompatible with .nii.gz, hence we unzip
+            end
+
+            % uBIDSimg = dir(fullfile(subjBIDSdir,'*bold.nii'));
+            % uBIDSimg = fullfile(uBIDSimg(:).folder,uBIDSimg(:).name);
+
+            % add in canlab spike detection (Mahalanobis distance)
+            [D2, D2_expected, pval, wh_outlier_uncorr, wh_outlier_corr] = mahal(func, 'noplot');
+            outlier_index=find(wh_outlier_uncorr==1);     % You can toggle between the two: corrected or uncorrected outliers.
+            % outlier_index=find(wh_outlier_corr==1);
+            if length(outlier_index)>0
+               for covi=1:length(outlier_index)
+                  A=zeros(1,size(image.dat,2));
+                  A(outlier_index(covi))=1;   %%%%% Outlier regressor e.g [0 0 0 0 0 0 1 0 0 0 0 0 ....]
+                  R_spikes=[R_spikes A'];
+               end
+            end
+
+            % [~, mahal_spikes, ~, mahal_spikes_regs, ~] = scn_session_spike_id(uBIDSimg, 'doplot', 0); % CANlab function needs to be on your Matlab path
+            % delete('*.img'); % delete implicit mask .hdr/.img files generated by the CANlab function on the line above, since we don't need/use them
+            % delete('*.hdr');
+            % delete('qc_results.yaml');
+            % delete(uBIDSimg); % delete unzipped image since we don't need it anymore and it eats up space
+            % mahal_spikes_regs(:,1) = []; %drop gtrim which is the global signal
+            noise_dat(:,contains(noise_dat.Properties.VariableNames,'motion_outlier'))=[]; % drop fmriprep motion outliers since we do not use them when LaBGAS_options.mandatory.spike_def = CANlab, and they cause redundancies
+            noise_dat = [noise_dat array2table(mahal_spikes_regs)];
+            
+            % cd(rootdir);
+
+            % add in dvars spike regressors that are non-redundant with mahal spikes
+            dvarsZ = [0; zscore(noise_dat.dvars(2:end))]; % first element of dvars always = 0, drop it from zscoring and set it to Z=0
+            dvars_spikes = find(dvarsZ > spikes.dvars_threshold);
+            same = ismember(dvars_spikes,mahal_spikes);
+            dvars_spikes(same) = []; % drop the redundant ones
+            dvars_spikes_regs = zeros(height(noise_dat),size(dvars_spikes,1));
+            for dvar=1:size(dvars_spikes,1)
+                dvars_spikes_regs(dvars_spikes(dvar),dvar) = 1;
+            end
+            noise_dat = [noise_dat array2table(dvars_spikes_regs)];
+
+            disp('Generated RMSSD Movie...');
+            rmssd_file=fullfile(funcs(i).folder, ['sub-' sub '_ses-' ses '_task-' task '_run-' run '_rmssd-movie.tiff']);
+            if isfile(rmssd_file)
+                [rmssd, R_dvars] = rmssd_movie(image, 'nomovie');
+            else
+                [rmssd, R_dvars] = rmssd_movie(image, 'writetofile', 'movieoutfile', rmssd_file);
+            end
+            R = [R_spikes R_dvars];
+
+
+
+
+            % flag user-specified number of volumes after each spike
+            % Motion can create artifacts lasting longer than the single image we
+            % usually account for using spike id scripts. we're also going to flag the
+            % following TRs, the number of which is defined by the user. If
+            % 'LaBGAS_options.spikes.spike_additional_vols' remains unspecified, everything will proceed as
+            % it did before, meaning spikes will be identified and flagged in the
+            % creation of nuisance regressors without considering the following TRs
+            % Add them if user requested, for both nuisance_covs and dvars_spikes_regs
+            if spikes.spike_additional_vols ~= 0
+                % concatenate generated spike and DVARS regs. We
+                % would like to flag subsequent TR's with respect to both of these
+                % measures.
+                spikes = [mahal_spikes;dvars_spikes];
+                additional_spikes_regs = zeros(size(mahal_spikes_regs,1),size(spikes,1)*spikes.spike_additional_vols);
+                % This loop will create a separate column with ones in each row (TR) 
+                % we would like to consider a nuisance regressor
+                % Performs this function for spikes and DVARS. 
+                for spike = 1:size(spikes,1) 
+                    additional_spikes_regs(spikes(spike)+1 : spikes(spike)+spike_additional_vols,(spike*spike_additional_vols-(spike_additional_vols-1)):(spike*spike_additional_vols)) = eye(spike_additional_vols);
+                end
+                clear spike
+                % if any spikes went beyond the end, trim it down
+                additional_spikes_regs = additional_spikes_regs(1:height(noise_dat),:);
+                % add the additional spikes to the larger matrix
+                noise_dat = [noise_dat array2table(additional_spikes_regs)];
+            end
+
+            % remove redundant spike regressors
+            noise_hdr = noise_dat.Properties.VariableNames;
+            spike_cols = contains(noise_hdr,'mahal_spikes'); 
+            dvars_cols = contains(noise_hdr,'dvars_spikes'); 
+            additional_spike_cols = contains(noise_hdr,'additional_spikes'); 
+
+            [duplicate_rows, ~] = find(sum(noise_dat{:, spike_cols | dvars_cols | additional_spike_cols}, 2)>1);
+            % set duplicate values to zero; drops them later (to keep indices the same during the loop)
+            for row = 1:size(duplicate_rows,1) 
+                [~,curr_cols] = find(noise_dat{duplicate_rows(row),:}==1);
+                noise_dat{duplicate_rows(row), curr_cols(2:end)} = 0;
+            end
+            clear row
+            noise_dat = noise_dat(1:size(mahal_spikes_regs,1), any(table2array(noise_dat)));
+            
+    end 
+
+    % Wrap it up:
+    % Select confound and spike regressors to return for use in GLM 
+    regsfull = noise_dat.Properties.VariableNames;
+    motion_cols = contains(regsfull,'rot') | contains(regsfull,'trans');
+    motion_cols_no_quad = (contains(regsfull,'rot') | contains(regsfull,'trans')) & ~contains(regsfull,'power2');
+    spike_cols = contains(regsfull,'mahal_spikes') | contains(regsfull,'motion_outlier'); 
+    dvars_cols = contains(regsfull,'dvars_spikes'); 
+    additional_spike_cols = contains(regsfull,'additional_spikes');
+
+    if LaBGAS_options.movement_reg_quadratic
+        Rmotion = noise_dat(:,motion_cols);
+    else
+        Rmotion = noise_dat(:,motion_cols_no_quad);
+    end
+    
+    Rspikes = noise_dat(:,spike_cols | dvars_cols | additional_spike_cols);
+    Rcsf = table(noise_dat.csf,'VariableNames',{'csf'});
+    
+    % recalculate derivatives, z-score, and recalculate
+    % quadratics to orthogonalize
+    regsmotion = Rmotion.Properties.VariableNames;
+    regsnot2keep = contains(regsmotion,'derivative') | contains(regsmotion,'power');
+    regsderiv = regsmotion(~contains(regsmotion,'power'));
+    regsderiv = regsderiv(contains(regsderiv,'derivative'));
+    Rmotion = Rmotion(:,~regsnot2keep);
+    deriv = @(x) gradient(x);
+    Rmotionderiv = varfun(deriv,Rmotion);
+        for regderiv = 1:size(Rmotionderiv.Properties.VariableNames,2)
+            Rmotionderiv.Properties.VariableNames{regderiv} = regsderiv{regderiv};
+        end
+    Rmotionderiv = [Rmotion,Rmotionderiv];
+    regsmotion2 = Rmotionderiv.Properties.VariableNames;
+    zscore = @(x) zscore(x);
+    Rmotionzscore = varfun(deriv,Rmotionderiv);
+    for regz = 1:size(Rmotionzscore.Properties.VariableNames,2)
+        Rmotionzscore.Properties.VariableNames{regz} = regsmotion2{regz};
+    end
+    
+    if LaBGAS_options.movement_reg_quadratic
+        quad = @(x) x.^ 2;
+        Rmotionquad = varfun(quad,Rmotionzscore);
+        Rmotionfinal = [Rmotionzscore,Rmotionquad];
+    else Rmotionfinal = Rmotionzscore;
+    end
+    R = [Rmotionfinal,Rspikes,Rcsf];
+    
+    % get row indices for spikes for later use
+    Rspikes.spikes=sum(Rspikes{:,1:end},2);
+    volume_idx = [1:height(noise_dat)]; 
+    spikes = volume_idx(Rspikes.spikes==1)';
+
+    % compute and output how many spikes total
+    n_spike_regs = sum(dvars_cols | spike_cols | additional_spike_cols);
+    n_spike_regs_percent = n_spike_regs / height(noise_dat);
+
+    % print warning if #volumes identified as spikes exceeds
+    % user-defined threshold
+        if n_spike_regs_percent > LaBGAS_options.mandatory.spikes_percent_threshold
+            warning('\nnumber of volumes identified as spikes exceeds threshold %s in %s',LaBGAS_options.mandatory.spikes_percent_threshold,subjrunnames{run})
+        end
+
+    % save confound regressors as matrix named R for use in
+    % SPM/CANlab GLM model tools
+    R=table2array(R);
+
+    % define and create subdir for model
+    runmodeldir = fullfile(rundir,DSGN.modelingfilesdir);
+        if ~exist(runmodeldir,'dir')
+            mkdir(runmodeldir);
+        end
+
+    % write confound regressors
+    filename_noise_regs = fullfile(runmodeldir,DSGN.multireg);
+    save(filename_noise_regs,'R');
+
+    clear Rmotion* Rcsf Rspikes
+
+
+end
+
+
+
+
+    
+    %%% Below comes from Lukas' scripts and will be adapted:
+
+    % define regressors in fMRIprep output
+    % noise_hdr=noise_dat.Properties.VariableNames;
+
+    spike_cols = contains(noise_hdr,'motion_outlier');
+    Rspikes=noise_dat(:,spike_cols);
+
+    Rspikes.spikes=sum(Rspikes{:,1:end},2);
+    volume_idx = [1:height(noise_dat)]; 
+    spikes = volume_idx(Rspikes.spikes==1);
+
+
+    if LaBGAS_options.spikes.spike_additional_vols ~= 0
+        additional_spikes_regs = zeros(height(noise_dat),size(spikes,2)*LaBGAS_options.spikes.spike_additional_vols);
+            % This loop will create a separate column with ones in each row (TR) 
+            % we would like to consider a nuisance regressor
+            for spike = 1:size(spikes,2) 
+                additional_spikes_regs(spikes(spike)+1 : spikes(spike)+LaBGAS_options.spikes.spike_additional_vols,(spike*LaBGAS_options.spikes.spike_additional_vols-(LaBGAS_options.spikes.spike_additional_vols-1)):(spike*LaBGAS_options.spikes.spike_additional_vols)) = eye(LaBGAS_options.spikes.spike_additional_vols);
+            end
+            clear spike
+        % if any spikes went beyond the end, trim it down
+        additional_spikes_regs = additional_spikes_regs(1:height(noise_dat),:);
+        % add the additional spikes to the larger matrix
+        noise_dat = [noise_dat array2table(additional_spikes_regs)];
+    end
+
+    % remove redundant spike regressors
+    noise_hdr = noise_dat.Properties.VariableNames;
+    spike_cols = contains(noise_hdr,'motion_outlier');
+    additional_spike_cols = contains(noise_hdr,'additional_spikes'); 
+    [duplicate_rows, ~] = find(sum(noise_dat{:, spike_cols | additional_spike_cols}, 2)>1);
+        for row = 1:length(duplicate_rows) % This loop sets duplicate values to zero; drops them later (to keep indices the same during the loop)
+            [~,curr_cols] = find(noise_dat{duplicate_rows(row),:}==1);
+            noise_dat{duplicate_rows(row), curr_cols(2:end)} = 0;
+        end
+        clear row
+    noise_dat = noise_dat(1:height(noise_dat), any(table2array(noise_dat)));
+
+    % flag user-specified number of volumes after each spike
+    % Motion can create artifacts lasting longer than the single image we
+    % usually account for using spike id scripts. we're also going to flag the
+    % following TRs, the number of which is defined by the user. If
+    % 'LaBGAS_options.spikes.spike_additional_vols' remains unspecified, everything will proceed as
+    % it did before, meaning spikes will be identified and flagged in the
+    % creation of nuisance regressors without considering the following TRs
+    % Add them if user requested, for both nuisance_covs and dvars_spikes_regs
+        if LaBGAS_options.spikes.spike_additional_vols ~= 0
+            % concatenate generated spike and DVARS regs. We
+            % would like to flag subsequent TR's with respect to both of these
+            % measures.
+            spikes = [mahal_spikes;dvars_spikes];
+            additional_spikes_regs = zeros(size(mahal_spikes_regs,1),size(spikes,1)*LaBGAS_options.spikes.spike_additional_vols);
+                % This loop will create a separate column with ones in each row (TR) 
+                % we would like to consider a nuisance regressor
+                % Performs this function for spikes and DVARS. 
+                for spike = 1:size(spikes,1) 
+                    additional_spikes_regs(spikes(spike)+1 : spikes(spike)+spike_additional_vols,(spike*spike_additional_vols-(spike_additional_vols-1)):(spike*spike_additional_vols)) = eye(spike_additional_vols);
+                end
+                clear spike
+            % if any spikes went beyond the end, trim it down
+            additional_spikes_regs = additional_spikes_regs(1:height(noise_dat),:);
+            % add the additional spikes to the larger matrix
+            noise_dat = [noise_dat array2table(additional_spikes_regs)];
+        end
+
+    % remove redundant spike regressors
+    noise_hdr = noise_dat.Properties.VariableNames;
+    spike_cols = contains(noise_hdr,'mahal_spikes'); 
+    dvars_cols = contains(noise_hdr,'dvars_spikes'); 
+    additional_spike_cols = contains(noise_hdr,'additional_spikes'); 
+
+    [duplicate_rows, ~] = find(sum(noise_dat{:, spike_cols | dvars_cols | additional_spike_cols}, 2)>1);
+    % set duplicate values to zero; drops them later (to keep indices the same during the loop)
+        for row = 1:size(duplicate_rows,1) 
+            [~,curr_cols] = find(noise_dat{duplicate_rows(row),:}==1);
+            noise_dat{duplicate_rows(row), curr_cols(2:end)} = 0;
+        end
+        clear row
+    noise_dat = noise_dat(1:size(mahal_spikes_regs,1), any(table2array(noise_dat)));
+else
+    error('\ninvalid LaBGAS_options.mandatory.spike_def option %s specified in <study_name>_firstlevel_<mx>_s1_options_dsgn_struct.m, please check before proceeding', LaBGAS_options.mandatory.spike_def)
+end
+
+% Select confound and spike regressors to return for use in GLM 
+regsfull = Rfull.Properties.VariableNames;
+motion_cols = contains(regsfull,'rot') | contains(regsfull,'trans');
+motion_cols_no_quad = (contains(regsfull,'rot') | contains(regsfull,'trans')) & ~contains(regsfull,'power2');
+spike_cols = contains(regsfull,'mahal_spikes') | contains(regsfull,'motion_outlier'); 
+dvars_cols = contains(regsfull,'dvars_spikes'); 
+additional_spike_cols = contains(regsfull,'additional_spikes'); 
+if LaBGAS_options.movement_reg_quadratic
+    Rmotion = Rfull(:,motion_cols);
+else
+    Rmotion = Rfull(:,motion_cols_no_quad);
+end
+Rspikes = Rfull(:,spike_cols | dvars_cols | additional_spike_cols);
+Rcsf = table(Rfull.csf,'VariableNames',{'csf'});
+
+% recalculate derivatives, z-score, and recalculate
+% quadratics to orthogonalize
+regsmotion = Rmotion.Properties.VariableNames;
+regsnot2keep = contains(regsmotion,'derivative') | contains(regsmotion,'power');
+regsderiv = regsmotion(~contains(regsmotion,'power'));
+regsderiv = regsderiv(contains(regsderiv,'derivative'));
+Rmotion = Rmotion(:,~regsnot2keep);
+deriv = @(x) gradient(x);
+Rmotionderiv = varfun(deriv,Rmotion);
+for regderiv = 1:size(Rmotionderiv.Properties.VariableNames,2)
+    Rmotionderiv.Properties.VariableNames{regderiv} = regsderiv{regderiv};
+end
+Rmotionderiv = [Rmotion,Rmotionderiv];
+regsmotion2 = Rmotionderiv.Properties.VariableNames;
+zscore = @(x) zscore(x);
+Rmotionzscore = varfun(deriv,Rmotionderiv);
+for regz = 1:size(Rmotionzscore.Properties.VariableNames,2)
+    Rmotionzscore.Properties.VariableNames{regz} = regsmotion2{regz};
+end
+
+if LaBGAS_options.movement_reg_quadratic
+    quad = @(x) x.^ 2;
+    Rmotionquad = varfun(quad,Rmotionzscore);
+    Rmotionfinal = [Rmotionzscore,Rmotionquad];
+else Rmotionfinal = Rmotionzscore;
+end
+R = [Rmotionfinal,Rspikes,Rcsf];
+
+% get row indices for spikes for later use
+Rspikes.spikes=sum(Rspikes{:,1:end},2);
+volume_idx = [1:height(Rfull)]; 
+spikes = volume_idx(Rspikes.spikes==1)';
+
+% compute and output how many spikes total
+n_spike_regs = sum(dvars_cols | spike_cols | additional_spike_cols);
+n_spike_regs_percent = n_spike_regs / height(Rfull);
+
+% print warning if #volumes identified as spikes exceeds
+% user-defined threshold
+if n_spike_regs_percent > LaBGAS_options.mandatory.spikes_percent_threshold
+    warning('\nnumber of volumes identified as spikes exceeds threshold %s in %s',LaBGAS_options.mandatory.spikes_percent_threshold,subjrunnames{run})
+end
+
+% save confound regressors as matrix named R for use in
+% SPM/CANlab GLM model tools
+R=table2array(R);
+
+% define and create subdir for model
+runmodeldir = fullfile(rundir,DSGN.modelingfilesdir);
+if ~exist(runmodeldir,'dir')
+    mkdir(runmodeldir);
+end
+
+% write confound regressors
+filename_noise_regs = fullfile(runmodeldir,DSGN.multireg);
+save(filename_noise_regs,'R');
+
+
+
+
+%%%% Lukas' CANLab
+
+
+

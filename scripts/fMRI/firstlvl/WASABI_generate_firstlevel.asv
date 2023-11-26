@@ -127,12 +127,12 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, spike_def, omit_sp
     end
 
     % MANDATORY REQUIRED
-    mandatory.spike_def = 'fMRIprep';
-    % mandatory.spike_def = 'CANlab';
-    mandatory.omit_spike_trials = 'no';
-    mandatory.spikes_percent_threshold=0.15;
-    mandatory.vif_thresh=2;
-    mandatory.movement_reg_quadratic = true; % change to false if you don't want to add quadratic terms for movement parameters and their first-order derivatives
+    spike_def = 'fMRIprep';
+    spike_def = 'CANlab';
+    omit_spike_trials = 'no';
+    spikes_percent_threshold=0.15;
+    vif_thresh=2;
+    movement_reg_quadratic = true; % change to false if you don't want to add quadratic terms for movement parameters and their first-order derivatives
     
     % REQUIRED IF YOU HAVE PARAMETRIC MODULATORS
     pmods.pmod_polynom = 1;
@@ -141,9 +141,8 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, spike_def, omit_sp
     pmods.pmod_type = 'parametric_standard';
     
     % SPIKE OPTIONS
-    spikeopts.dvars_threshold = 2; % REQUIRED if spike_def = 'CANlab'
-    spikeopts.spike_additional_vols=0; % OPTIONAL, NOT RECOMMENDED TO TURN ON
-    
+    spikes.dvars_threshold = 2; % REQUIRED if spike_def = 'CANlab'
+    spikes.spike_additional_vols=0; % OPTIONAL, NOT RECOMMENDED TO TURN ON
 
     % OPTIONAL
     subjs2analyze = {}; % enter subjects separated by comma if you only want to analyze selected subjects e.g. {'sub-01','sub-02'}; THIS IS NOT YET FULLY IMPLEMENTED HENCE LEAVE CELL ARRAY EMPTY OR COMMENT OUT OR DO NOT SPECIFY FIELD AT ALL
@@ -160,9 +159,13 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, spike_def, omit_sp
     
     % THE ABOVE OPTIONS CAN BE CONSIDERED LABGAS DEFAULTS, BUT MAY BE
     % STUDY-SPECIFIC, SO DISCUSS WITH LUKAS IF IN DOUBT!
-    if strcmpi(spike_def,'CANlab')==1 && ~isfield(spikeopts,'dvars_threshold')
-        error('spike_def option %s requires specification of spikeopts.dvars_threshold, please specify before proceeding', mandatory.spike_def)
+    if strcmpi(spike_def,'CANlab')==1 && ~isfield(spikes,'dvars_threshold')
+        error('spike_def option %s requires specification of spikes.dvars_threshold, please specify before proceeding', mandatory.spike_def)
     end
+
+
+
+
 
     if bySubject
         parfor sub = 1:numel(subs)

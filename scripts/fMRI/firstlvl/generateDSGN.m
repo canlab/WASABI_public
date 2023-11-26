@@ -110,7 +110,7 @@ function DSGN = setupDirectories(firstlvl_derivdir, fmriprep_derivdir, funcs, ta
         mkdir(DSGN.modeldir)
     end
 
-    DSGN.subjects = fullfile(fmriprep_derivdir, strcat('sub-', unique(sub)));
+    DSGN.subjects = fullfile(firstlvl_derivdir, strcat('sub-', unique(sub)));
 end
 
 function DSGN = setupDesignParameters(DSGN)
@@ -124,10 +124,11 @@ function DSGN = setupDesignParameters(DSGN)
     DSGN.multireg = 'noise_model.mat';  % specify name for matfile with noise parameters you want to save
 
     % Study-Specific Parameters:
-    DSGN.tr = 0.46;         % repetition time (TR) in seconds
-    DSGN.hpf = 180;         % roughly 1/2 scan time; high pass filter in seconds; SPM default is 128, CANlab default is 180 since the brain response to pain stimuli last long and variance may be lost at shorter lengths, use scn_spm_design_check output, and review the SPM.mat in spm for diagnostics; 
-    DSGN.fmri_t0 = 1;       % microtime onset - reference slice used in slice timing correction; spm (and CANlab) default 1 can be kept for multiband w/o slice timing. spm default is 8.
-    % DSGN.fmri_t = 16;     % microtime resolution - number of slices since we did slice timing; default 16 can be kept for multiband w/o slice timing; LabGAS does 30. CHECK IF YOU HAVE MULTIBAND WITH SLICE TIMING
+    DSGN.tr = 0.46;       % repetition time (TR) in seconds
+    DSGN.hpf = 180;       % roughly 1/2 scan time; high pass filter in seconds; SPM default is 128, CANlab default is 180 since the brain response to pain stimuli last long and variance may be lost at shorter lengths, use scn_spm_design_check output, and review the SPM.mat in spm for diagnostics; 
+    DSGN.fmri_t0 = 8;     % microtime onset - reference slice used in slice timing correction; spm (and CANlab) default 1 can be kept for multiband w/o slice timing. spm default is 8.
+    DSGN.fmri_t = 16;     % microtime resolution - number of slices since we did slice timing; default 16 can be kept for multiband w/o slice timing; LabGAS does 30. CHECK IF YOU HAVE MULTIBAND WITH SLICE TIMING
+    
     DSGN.fast = true;
     % if true, uses the FAST autoregressive model to model serial correlations (req spm12 r7771). This method was developed for sub-second TRs. For details see Bollmann, et al. (2018) Neuroimage. 
     % Note: if DSGN.fast = true, DSGN.ar1 must be false. These are mutually exclusive options. Note: the resultant SPM.mat files may be quite large. You may need to set spm_defaults.m to set defaults.mat.format to '-v7.3' to save them. 
@@ -145,7 +146,7 @@ function DSGN = setupDesignParameters(DSGN)
     %     DSGN.convolution.dispersion: default 0, which means no dispersion derivative
 end
 
-function DSGN = processFunctionalRuns(funcs, task, spike_def, DSGN)
+function DSGN = processFunctionalRuns(funcs, task, DSGN)
     DSGN.funcnames={};
     DSGN.conditions={};
     DSGN.onsets={};
@@ -158,8 +159,6 @@ function DSGN = processFunctionalRuns(funcs, task, spike_def, DSGN)
 
         % 1. Find the *_events.tsv file
         events_fname = fullfile(funcs(i).folder, '*_events.tsv');
-        events_tsv = dir(events_fname);
-        events_dat = readtable(fullfile(events_tsv.folder, events_tsv.name),'FileType', 'text', 'Delimiter', 'tab');
 
         funcname=fullfile(['ses-' ses], 'func', ['run-', run], funcs(i).name);
         fullpath=fullfile(findParentSubDir(DSGN.modeldir), funcname);
@@ -181,63 +180,43 @@ function DSGN = processFunctionalRuns(funcs, task, spike_def, DSGN)
         % noise_dat = importBIDSfile(fullfile(noise_tsv.folder, noise_tsv.name));
         noise_dat = readtable(fullfile(noise_tsv.folder, noise_tsv.name),'FileType', 'text', 'Delimiter', 'tab');
         
-        % If spike_def is 'CANlab', which is the default
-        % 3. Generate RMSSD/DVARS Image-wise Nuisance Indicator vectors
-        % Please note, fmriprep confounds include regressors for dvars,
-        % framewise_displacement, rmsd, motion_outlier* and I am not sure
-        % how well they compare with our rmssd methods so they are not the default for now.
-        if strcmpi(spike_def, 'CANlab')
-            disp('Generating RMSSD/DVARS with CANlab Default Specifications...')
-            if isfile(fullfile(funcs(i).folder, [erase(funcs(i).name, '.nii') '.mat']))
-                load(fullfile(funcs(i).folder, [erase(funcs(i).name, '.nii') '.mat']));
-            else
-                image = fmri_data(fullfile(funcs(i).folder, funcs(i).name));
-                save(fullfile(funcs(i).folder, [erase(funcs(i).name, '.nii') '.mat']), 'image', '-mat');
-            end
-        
-            R_spikes=[];
-            [D2, D2_expected, pval, wh_outlier_uncorr, wh_outlier_corr] = mahal(image, 'noplot');
-            outlier_index=find(wh_outlier_uncorr==1);     % You can toggle between the two: corrected or uncorrected outliers.
-            % outlier_index=find(wh_outlier_corr==1);
-            if length(outlier_index)>0
-               for covi=1:length(outlier_index)
-                  A=zeros(1,size(image.dat,2));
-                  A(outlier_index(covi))=1;   %%%%% Outlier regressor e.g [0 0 0 0 0 0 1 0 0 0 0 0 ....]
-                  R_spikes=[R_spikes A'];
-               end
-            end
-        
-            rmssd_file=fullfile(funcs(i).folder, ['sub-' sub '_ses-' ses '_task-' task '_run-' run '_rmssd-movie.tiff']);
-            if isfile(rmssd_file)
-                [rmssd, R_dvars] = rmssd_movie(image, 'nomovie');
-            else
-                [rmssd, R_dvars] = rmssd_movie(image, 'writetofile', 'movieoutfile', rmssd_file);
-            end
-            R = [R_spikes R_dvars];
-        else
-            R = []; % generate_regressors() will use fmriprep spikes and dvars instead if blank
-        end
 
         % 4. Generate regressors. Call a generate_WASABI_regressors function to do most of the heavy lifting.
-        % Specify alternative onset-duration columns as a tuple e.g., {'ttl_2', 'ttl_3-ttl_2'}
-        ons_dur={{'ttl_2', 'ttl_3-ttl_2'}};
+        % Specify alternative onset-duration columns as a tuple e.g., {'name', 'ttl_2', 'ttl_3-ttl_2'}
+        if ismember(task, {'bodymap', 'acceptmap'})
+            ons_dur={{'ttl_2','ttl_3-ttl_2'}, {'ttl_1', 'ttl_4-ttl_1'}};
+        end
+
+        if strcmpi(task, 'distractmap')
+            events_dat.nback_prestim=events_dat(endsWith(events_dat.conditions, 'back_stim'),:).onset;
+            events_dat(endsWith(events_dat.conditions, 'timRating'),:).conditions='intensity_rating_start'; % Make sure all the rating events are called the same thing.
+            ons_dur={{'ttl_2','ttl_3-ttl_2'}, {'ttl_1', 'ttl_4-ttl_1'}, {'nback_prestim', 'ttl_1-nback_onset'}};
+        end
+        % This set of onsets and durations:
+        % ttl_2: The start of the peak heat stimulation
+        % ttl_1: The start of the heat stimulation onset
+        % *back_stim: For the NoF distractmap specifically, generate a
+        % regressor where onset time is the start of the nback trial but
+        % before the heat stimulation onset.
+        % Will probably have to find a way to generate this for nback*
+        % runs.
 
         % If you desire Parametric Modulators
+
         % DSGN.pmods={};
-        % [DSGN.conditions{end+1}, DSGN.onsets{end+1}, DSGN.durations{end+1}, DSGN.pmods{end+1}]=generate_regressors(task, events_dat, noise_dat, R, spike_def, model_path)
+        % [DSGN.conditions{end+1}, DSGN.onsets{end+1}, DSGN.durations{end+1}, DSGN.pmods{end+1}]=generate_regressors(func_fullpath, events_fname, noise_fname, model_path)
         % [DSGN.pmods{end+1}, ]=configPmods(funcs, events_dat, DSGN.conditions{end})
 
         % If you don't have pmods:
-
-        [DSGN.conditions{end+1}, DSGN.onsets{end+1}, DSGN.durations{end+1}, ~]=generate_regressors(task, events_dat, noise_dat, R, spike_def, model_path, 'ons_dur', ons_dur);
-
+        func_fullpath=fullfile(funcs(i).folder, funcs(i).name);
+        [DSGN.conditions{end+1}, DSGN.onsets{end+1}, DSGN.durations{end+1}, ~]=generate_regressors(func_fullpath, events_fname, noise_fname, model_path, 'ons_dur', ons_dur);
 
         % 5. Generate contrasts. Call generate_WASABI_contrasts function to do most of the heavy lifting.
         DSGN = generate_contrasts(task, DSGN);
     end
 end
 
-function [pmods] = configPmods(funcs, events_dat, conditions)
+function [pmods] = configPmods(funcs, events_dat, conditions, options)
     %% PARAMETRIC MODULATORS IF SPECIFIED
     
     % prep work for parametric modulators
@@ -246,11 +225,12 @@ function [pmods] = configPmods(funcs, events_dat, conditions)
     % modulating.
 
     % defaults
-    options.pmods.pmod_name = 'rating';
-    options.pmods.pmod_polynom = 1;
-    options.pmods.pmod_name = 'rating';
-    options.pmods.pmod_ortho_off = false;
-    options.pmods.pmod_type = 'parametric_standard';
+    if isempty(options.pmods)
+        options.pmods.pmod_name = 'rating';
+        options.pmods.pmod_polynom = 1;
+        options.pmods.pmod_ortho_off = false;
+        options.pmods.pmod_type = 'parametric_standard';
+    end
 
     pmods={options.pmods.pmod_name};
 
