@@ -129,9 +129,89 @@ def genCalibrationSummaries(sub_dir):
     # Initialize DataFrame
     data=pd.read_csv(sorted_flist[0],sep='\t')          # read in the tsv
     
-    for file in sorted_flist[1:]:                       # For each file
+    # Function to shift and insert NaN
+    def shift_and_insert_nan(df, indices):
+        nan_row = pd.DataFrame(np.nan, index=[0], columns=df.columns)
+        for index in sorted(indices, reverse=True):
+            df = pd.concat([df.iloc[:index], nan_row, df.iloc[index:]]).reset_index(drop=True)
+        return df
+
+    # # Initialize an empty DataFrame to hold all processed data
+    # all_data = pd.DataFrame()
+
+    # # Process each file
+    # for file in sorted_flist[1:]:
+    #     # Read the file
+    #     temp_data = pd.read_csv(file, sep='\t')
+
+    #     # Process IntensityRating - remove last entry for each file
+    #     intensity_df = temp_data[temp_data['condition'] == 'IntensityRating']
+    #     if not intensity_df.empty:
+    #         intensity_df = intensity_df.iloc[:-1]
+
+    #     # Process ToleranceRating - no removal of last entry specified
+    #     tolerance_df = temp_data[temp_data['condition'] == 'ToleranceRating']
+
+    #     # Find indices where PainBinary is -1
+    #     pain_binary_indices = temp_data.index[(temp_data['condition'] == 'PainBinary') & (temp_data['value'] == -1)].tolist()
+
+    #     # Apply shift_and_insert_nan function
+    #     intensity_df = shift_and_insert_nan(intensity_df, pain_binary_indices)
+    #     tolerance_df = shift_and_insert_nan(tolerance_df, pain_binary_indices)
+
+    #     # Combine processed data for this file
+    #     processed_data = pd.concat([temp_data, intensity_df, tolerance_df], axis=1)
+
+    #     # Append processed data to all_data
+    #     all_data = pd.concat([all_data, processed_data])
+
+    # # Reset index of the final DataFrame
+    # all_data.reset_index(drop=True, inplace=True)
+    
+    
+    # Initialize lists to store IntensityRating and ToleranceRating
+    intensity_ratings = []
+    tolerance_ratings = []
+    # Process each file
+    for file in sorted_flist[0:]:
+        # Read the file
         temp_data = pd.read_csv(file, sep='\t')
-        data=pd.concat([data,temp_data])                # read in the tsv
+
+        # Extract IntensityRating and ToleranceRating
+        intensity = temp_data[temp_data['condition'] == 'IntensityRating']['value'].tolist()
+        tolerance = temp_data[temp_data['condition'] == 'ToleranceRating']['value'].tolist()
+
+        # Remove last IntensityRating entry for each file, if not empty
+        if intensity:
+            intensity.pop()
+
+        # Identify indices where PainBinary is -1
+        pain_binary_indices = temp_data[temp_data['condition'] == 'PainBinary'].reset_index(drop=True)
+        pain_binary_indices = pain_binary_indices.index[pain_binary_indices['value'] == -1].tolist()
+    
+        # Function to insert NaN at specific indices
+        def insert_nan_at_indices(lst, indices):
+            # Sort indices in ascending order
+            for index in sorted(indices):
+                # Insert NaN at the correct index
+                lst.insert(index, np.nan)
+            return lst
+
+        # Apply function to intensity and tolerance
+        intensity = insert_nan_at_indices(intensity, pain_binary_indices)
+        tolerance = insert_nan_at_indices(tolerance, pain_binary_indices)
+
+        # Append to the lists
+        intensity_ratings.extend(intensity)
+        tolerance_ratings.extend(tolerance)
+        
+        if file==sorted_flist[0]:
+            data = temp_data
+        else:
+            data = pd.concat([data, temp_data])
+        
+    # Reset index of the final DataFrame
+    data.reset_index(drop=True, inplace=True)
 
     date=np.unique(data['date'])[0]
     SID=np.unique(data['SID'])[0]
@@ -144,10 +224,12 @@ def genCalibrationSummaries(sub_dir):
     repetition = body_site.to_frame(name='body_site').groupby('body_site').cumcount() + 1
     temperature= data['temperature'].dropna() # Gather every temperature
     pain= data.loc[data['condition'] == 'PainBinary', 'value']# Gather every condition=PainBinary
-    intensity= data.loc[data['condition'] == 'IntensityRating', 'value']# Gather every condition==IntensityRating
-    intensity=intensity.drop(intensity.index[7::8]) # Drop every 8th observation (i.e. every 8th IntensityRating)
-    tolerance= data.loc[data['condition'] == 'ToleranceRating', 'value'] # Gather every ToleranceRating
-
+    # intensity= data.loc[data['condition'] == 'IntensityRating', 'value']# Gather every condition==IntensityRating
+    # intensity=intensity.drop(intensity.index[7::8]) # Drop every 8th observation (i.e. every 8th IntensityRating)
+    # tolerance= data.loc[data['condition'] == 'ToleranceRating', 'value'] # Gather every ToleranceRating
+    intensity=intensity_ratings
+    tolerance=tolerance_ratings
+   
     bids_filename = sub_dir + os.sep + u'sub-SID%06d_task-%s.tsv' % (int(SID), 'bodyCalibration')
     bids_df = pd.DataFrame({
         'repetition': pd.Series(repetition).reset_index(drop=True),
@@ -207,12 +289,12 @@ def genCalibrationSummaries(sub_dir):
     averaged_df = averaged_df[column_order]
     
     # Save the participant summary
-    averaged_filename = os.path.join(sub_dir, f'sub-{SID}_task-bodyCalibration_participants.tsv')
+    averaged_filename = os.path.join(sub_dir, f'sub-SID{SID:06}_task-bodyCalibration_participants.tsv')
     averaged_df = pd.DataFrame([averaged_data])
     averaged_df.to_csv(averaged_filename, sep='\t', index=False)
 
 # Should run something like this:
 # Python cannot handle Windows filepaths 
-dir=r'C:\Users\Admin\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID002292\ses-01'
+dir=r'C:\Users\Michael\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID002742\ses-01'
 genCalibrationSummaries(dir)
 # Done
