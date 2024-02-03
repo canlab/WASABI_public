@@ -86,8 +86,6 @@ def read_tsv(filename):
     w.write(header + str(min(temps)) + ',' + str(max(temps)) + ',' + end + '\n')
     f.close()
 
-
-
 def genCalibrationSummaries(sub_dir):
     # This function should take in a subject directory and spit out two files:
     # genCalibrationSummaries(r'C:\Users\Admin\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID00XXXX\ses-01') =>
@@ -134,40 +132,7 @@ def genCalibrationSummaries(sub_dir):
         nan_row = pd.DataFrame(np.nan, index=[0], columns=df.columns)
         for index in sorted(indices, reverse=True):
             df = pd.concat([df.iloc[:index], nan_row, df.iloc[index:]]).reset_index(drop=True)
-        return df
-
-    # # Initialize an empty DataFrame to hold all processed data
-    # all_data = pd.DataFrame()
-
-    # # Process each file
-    # for file in sorted_flist[1:]:
-    #     # Read the file
-    #     temp_data = pd.read_csv(file, sep='\t')
-
-    #     # Process IntensityRating - remove last entry for each file
-    #     intensity_df = temp_data[temp_data['condition'] == 'IntensityRating']
-    #     if not intensity_df.empty:
-    #         intensity_df = intensity_df.iloc[:-1]
-
-    #     # Process ToleranceRating - no removal of last entry specified
-    #     tolerance_df = temp_data[temp_data['condition'] == 'ToleranceRating']
-
-    #     # Find indices where PainBinary is -1
-    #     pain_binary_indices = temp_data.index[(temp_data['condition'] == 'PainBinary') & (temp_data['value'] == -1)].tolist()
-
-    #     # Apply shift_and_insert_nan function
-    #     intensity_df = shift_and_insert_nan(intensity_df, pain_binary_indices)
-    #     tolerance_df = shift_and_insert_nan(tolerance_df, pain_binary_indices)
-
-    #     # Combine processed data for this file
-    #     processed_data = pd.concat([temp_data, intensity_df, tolerance_df], axis=1)
-
-    #     # Append processed data to all_data
-    #     all_data = pd.concat([all_data, processed_data])
-
-    # # Reset index of the final DataFrame
-    # all_data.reset_index(drop=True, inplace=True)
-    
+        return df   
     
     # Initialize lists to store IntensityRating and ToleranceRating
     intensity_ratings = []
@@ -254,7 +219,7 @@ def genCalibrationSummaries(sub_dir):
     # Initialize an empty list for the averaged data
     averaged_data = {
         'date': date,
-        'DBIC Number': SID,
+        'DBIC_id': SID,
         # 'age': calculate_age(date),
         # 'dob': dob,  # dob seems to be the same as date here, which might be incorrect
         'sex': sex,
@@ -269,8 +234,8 @@ def genCalibrationSummaries(sub_dir):
                     (bids_df['pain'] == 1) & \
                     (bids_df['tolerance'] == 1)
                     
-        averaged_data[f'{site.lower()}_ht'] = round_to_halfdegree(bids_df.loc[condition]['temperature'].mean())
-        averaged_data[f'{site.lower()}_i'] = bids_df.loc[condition]['intensity'].mean()
+        averaged_data[f'{site.replace(" ", "").lower()}_ht'] = round_to_halfdegree(bids_df.loc[condition]['temperature'].mean())
+        averaged_data[f'{site.replace(" ", "").lower()}_i'] = bids_df.loc[condition]['intensity'].mean()
 
     # Convert the dictionary to a DataFrame
     averaged_df = pd.DataFrame([averaged_data])
@@ -278,13 +243,13 @@ def genCalibrationSummaries(sub_dir):
     # Specify the column order if necessary
     column_order = [
         'date', 
-        'DBIC Number', 
+        'DBIC_id', 
         # 'age', 
         # 'dob', 
         'sex', 
         'handedness', 
         'calibration_order'
-    ] + [f'{site.lower()}_ht' for site in body_sites] + [f'{site.lower()}_i' for site in body_sites]
+    ] + [f'{site.replace(" ", "").lower()}_ht' for site in body_sites] + [f'{site.replace(" ", "").lower()}_i' for site in body_sites]
 
     averaged_df = averaged_df[column_order]
     

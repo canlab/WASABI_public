@@ -90,6 +90,7 @@ if debug == 1:
     'first(1) or second(2) day': '1',
     'gender': 'm',
     'session': '1',
+    'run': '1',
     'handedness': 'r', 
     'scanner': 'MS'
     }
@@ -99,6 +100,7 @@ else:
     'first(1) or second(2) day': '',
     'gender': '',
     'session': '',
+    'run': '5',
     'handedness': '', 
     'scanner': ''
     }
@@ -148,7 +150,7 @@ hyperalignment_bids=showMovie(win, movie, movie.name, movieCode)
 7. Save hyperalignment data into its own .TSV
 """ 
 hyperalignment_bids_data = pd.DataFrame([hyperalignment_bids])
-hyperalignment_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, 'hyperalignment'+expInfo['first(1) or second(2) day'])
+hyperalignment_bids_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_run-%02d_task-%s_acq-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), int(expInfo['run']), expName, 'kungfury'+expInfo['first(1) or second(2) day'])
 hyperalignment_bids_data.to_csv(hyperalignment_bids_filename, sep="\t")
 
 """

@@ -120,6 +120,8 @@ expInfo = {
 'run': '1'
 }
 
+participant_settingsHeat = {}
+
 if debug == 1:
     expInfo = {
     'DBIC Number': '99',
@@ -137,41 +139,26 @@ else:
         if "_task-bodyCalibration_participants.tsv" in dlg1[0]:
             # Read in participant info csv and convert to a python dictionary
             a = pd.read_csv(dlg1[0], delimiter='\t', index_col=0, header=0, squeeze=True)
-            if a.shape == (1,23) or a.shape == (1,24):
-                participant_settingsHeat = {}
-                p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
-                expInfo['DBIC Number'] = p_info['DBIC_id']
-                expInfo['sex'] = p_info['sex']
-                expInfo['handedness'] = p_info['handedness']
-
-                # Heat Settings
-                participant_settingsHeat['Left Face'] = p_info['leftface_ht']
-                participant_settingsHeat['Right Face'] = p_info['rightface_ht']
-                participant_settingsHeat['Left Arm'] = p_info['leftarm_ht']
-                participant_settingsHeat['Right Arm'] = p_info['rightarm_ht']
-                participant_settingsHeat['Left Leg'] = p_info['leftleg_ht']
-                participant_settingsHeat['Right Leg'] = p_info['rightleg_ht']
-                participant_settingsHeat['Chest'] = p_info['chest_ht']
-                participant_settingsHeat['Abdomen'] = p_info['abdomen_ht']
-
-                expInfo2 = {
-                'session': '',
-                'scanner': '',
-                'run': '',
-                'body sites': ''
-                }
-                dlg2 = gui.DlgFromDict(title="Accept Map Scan", dictionary=expInfo2, sortKeys=False) 
-                expInfo['session'] = expInfo2['session']
-                expInfo['scanner'] = expInfo2['scanner']
-                expInfo['run'] = expInfo2['run']
-                expInfo['body sites'] = expInfo2['body sites']
-                if dlg2.OK == False:
-                    core.quit()  # user pressed cancel
-            else:
-                errorDlg1 = gui.Dlg(title="Error - invalid file")
-                errorDlg1.addText("Selected file is not a valid calibration file. Data is incorrectly formatted. (Wrong dimensions)")
-                errorDlg1.show()
-                dlg1=None
+            p_info = [dict(zip(a.iloc[i].index.values, a.iloc[i].values)) for i in range(len(a))][0]
+            expInfo['DBIC Number'] = p_info['DBIC_id']
+            expInfo['sex'] = p_info['sex']
+            expInfo['handedness'] = p_info['handedness']
+            participant_settingsHeat['Left Leg'] = p_info['leftleg_ht']
+            participant_settingsHeat['Chest'] = p_info['chest_ht']
+            
+            expInfo2 = {
+            'session': '',
+            'scanner': '',
+            'run': '',
+            'body sites': ''
+            }
+            dlg2 = gui.DlgFromDict(title="Accept Map Scan", dictionary=expInfo2, sortKeys=False) 
+            expInfo['session'] = expInfo2['session']
+            expInfo['scanner'] = expInfo2['scanner']
+            expInfo['run'] = expInfo2['run']
+            expInfo['body sites'] = expInfo2['body sites']
+            if dlg2.OK == False:
+                core.quit()  # user pressed cancel
         else:
             errorDlg2 = gui.Dlg(title="Error - invalid file")
             errorDlg2.addText("Selected file is not a valid calibration file. Name is not formatted sub-XXX_task-Calibration_participant.tsv")
@@ -239,7 +226,7 @@ else:
 # bodySites = ["Left Leg"]
 
 expInfo['body_site_order'] = str(bodySites)
-expInfo['expName'] = ConditionSuffix
+expInfo['expName'] = 'acceptmap'+ConditionSuffix
 
 """ 
 4. Setup the Window
@@ -292,7 +279,7 @@ with open("thermode1_programs.txt") as f:
 """
 6. Prepare files to write
 """
-sub_dir = os.path.join(_thisDir, 'data', 'sub-%05d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
+sub_dir = os.path.join(_thisDir, 'data', 'sub-SID%06d' % (int(expInfo['DBIC Number'])), 'ses-%02d' % (int(expInfo['session'])))
 if not os.path.exists(sub_dir):
     os.makedirs(sub_dir)
 
@@ -357,16 +344,15 @@ win.mouseVisible = False
 """
 showText(win, "Instructions", 'Welcome to the scan\nPlease read the following instructions \nvery carefully.\n\n\n\nExperimenter press [Space] to continue.', biopacCode=instructions, noRecord=True)
 
-if expInfo['run']>1:
-    runRange=range(expInfo['run']-1, 8)
-else:
-    runRange=range(len(bodySites))
-    
+runRange=range(expInfo['run'], expInfo['run']+len(bodySites))
+
 for runs in runRange:
+    runcounter=runs-min(runRange)
+    
     # Set Skin-Site to prevent burns:
-    if (runs==0 or runs==1):
+    if (runcounter==0 or runcounter==1):
             skinSite='1'
-    elif (runs==2 or runs==3):
+    elif (runcounter==2 or runcounter==3):
             skinSite='2'
     else:
             skinSite='99'
@@ -374,16 +360,16 @@ for runs in runRange:
     """
     7. Body-Site Instructions: Instruct the Experimenter on the Body Sites to attach thermodes to at the beginning of each run
     """
-    bodysiteInstruction="Experimenter: \nPlease place the thermode on skin site " + skinSite + " of the: \n" + bodySites[runs].lower()
-    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runs]], biopacCode=bodymapping_instruction, noRecord=True)
+    bodysiteInstruction="Experimenter: \nPlease place the thermode on skin site " + skinSite + " of the: \n" + bodySites[runcounter].lower()
+    showTextAndImg(win, "Bodysite Instruction", bodysiteInstruction, imgPath=bodysite_word2img[bodySites[runcounter]], biopacCode=bodymapping_instruction, noRecord=True)
     routineTimer.reset()
     
     """
     8. Start Scanner
     """
     if eyetracker_exists==1:
-        sourceEDF_filename = "S%dR%s.EDF" % (int(expInfo['DBIC Number']), runs+1)
-        destinationEDF = os.path.join(sub_dir, "S%dR%s.EDF" % (int(expInfo['DBIC Number']), runs+1))
+        sourceEDF_filename = "S%dR%s.EDF" % (int(expInfo['DBIC Number']), runs)
+        destinationEDF = os.path.join(sub_dir, "S%dR%s.EDF" % (int(expInfo['DBIC Number']), runs))
         sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
         startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
     
@@ -393,9 +379,9 @@ for runs in runRange:
     9. Set Trial parameters
     """
     jitter2 = None  # Reset Jitter2
-    bodySiteData = bodySites[runs]
-    BiopacChannel = bodysite_word2heatcode[bodySites[runs]]
-    temperature = participant_settingsHeat[bodySites[runs]]
+    bodySiteData = bodySites[runcounter]
+    BiopacChannel = bodysite_word2heatcode[bodySites[runcounter]]
+    temperature = participant_settingsHeat[bodySites[runcounter]]
     thermodeCommand = thermode_temp2program[temperature]
 
     routineTimer.reset()
@@ -463,7 +449,9 @@ for runs in runRange:
         acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
         painRating=acceptmap_bids['value'].iloc[-1]
         acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
-        acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "AcceotBinary", acceptText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
+        
+        if ConditionName == "Regulation Phase":
+            acceptmap_bids=acceptmap_bids.append(showRatingScale(win, "AcceptBinary", acceptText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=accept_binary), ignore_index=True)
         
         rating_sound.stop()
 
@@ -509,10 +497,10 @@ for runs in runRange:
     acceptmap_bids['session']=expInfo['session']
     acceptmap_bids['handedness']=expInfo['handedness']
     acceptmap_bids['scanner']=expInfo['scanner']
-    acceptmap_bids['body_site']=bodySites[runs]
+    acceptmap_bids['body_site']=bodySites[runcounter]
     acceptmap_bids['skin_site']=skinSite
     
-    acceptmap_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expInfo['expName'], bodySites[runs].replace(" ", "").lower(), str(expInfo['run']+runs))
+    acceptmap_bidsfilename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expInfo['expName'], bodySites[runcounter].replace(" ", "").lower(), str(expInfo['run']+runcounter))
     
     acceptmap_bids.to_csv(acceptmap_bidsfilename, sep="\t")
     acceptmap_bids=pd.DataFrame(columns=varNames) # Clear it out for a new file.

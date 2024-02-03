@@ -457,6 +457,7 @@ abdomen_heat=18
 instruction_code=19
 
 pain_binary=20
+accept_binary=52
 trialIntensity_rating=21
 tolerance_binary=22
 distract_binary=23
