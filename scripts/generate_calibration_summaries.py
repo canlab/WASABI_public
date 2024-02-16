@@ -260,6 +260,6 @@ def genCalibrationSummaries(sub_dir):
 
 # Should run something like this:
 # Python cannot handle Windows filepaths 
-dir=r'C:\Users\Michael\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID002742\ses-01'
+dir=r'C:\Users\Dartmouth\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID002743\ses-01'
 genCalibrationSummaries(dir)
 # Done

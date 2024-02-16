@@ -75,7 +75,7 @@ from WASABI_psychopy_utilities import *
 from WASABI_config import *
 
 __author__ = "Michael Sun"
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 __email__ = "msun@dartmouth.edu"
 __status__ = "Production"
 
