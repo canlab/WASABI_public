@@ -351,7 +351,7 @@ for runs in runRange:
     
     # Set Skin-Site to prevent burns:
     if (runcounter==0 or runcounter==1):
-            skinSite='1'
+            skinSite='3'
     elif (runcounter==2 or runcounter==3):
             skinSite='2'
     else:
