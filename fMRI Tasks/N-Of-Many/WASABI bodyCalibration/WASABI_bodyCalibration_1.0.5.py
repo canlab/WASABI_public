@@ -172,7 +172,7 @@ InstructionText = "Experience the following sensations as they come."
 """
 if expInfo['body sites']=="":
     bodySites = ["Right Leg", "Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Chest", "Abdomen"]
-    # random.shuffle(bodySites)
+    random.shuffle(bodySites)
     # FOR THE RA: IF YOU NEED TO CONTINUE FROM AN INTERRUPTED BODYCALIBRATION:
     # 1. UNCOMMENT THE LINE BELOW,
     # 2. FILL IN THE FIRST ELEMENTS WITH BODYSITES ALREADY RUN, 
