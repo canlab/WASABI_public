@@ -176,7 +176,7 @@ if expInfo['body sites']=="":
     # 1. UNCOMMENT THE LINE BELOW,
     # 2. FILL IN THE FIRST ELEMENTS WITH BODYSITES ALREADY RUN, 
     # 3. AND THEN TYPE IN THE RUN YOU LEFT OFF ON IN THE DIALOGUE BOX UPON RE-RUNNING THIS TASK:!
-    # bodySites = ["Right Face", "Right Arm", "Right Leg", "Abdomen", "Left Face", "Left Arm", "Left Leg", "Chest"]
+    #bodySites = ["Right Leg", "Left Face", "Right Face", "Left Arm", "Right Arm", "Left Leg", "Chest", "Abdomen"]
     
 else:
     bodySites=list(expInfo['body sites'].split(", "))
@@ -516,7 +516,7 @@ if bids_df.loc[(bids_df['body_site']=='Chest') & (bids_df['repetition']!=1) & (b
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
     averaged_df['Eligible']=-2
 
-if averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
+eif averaged_df['leftleg_ht']<47 | averaged_df['chest_ht']<47:
     end_msg="Thank you for your participation. \n\n\nUnfortunately you don't qualify for the continuation of this study. Experimenter please press [e]."
     averaged_df['Eligible']=-3
 

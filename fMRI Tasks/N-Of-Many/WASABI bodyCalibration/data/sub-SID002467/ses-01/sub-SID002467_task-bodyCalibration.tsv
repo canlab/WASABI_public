@@ -1,0 +1,8 @@
+	repetition	body_site	temperature	pain	intensity	tolerance
+0	1	Abdomen	48.0	1.0	45.0	-1.0
+1	2	Abdomen	47.5	1.0	41.604938271604944	-1.0
+2	3	Abdomen	47.0	1.0	39.44444444444444	1.0
+3	4	Abdomen	47.0	1.0	38.08641975308642	1.0
+4	5	Abdomen	47.0	1.0	35.98765432098765	1.0
+5	6	Abdomen	47.0	1.0	37.03703703703704	1.0
+6	7	Abdomen	47.0	1.0	30.06172839506173	0.0
