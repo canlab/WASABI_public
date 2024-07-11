@@ -1,0 +1,2 @@
+date	DBIC_id	sex	handedness	calibration_order	leftarm_ht	leftarm_i	rightarm_ht	rightarm_i	leftleg_ht	leftleg_i	rightleg_ht	rightleg_i	leftface_ht	leftface_i	rightface_ht	rightface_i	chest_ht	chest_i	abdomen_ht	abdomen_i
+2024_Jul_08_1504	2993	m	r	('abdomen', 'rightface', 'leftface', 'chest', 'leftarm', 'rightarm', 'leftleg', 'rightleg')	48.5	29.28395061728395	48.5	28.909465020576135	48.5	33.07613168724279	48.5	30.814814814814817	48.5	23.086419753086417	48.5	25.654320987654323	48.5	32.37654320987655	48.5	24.485596707818928

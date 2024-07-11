@@ -91,11 +91,12 @@ function DSGN = generate_contrasts(task, DSGN)
                 {{'.*hot'}, 'Hot', [1]} 
                 {{'.*warm'}, 'Warm', [1]} 
                 {{'.*imagine'}, 'Imagine', [1]}
+                {{'.*imagcue'}, 'Imagine-Cue', [1]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'Sensation', [1 1 0]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'Aversion', [1 0 1]}
                 {{{'.*hot'} {'.*warm'}}, 'HotvsWarm', [1 -1]}
                 {{{'.*hot'} {'.*imagine'}}, 'HotvsImagine', [1 -1]}
-                {{{'.*warm'} {'.*imagine'}}, 'WarmvsImagine', [1 -1]}
+                {{{'.*imagine'} {'.*warm'}}, 'ImaginevsWarm', [1 -1]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'HotU', [2 -1 -1]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'WarmU', [-1 2 -1]}
                 {{'.*hot' '.*warm' '.*imagine'}, 'ImagineU', [-1 -1 2]}

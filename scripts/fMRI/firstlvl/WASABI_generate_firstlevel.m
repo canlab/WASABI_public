@@ -195,7 +195,8 @@ function WASABI_genfirstlvlDSGNs(fmriprep_derivdir, bidsroot, spike_def, omit_sp
                         % If running one subject's session at a time, print some feedback:
                         [subject, session, run, ~] = getBIDSSubSesRunTask(funcs(1).name);
                         disp(['Currently processing sub-', subject, '_ses-',session,'_run-',run, '_task-', tasks{t}]);
-                        DSGN=generateDSGN(funcs, firstlvl_derivdir, fmriprep_derivdir, tasks{t}, spike_def, 0);
+                        % DSGN=generateDSGN(funcs, firstlvl_derivdir, fmriprep_derivdir, tasks{t}, spike_def, 0);
+                        DSGN=generateDSGN(funcs, firstlvl_derivdir, fmriprep_derivdir, tasks{t}, 0);
                     else
                         % If there is no matching task, then display this message:
                         disp(['No ', tasks{t}, ' runs for ', subs{sub}, ' session ', num2str(ses)]);
