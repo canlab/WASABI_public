@@ -1,0 +1,2 @@
+date	DBIC_id	sex	handedness	calibration_order	leftarm_ht	leftarm_i	rightarm_ht	rightarm_i	leftleg_ht	leftleg_i	rightleg_ht	rightleg_i	leftface_ht	leftface_i	rightface_ht	rightface_i	chest_ht	chest_i	abdomen_ht	abdomen_i
+2024_Jul_16_2015	3000	m	r	('rightleg', 'leftleg', 'rightface', 'chest', 'leftarm', 'leftface', 'rightarm', 'abdomen')	48.5	30.967078189300413	48.5	35.699588477366255	48.5	18.940329218106996	48.5	22.20987654320988	48.5	26.23456790123457	48.5	22.18106995884774	48.5	27.65432098765432	48.5	22.66975308641975
