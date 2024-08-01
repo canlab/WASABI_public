@@ -258,9 +258,17 @@ def genCalibrationSummaries(sub_dir):
     averaged_df = pd.DataFrame([averaged_data])
     averaged_df.to_csv(averaged_filename, sep='\t', index=False)
 
+# Step 1: You will want to run the above code first to load the function genCalibrationSummaries() into memory, before calling it below:
+# Highlight all of the above, right click > Run in Interactive Window > Run Selection/Line in Interactive Window
+
 # Should run something like this:
-# Python cannot handle Windows filepaths 
+# Python cannot handle Windows filepaths without an 'r' prefix
 # dir=r'C:\Users\Dartmouth\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID002743\ses-01'
-dir=r'C:\Users\Michael\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID003000\ses-01'
+dir=r'C:\Users\Michael\Documents\GitHub\canlab\WASABI_public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID002990\ses-01'
+# dir=r'C:\dbic_computer_path_to\WASABI_Public\fMRI Tasks\N-Of-Many\WASABI bodyCalibration\data\sub-SID003000\ses-01'
 genCalibrationSummaries(dir)
+
+# Step 2: Edit your path to dir with the desired subject ID, and the path on your local machine.
+# Step 3: Highlight the above call to dir and genCalibrationSummaries(), right click > Run in Interactive Window > Run Selection/Line in Interactive Window
+
 # Done
