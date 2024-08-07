@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bi5555n/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2020.2.10),
@@ -222,8 +222,8 @@ if expInfo['body sites']=="":
 else:
     bodySites=list(expInfo['body sites'].split(", "))
 
-# If bodysites and run order need to be manually set for the participant, in a pinch, uncomment below and edit:
-bodySites = ["Left Leg","Chest","Left Leg"]
+# If bodysites and run order need to be manually set for the participant, in a pinch, uncomment below
+bodySites = ["Left Leg","Chest"]
 
 expInfo['body_site_order'] = str(bodySites)
 expInfo['expName'] = 'acceptmap'+ConditionSuffix
