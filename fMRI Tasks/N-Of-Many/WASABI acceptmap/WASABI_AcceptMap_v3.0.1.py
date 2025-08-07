@@ -223,7 +223,7 @@ else:
     bodySites=list(expInfo['body sites'].split(", "))
 
 # If bodysites and run order need to be manually set for the participant, in a pinch, uncomment below
-bodySites = ["Chest","Left Leg","Chest"]
+#bodySites = ["Chest","Left Leg"]
 
 expInfo['body_site_order'] = str(bodySites)
 expInfo['expName'] = 'acceptmap'+ConditionSuffix
