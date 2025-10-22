@@ -1,2 +1,2 @@
-	date	DBIC_id	age	dob	sex	handedness	calibration_order	leftarm_ht	rightarm_ht	leftleg_ht	rightleg_ht	leftface_ht	rightface_ht	chest_ht	abdomen_ht	leftarm_i	rightarm_i	leftleg_i	rightleg_i	leftface_i	rightface_i	chest_i	abdomen_i	Eligible
-0	2025_Aug_28_1659	3156	20.21917808219178	06/14/2005	m	r	['Right Face', 'Abdomen', 'Left Arm', 'Left Face', 'Left Leg', 'Right Leg', 'Chest', 'Right Arm']		48.5								40.925925925925924							-2
+date	DBIC_id	sex	handedness	calibration_order	leftarm_ht	leftarm_i	rightarm_ht	rightarm_i	leftleg_ht	leftleg_i	rightleg_ht	rightleg_i	leftface_ht	leftface_i	rightface_ht	rightface_i	chest_ht	chest_i	abdomen_ht	abdomen_i
+2025_Aug_28_1534	3156	m	r	('leftarm', 'rightface', 'rightleg', 'abdomen', 'leftface', 'leftleg', 'chest', 'rightarm')	48.5	41.615226337448554	48.5	40.925925925925924	48.0	57.26851851851852	48.5	56.604938271604944	48.5	33.858024691358025	48.5	36.67901234567901	48.5	17.335390946502056	48.5	23.23045267489712
