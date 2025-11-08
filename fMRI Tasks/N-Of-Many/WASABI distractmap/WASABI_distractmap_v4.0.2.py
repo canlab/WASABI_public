@@ -1,4 +1,4 @@
-#!/usr/bin/en5555v python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2020.2.10),
@@ -221,7 +221,7 @@ else:
     bodySites=list(expInfo['body sites'].split(", "))
 
 # If bodysites and run order need to be manually set for the participant, in a pinch, uncomment below and edit:
-#bodySites = ["Left Leg","Chest","Left Leg"]
+#bodySites = ["Left Leg","Chest"]
 
 expInfo['body_site_order'] = str(bodySites)
 
