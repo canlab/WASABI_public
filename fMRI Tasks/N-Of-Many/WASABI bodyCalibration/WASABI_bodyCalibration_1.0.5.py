@@ -176,7 +176,7 @@ if expInfo['body sites']=="":
     # 1. UNCOMMENT THE LINE BELOW,
     # 2. FILL IN THE FIRST ELEMENTS WITH BODYSITES ALREADY RUN, 
     # 3. AND THEN TYPE IN THE RUN YOU LEFT OFF ON IN THE DIALOGUE BOX UPON RE-RUNNING THIS TASK:!
-    #bodySites = ["Right Arm","Right Face","Abdomen","Chest","Left Arm","Left Leg","Right Leg","Left Face"]
+    #bodySites = ["Right Face","Abdomen","Left Arm","Right Leg","Left Face","Chest","Left Leg","Right Arm"]
     
 else:
     bodySites=list(expInfo['body sites'].split(", "))
